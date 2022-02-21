@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stack>
+
 #include "Base.h"
 
 class State;
@@ -19,6 +20,15 @@ public:
 	// Handling the main loop
 	void run();
 
+	// Called by the active state as he must stop.
+	void killState(const Ref<State>& newState);
+
+	// Big problem time.
+	[[noreturn]] void emergencyStop(const char* errMsg);
+
+private: // Private methods
+	void close();
+
 	// Handling global events : sf::Event::Close
 	void updateEvents();
 
@@ -34,13 +44,7 @@ public:
 	// Simply updates delta time : time between two frames.
 	void updateDt();
 
-	// Called by the active state as he must stop.
-	void killState(const Ref<State>& newState);
-
-	// Big problem time (not used yet).
-	void emergencyStop(const char* errMsg);
-
-private: // Attributes
+private: // Private attributes
 	// Singleton instance
 	static Application* m_Singleton;
 
@@ -55,8 +59,5 @@ private: // Attributes
 	// State stack
 	std::stack<Ref<State>> m_States;
 	Ref<State> m_NextState;
-
-private: // Methods
-	void close();
 };
 

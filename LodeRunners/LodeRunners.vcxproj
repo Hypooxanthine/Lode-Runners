@@ -163,6 +163,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Entities\Components\FlipbookComponent.cpp" />
+    <ClCompile Include="src\Assets\Flipbook.cpp" />
+    <ClCompile Include="src\Assets\Sprite.cpp" />
+    <ClCompile Include="src\Assets\Assets.cpp" />
+    <ClCompile Include="src\Level\Level.cpp" />
     <ClCompile Include="src\Core\Log.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\tinyxml2.cpp" />
@@ -170,12 +175,20 @@
     <ClCompile Include="src\States\State.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Entities\Components\FlipbookComponent.h" />
+    <ClInclude Include="src\Assets\Flipbook.h" />
+    <ClInclude Include="src\Assets\Sprite.h" />
+    <ClInclude Include="src\Assets\Assets.h" />
+    <ClInclude Include="src\Level\Level.h" />
     <ClInclude Include="src\Core\Log.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\Base.h" />
     <ClInclude Include="src\Core\tinyxml2.h" />
     <ClInclude Include="src\States\States.h" />
     <ClInclude Include="src\States\State.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="config.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

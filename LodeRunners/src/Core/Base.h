@@ -7,9 +7,12 @@
 /* Main STL libraries. */
 #include <iostream>
 #include <memory>
+#include <thread>
 #include <functional>
 #include <optional>
 #include <string>
+#include <unordered_map>
+#include <map>
 
 /* SFML Graphic component */
 #include <SFML/Graphics.hpp>

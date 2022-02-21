@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "../States/State.h"
+#include "../Assets/Assets.h"
 
 Application* Application::m_Singleton = nullptr;
 
@@ -8,6 +9,9 @@ Application::Application()
 	m_Window(MakeRef<sf::RenderWindow>()),
 	m_Event(sf::Event())
 {
+	if (!Assets::load())
+		emergencyStop("Couldn't load game assets.");
+
 	if (m_Singleton)
 	{
 		LOG_ERROR("Application already exists.");
@@ -99,9 +103,9 @@ void Application::killState(const Ref<State>& newState)
 		m_NextState = newState;
 }
 
-void Application::emergencyStop(const char* errMsg)
+[[noreturn]] void Application::emergencyStop(const char* errMsg)
 {
-	LOG_ERROR(std::string("Emergency stop has been called. Details :") + errMsg);
+	LOG_ERROR(std::string("Emergency stop has been called. Details: ") + errMsg);
 	exit(1);
 }
 
