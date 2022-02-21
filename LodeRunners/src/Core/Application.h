@@ -20,8 +20,11 @@ public:
 	// Handling the main loop
 	void run();
 
+	// Called by the active state to push another one. The caller doesn't die, he will wake up when he'll be on the top of the stack (when all his descendants will be killed).
+	void pushState(const Ref<State>& newState);
+
 	// Called by the active state as he must stop.
-	void killState(const Ref<State>& newState);
+	void killState();
 
 	// Big problem time.
 	[[noreturn]] void emergencyStop(const char* errMsg);

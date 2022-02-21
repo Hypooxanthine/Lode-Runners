@@ -93,14 +93,18 @@ void Application::updateDt()
 	m_DeltaTime = m_DtClock.restart().asSeconds();
 }
 
-void Application::killState(const Ref<State>& newState)
+void Application::pushState(const Ref<State>& newState)
 {
-	LOG_TRACE("State killed.");
+	LOG_INFO("New state pushed.");
+	m_NextState = newState;
+}
+
+void Application::killState()
+{
+	LOG_INFO("State killed.");
 
 	if (!m_States.empty())
 		m_States.pop();
-	if (newState)
-		m_NextState = newState;
 }
 
 [[noreturn]] void Application::emergencyStop(const char* errMsg)
