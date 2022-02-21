@@ -25,5 +25,8 @@
 *.out
 *.app
 
-# Vs files
+# Folders
 .vs/
+x86/
+x64/
+Intermediate/
