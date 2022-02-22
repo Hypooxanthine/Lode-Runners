@@ -63,7 +63,7 @@ private: // Private methods
 	static ElementPosition getTilePosition(const tinyxml2::XMLElement* tilesElement, const std::string& name);
 
 private: // Private attributes
-	// Links between xml config file IDs/names and enums
+	// Links between xml config file IDs/names and enums. Simple maps to be able to iterate through them.
 	static std::map<TileType, std::string> m_XMLTileNames;
 	static std::map<FlipbookType, std::string> m_XMLFlipbookNames;
 
