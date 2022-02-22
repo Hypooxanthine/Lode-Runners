@@ -167,6 +167,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Assets\LevelAsset.cpp" />
+    <ClCompile Include="src\Assets\AssetLoader.cpp" />
+    <ClCompile Include="src\States\EditorState.cpp" />
     <ClCompile Include="src\Entities\Components\FlipbookComponent.cpp" />
     <ClCompile Include="src\Assets\Flipbook.cpp" />
     <ClCompile Include="src\Assets\Sprite.cpp" />
@@ -179,6 +182,9 @@
     <ClCompile Include="src\States\State.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Assets\LevelAsset.h" />
+    <ClInclude Include="src\Assets\AssetLoader.h" />
+    <ClInclude Include="src\States\EditorState.h" />
     <ClInclude Include="src\Entities\Components\FlipbookComponent.h" />
     <ClInclude Include="src\Assets\Flipbook.h" />
     <ClInclude Include="src\Assets\Sprite.h" />

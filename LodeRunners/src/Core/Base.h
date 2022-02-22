@@ -31,9 +31,6 @@ constexpr Ref<T> MakeRef(Args&& ... args)
 /* Logging. */
 #include "Log.h"
 
-/* XML parser. */
-#include "tinyxml2.h"
-
 /* Do not include Application.h in Application.h. */
 #ifndef APPLICATION_CLASS_FILE
 #include "Application.h"
@@ -41,3 +38,7 @@ constexpr Ref<T> MakeRef(Args&& ... args)
 
 /* Assertion system. */
 #define ASSERT(condition, msg) if(!condition) Application::get()->emergencyStop(std::string("Assertion failed. ") + msg)
+
+/* Global defines */
+#define TILES_WIDTH 26
+#define TILES_HEIGHT 16

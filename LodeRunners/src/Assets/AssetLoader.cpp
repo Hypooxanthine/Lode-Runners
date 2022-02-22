@@ -1,5 +1,3 @@
-#include "Assets.h"
-
 #include "AssetLoader.h"
 
 // Macros for filling connections between xml IDs and C++ enums
@@ -10,15 +8,13 @@
 #define CORRUPTED(condition) ASSERT(condition, ((std::string)"config.xml file corrupted. Line : " + std::to_string(__LINE__) + ". Aborting.").c_str())
 #define CANT_FIND(condition, x) ASSERT(condition, ((std::string)"Couldn't find \"" + x + "\". Line : " + std::to_string(__LINE__) + ". Aborting.").c_str())
 
-// Static variables declarations
-std::map<TileType, std::string> Assets::m_XMLTileNames;
-std::map<FlipbookType, std::string> Assets::m_XMLFlipbookNames;
-Sprite Assets::m_SkinIcon;
-unsigned int Assets::m_ElementSize = 0;
-std::unordered_map<TileType, Sprite> Assets::m_Tiles;
-std::unordered_map<FlipbookType, Flipbook> Assets::m_Flipbooks;
+// Static members declarations
+std::map<TileType, std::string> AssetLoader::m_XMLTileNames;
+std::map<FlipbookType, std::string> AssetLoader::m_XMLFlipbookNames;
+std::vector<std::string> AssetLoader::m_AvailableSkins;
+std::vector<std::string> AssetLoader::m_AvailableLevels;
 
-void Assets::setup()
+void AssetLoader::init()
 {
 	FILL_XML_TILE_NAMES(Blank);
 	FILL_XML_TILE_NAMES(Brick);
@@ -41,22 +37,18 @@ void Assets::setup()
 	FILL_XML_FLIPBOOKS_NAMES(EnnemyFall);
 }
 
-void Assets::load(const std::string& name)
+void AssetLoader::loadSkin(std::unordered_map<TileType, Sprite>& tiles, unsigned int& elementSize, std::unordered_map<FlipbookType, Flipbook>& flipbooks, const std::string& skinName)
 {
-	/*setup();
-
 	tinyxml2::XMLDocument doc;
 	ASSERT(doc.LoadFile("config.xml") == tinyxml2::XMLError::XML_SUCCESS, "Couldn't open config.xml.");
 	tinyxml2::XMLHandle docHandle(&doc);
 
-	LoadSpritesheet(docHandle, name);
-	loadTiles(docHandle, name);
-	loadFlipbooks(docHandle, name);*/
-
-	AssetLoader::loadSkin(m_Tiles, m_ElementSize, m_Flipbooks, name);
+	LoadSpritesheet(docHandle, skinName);
+	loadTiles(tiles, elementSize, docHandle, skinName);
+	loadFlipbooks(docHandle, skinName);
 }
 
-void Assets::LoadSpritesheet(tinyxml2::XMLHandle& handle, const std::string& name)
+void AssetLoader::LoadSpritesheet(tinyxml2::XMLHandle& handle, const std::string& name)
 {
 	// Getting requested skin settings
 	auto skinElement = getSkin(handle, name);
@@ -73,10 +65,10 @@ void Assets::LoadSpritesheet(tinyxml2::XMLHandle& handle, const std::string& nam
 	CORRUPTED(skinElement->QueryStringAttribute("fileName", &spritesheetFileName) == tinyxml2::XMLError::XML_SUCCESS);
 
 	// Loading spritesheet
-	CANT_FIND(getSpriteSheet().loadFromFile(getSkinPath(handle, name)), spritesheetFileName);
+	CANT_FIND(getSpriteSheet().loadFromFile(getSpriteSheetPath(handle, name)), spritesheetFileName);
 }
 
-void Assets::loadTiles(tinyxml2::XMLHandle& handle, const std::string& name)
+void AssetLoader::loadTiles(std::unordered_map<TileType, Sprite>& tiles, unsigned int& elementSize, tinyxml2::XMLHandle& handle, const std::string& name)
 {
 	// Getting requested skin layout
 	auto skinElement = getSkin(handle, name);
@@ -87,27 +79,33 @@ void Assets::loadTiles(tinyxml2::XMLHandle& handle, const std::string& name)
 	auto layoutElement = getLayout(handle, layoutName);
 
 	// Getting element size
-	CORRUPTED(layoutElement->QueryUnsignedAttribute("elementSize", &m_ElementSize) == tinyxml2::XMLError::XML_SUCCESS);
+	CORRUPTED(layoutElement->QueryUnsignedAttribute("elementSize", &elementSize) == tinyxml2::XMLError::XML_SUCCESS);
 
 	// Getting Tiles
 	auto tilesElement = getTiles(handle);
 
-	for(const std::pair<TileType, std::string>& p : m_XMLTileNames)
+	for (const std::pair<TileType, std::string>& p : m_XMLTileNames)
 	{
 		auto pos = getTilePosition(tilesElement, p.second);
 		LOG_TRACE(p.second + " tile loaded.");
-		m_Tiles[p.first] = Sprite(getSpriteSheet(), m_ElementSize, pos.x, pos.y);
+		tiles[p.first] = Sprite(getSpriteSheet(), elementSize, pos.x, pos.y);
 	}
 
 	LOG_INFO("Tiles loaded.");
 }
 
-void Assets::loadFlipbooks(tinyxml2::XMLHandle& handle, const std::string& name)
+void AssetLoader::loadFlipbooks(tinyxml2::XMLHandle& handle, const std::string& name)
 {
 	LOG_INFO("Flipbooks loaded.");
 }
 
-tinyxml2::XMLElement* Assets::getSkins(tinyxml2::XMLHandle& handle)
+void AssetLoader::loadLevel(LevelAsset& level)
+{
+
+}
+
+
+tinyxml2::XMLElement* AssetLoader::getSkins(tinyxml2::XMLHandle& handle)
 {
 	// Getting skins
 	auto skinsElement = handle.FirstChildElement("App").FirstChildElement("Spritesheets").FirstChildElement("Skins").ToElement();
@@ -115,7 +113,7 @@ tinyxml2::XMLElement* Assets::getSkins(tinyxml2::XMLHandle& handle)
 	return skinsElement;
 }
 
-tinyxml2::XMLElement* Assets::getSkin(tinyxml2::XMLHandle& handle, const std::string& name)
+tinyxml2::XMLElement* AssetLoader::getSkin(tinyxml2::XMLHandle& handle, const std::string& name)
 {
 	// Getting skins
 	auto skinsElement = getSkins(handle);
@@ -128,7 +126,7 @@ tinyxml2::XMLElement* Assets::getSkin(tinyxml2::XMLHandle& handle, const std::st
 	return skinElement;
 }
 
-std::string Assets::getSkinPath(tinyxml2::XMLHandle& handle, const std::string& name)
+std::string AssetLoader::getSpriteSheetPath(tinyxml2::XMLHandle& handle, const std::string& name)
 {
 	// Getting requested skin settings (it contains the file name of the spritesheet to use)
 	auto skinElement = getSkin(handle, name);
@@ -148,14 +146,14 @@ std::string Assets::getSkinPath(tinyxml2::XMLHandle& handle, const std::string& 
 	return (std::string)spritesheetPath + spritesheetFileName;
 }
 
-tinyxml2::XMLElement* Assets::getLayouts(tinyxml2::XMLHandle& handle)
+tinyxml2::XMLElement* AssetLoader::getLayouts(tinyxml2::XMLHandle& handle)
 {
 	auto layoutsElement = handle.FirstChildElement("App").FirstChildElement("Spritesheets").FirstChildElement("Layouts").ToElement();
 	CORRUPTED(layoutsElement);
 	return layoutsElement;
 }
 
-tinyxml2::XMLElement* Assets::getLayout(tinyxml2::XMLHandle& handle, const std::string& name)
+tinyxml2::XMLElement* AssetLoader::getLayout(tinyxml2::XMLHandle& handle, const std::string& name)
 {
 	auto layoutElement = handle.FirstChildElement("App").FirstChildElement("Spritesheets").FirstChildElement("Layouts").FirstChildElement("Layout").ToElement();
 	CORRUPTED(layoutElement);
@@ -168,7 +166,7 @@ tinyxml2::XMLElement* Assets::getLayout(tinyxml2::XMLHandle& handle, const std::
 	return layoutElement;
 }
 
-tinyxml2::XMLElement* Assets::getTiles(tinyxml2::XMLHandle& handle)
+tinyxml2::XMLElement* AssetLoader::getTiles(tinyxml2::XMLHandle& handle)
 {
 	auto tilesElement = handle.FirstChildElement("App").FirstChildElement("Spritesheets").FirstChildElement("Layouts").FirstChildElement("Layout").FirstChildElement("Tiles").ToElement();
 	CORRUPTED(tilesElement);
@@ -176,7 +174,7 @@ tinyxml2::XMLElement* Assets::getTiles(tinyxml2::XMLHandle& handle)
 	return tilesElement;
 }
 
-Assets::ElementPosition Assets::getTilePosition(const tinyxml2::XMLElement* tilesElement, const std::string& name)
+AssetLoader::ElementPosition AssetLoader::getTilePosition(const tinyxml2::XMLElement* tilesElement, const std::string& name)
 {
 	using namespace tinyxml2;
 

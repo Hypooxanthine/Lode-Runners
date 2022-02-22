@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "../States/State.h"
 #include "../Assets/Assets.h"
+#include "../Assets/AssetLoader.h"
 
 Application* Application::m_Singleton = nullptr;
 
@@ -9,6 +10,7 @@ Application::Application()
 	m_Window(MakeRef<sf::RenderWindow>()),
 	m_Event(sf::Event())
 {
+	AssetLoader::init();
 	Assets::load();
 
 	if (m_Singleton)
@@ -19,7 +21,8 @@ Application::Application()
 
 void Application::run()
 {
-	m_Window->create(sf::VideoMode(300, 300), "Lode Runners");
+	const unsigned int& elementSize = Assets::getElementSize();
+	m_Window->create(sf::VideoMode(elementSize * TILES_WIDTH, elementSize * TILES_HEIGHT), "Lode Runners");
 
 	while (m_Window->isOpen())
 	{
