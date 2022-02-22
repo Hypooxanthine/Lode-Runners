@@ -118,12 +118,14 @@
       <AdditionalIncludeDirectories>$(SolutionDir)External\SPDLOG\include\;$(SolutionDir)External\SFML-x86\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)External\SFML-x86\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-s.lib;sfml-window-s.lib;sfml-audio-s.lib;sfml-network-s.lib;sfml-system-s.lib;opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <TerminalServerAware>false</TerminalServerAware>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -154,12 +156,14 @@
       <AdditionalIncludeDirectories>$(SolutionDir)External\SPDLOG\include\;$(SolutionDir)External\SFML-x64\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)External\SFML-x64\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-s.lib;sfml-window-s.lib;sfml-audio-s.lib;sfml-network-s.lib;sfml-system-s.lib;opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <TerminalServerAware>false</TerminalServerAware>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

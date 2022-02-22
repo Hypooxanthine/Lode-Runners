@@ -9,14 +9,10 @@ Application::Application()
 	m_Window(MakeRef<sf::RenderWindow>()),
 	m_Event(sf::Event())
 {
-	if (!Assets::load())
-		emergencyStop("Couldn't load game assets.");
+	Assets::load();
 
 	if (m_Singleton)
-	{
-		LOG_ERROR("Application already exists.");
-		exit(1);
-	}
+		emergencyStop("Application already exists.");
 
 	m_Singleton = this;
 }
@@ -107,7 +103,7 @@ void Application::killState()
 		m_States.pop();
 }
 
-[[noreturn]] void Application::emergencyStop(const char* errMsg)
+[[noreturn]] void Application::emergencyStop(const std::string& errMsg)
 {
 	LOG_ERROR(std::string("Emergency stop has been called. Details: ") + errMsg);
 	exit(1);

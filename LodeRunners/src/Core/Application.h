@@ -1,4 +1,5 @@
 #pragma once
+#define APPLICATION_CLASS_FILE
 
 #include <stack>
 
@@ -27,7 +28,7 @@ public:
 	void killState();
 
 	// Big problem time.
-	[[noreturn]] void emergencyStop(const char* errMsg);
+	[[noreturn]] void emergencyStop(const std::string& errMsg);
 
 private: // Private methods
 	void close();

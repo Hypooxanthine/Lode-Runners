@@ -1,3 +1,8 @@
+/*
+This logging system is widely inspired by TheCherno's "Hazel" game engine : https://github.com/TheCherno/Hazel .
+Thanks to him for this powerful logging class.
+*/
+
 #pragma once
 
 #include <spdlog/spdlog.h>

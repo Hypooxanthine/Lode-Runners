@@ -19,6 +19,7 @@
 
 // We will be using shared pointers a lot. Shared pointers are not this expensive for a single referenced
 // pointer compared to unique pointers, so we can use it by default to make the code easier to read.
+// Thanks to TheCherno's "Hazel" game engine for this little code : https://github.com/TheCherno/Hazel
 template<typename T>
 using Ref = std::shared_ptr<T>;
 template<typename T, typename ... Args>
@@ -32,3 +33,11 @@ constexpr Ref<T> MakeRef(Args&& ... args)
 
 /* XML parser. */
 #include "tinyxml2.h"
+
+/* Do not include Application.h in Application.h. */
+#ifndef APPLICATION_CLASS_FILE
+#include "Application.h"
+#endif
+
+/* Assertion system. */
+#define ASSERT(condition, msg) if(!condition) Application::get()->emergencyStop(std::string("Assertion failed. ") + msg)

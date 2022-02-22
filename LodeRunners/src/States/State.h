@@ -16,6 +16,6 @@ public:
 	virtual void render(const Ref<sf::RenderWindow>& window) { window->clear(); }
 
 protected:
-	inline void kill() { Application::get()->killState( getNextState() ); }
+	inline void kill() { Application::get()->killState(); }
 };
 
