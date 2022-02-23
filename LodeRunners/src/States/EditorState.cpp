@@ -1,7 +1,9 @@
 #include "EditorState.h"
+#include "../Assets/Assets.h"
 
 EditorState::EditorState()
 {
+	m_LevelAsset = Assets::getLevelAsset("Level_1");
 }
 
 void EditorState::init()

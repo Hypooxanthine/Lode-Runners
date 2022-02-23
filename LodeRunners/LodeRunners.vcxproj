@@ -200,6 +200,9 @@
   <ItemGroup>
     <Xml Include="config.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\Levels\Level_1.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -37,7 +37,11 @@ constexpr Ref<T> MakeRef(Args&& ... args)
 #endif
 
 /* Assertion system. */
-#define ASSERT(condition, msg) if(!condition) Application::get()->emergencyStop(std::string("Assertion failed. ") + msg)
+#if defined(_DEBUG)
+#define ASSERT(condition, msg) if(!(condition)) Application::get()->emergencyStop((std::string)"Assertion failed, file " + __FILE__ + ", line " + std::to_string(__LINE__) + ". Details : " + msg)
+#else
+#define ASSERT(condition, msg) if(!(condition)) Application::get()->emergencyStop((std::string)"Assertion failed. " + msg)
+#endif
 
 /* Global defines */
 #define TILES_WIDTH 26

@@ -102,4 +102,7 @@
   <ItemGroup>
     <Xml Include="config.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\Levels\Level_1.txt" />
+  </ItemGroup>
 </Project>

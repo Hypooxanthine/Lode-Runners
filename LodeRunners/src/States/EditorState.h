@@ -7,13 +7,11 @@ class EditorState : public State
 public:
 	EditorState();
 
-	virtual inline Ref<State> getNextState() = 0;
-
 	virtual void init();
 	virtual void update(const float& dt);
 	virtual void render(Ref<sf::RenderWindow>& window);
 
 private:
-
+	Ref<LevelAsset> m_LevelAsset;
 };
 

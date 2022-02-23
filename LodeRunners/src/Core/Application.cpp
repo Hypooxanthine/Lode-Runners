@@ -3,6 +3,9 @@
 #include "../Assets/Assets.h"
 #include "../Assets/AssetLoader.h"
 
+// For testing purpose
+#include "../States/EditorState.h"
+
 Application* Application::m_Singleton = nullptr;
 
 Application::Application()
@@ -24,11 +27,15 @@ void Application::run()
 	const unsigned int& elementSize = Assets::getElementSize();
 	m_Window->create(sf::VideoMode(elementSize * TILES_WIDTH, elementSize * TILES_HEIGHT), "Lode Runners");
 
+	// For testing purpose
+	m_States.push(MakeRef<EditorState>());
+
 	while (m_Window->isOpen())
 	{
 		updateEvents();
 		update();
 		render();
+		checkState();
 		updateDt();
 	}
 }
@@ -108,7 +115,7 @@ void Application::killState()
 
 [[noreturn]] void Application::emergencyStop(const std::string& errMsg)
 {
-	LOG_ERROR(std::string("Emergency stop has been called. Details: ") + errMsg);
+	LOG_ERROR(std::string("Emergency stop has been called. Details:\n") + errMsg);
 	exit(1);
 }
 

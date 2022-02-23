@@ -95,6 +95,12 @@
     </Skins>
   </Spritesheets>
 
+  <Levels>
+    <Level name="Level_1" fileName="Level_1.txt" />
+    <Level name="Level_2" fileName="Level_2.txt" />
+    <Level name="Level_3" fileName="Level_3.txt" />
+  </Levels>
+
   <Paths>
     <!-- Please type slash terminated addresses. -->
     <Skins path="Resources/Skins/" />
