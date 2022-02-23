@@ -104,7 +104,7 @@ void AssetLoader::fillAvailableLevels(tinyxml2::XMLHandle& handle)
 	}
 }
 
-void AssetLoader::loadSkin(const std::string& skinName, Ref<std::unordered_map<TileType,Ref<Sprite>>> tiles, unsigned int& elementSize, Ref<std::unordered_map<FlipbookType,Ref<Flipbook>>> flipbooks)
+void AssetLoader::loadSkin(const std::string& skinName, Ref<std::unordered_map<TileType,Ref<SpriteAsset>>> tiles, unsigned int& elementSize, Ref<std::unordered_map<FlipbookType,Ref<FlipbookAsset>>> flipbooks)
 {
 	tinyxml2::XMLDocument doc;
 	ASSERT(doc.LoadFile("config.xml") == tinyxml2::XMLError::XML_SUCCESS, "Couldn't open config.xml.");
@@ -135,7 +135,7 @@ void AssetLoader::LoadSpritesheet(tinyxml2::XMLHandle& handle, const std::string
 	CANT_FIND(getSpriteSheet().loadFromFile(getSpriteSheetPath(handle, name)), spritesheetFileName);
 }
 
-void AssetLoader::loadTiles(std::unordered_map<TileType,Ref<Sprite>>& tiles, unsigned int& elementSize, tinyxml2::XMLHandle& handle, const std::string& name)
+void AssetLoader::loadTiles(std::unordered_map<TileType,Ref<SpriteAsset>>& tiles, unsigned int& elementSize, tinyxml2::XMLHandle& handle, const std::string& name)
 {
 	// Getting requested skin layout
 	auto skinElement = getSkin(handle, name);
@@ -157,8 +157,9 @@ void AssetLoader::loadTiles(std::unordered_map<TileType,Ref<Sprite>>& tiles, uns
 	for (const std::pair<TileType, std::string>& p : m_XMLTileNames)
 	{
 		auto pos = getTilePosition(tilesElement, p.second);
+		tiles[p.first] = MakeRef<SpriteAsset>(getSpriteSheet(), elementSize, pos.x, pos.y, p.first);
+
 		LOG_TRACE(p.second + " tile loaded.");
-		tiles[p.first] = MakeRef<Sprite>(getSpriteSheet(), elementSize, pos.x, pos.y);
 	}
 
 	LOG_INFO("Tiles loaded.");
@@ -191,14 +192,15 @@ void AssetLoader::loadLevel(const std::string& name, Ref<LevelAsset> level)
 
 		ASSERT(tile >= (int)TileType::Blank && tile <= (int)TileType::EnnemyStart, "Found invalid tile value in " + levelPath + ". Tile number : " + std::to_string(i + 1) + ", invalid value : " + std::to_string(tile) + ".");
 
-		level->m_Data[i] = MakeRef<Sprite>(*Assets::getTile((TileType)tile));
-		level->m_Data[i]->setPosition((i % TILES_WIDTH) * (float)m_ElementSize, (unsigned int)(i / TILES_WIDTH) * (float)m_ElementSize);
+		auto sprite = MakeRef<SpriteAsset>(*Assets::getTile((TileType)tile));
+		sprite->setPosition((i % TILES_WIDTH) * (float)m_ElementSize, (unsigned int)(i / TILES_WIDTH) * (float)m_ElementSize);
+		level->setSprite(i, sprite);
 		
 		// We're not supposed to reach the (TILES_HEIGHT*TILES_WIDTH+1)th value for i, so we never reach eofbit for a valid level save file.
 		ASSERT(file.rdstate() != std::ios::eofbit, "Couldn't load " + name + " : insufficient number of tiles. Found " + std::to_string(i) + ".");
 	}
 
-	level->m_Name = name;
+	level->setName(name);
 
 	file.close();
 }

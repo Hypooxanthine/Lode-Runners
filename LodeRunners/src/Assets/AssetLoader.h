@@ -2,8 +2,8 @@
 
 #include "../Core/Base.h"
 #include "../Core/tinyxml2.h"
-#include "Sprite.h"
-#include "Flipbook.h"
+#include "SpriteAsset.h"
+#include "FlipbookAsset.h"
 #include "LevelAsset.h"
 
 enum class TileType
@@ -43,7 +43,7 @@ public:
 	static void init();
 
 	static inline const std::vector<std::string> getAvailableSkins() { return m_AvailableSkins; }
-	static void loadSkin(const std::string& skinName, Ref<std::unordered_map<TileType,Ref<Sprite>>> tiles, unsigned int& elementSize, Ref<std::unordered_map<FlipbookType,Ref<Flipbook>>> flipbooks);
+	static void loadSkin(const std::string& skinName, Ref<std::unordered_map<TileType,Ref<SpriteAsset>>> tiles, unsigned int& elementSize, Ref<std::unordered_map<FlipbookType,Ref<FlipbookAsset>>> flipbooks);
 
 	static inline const std::vector<std::pair<std::string, std::string>> getAvailableLevels() { return m_AvailableLevels; }
 	static void loadLevel(const std::string& name, Ref<LevelAsset> level);
@@ -54,7 +54,7 @@ private:
 private: // Private methods : interactions with config.xml
 	// Highest level loadings
 	static void LoadSpritesheet(tinyxml2::XMLHandle& handle, const std::string& name);
-	static void loadTiles(std::unordered_map<TileType,Ref<Sprite>>& tiles, unsigned int& elementSize, tinyxml2::XMLHandle& handle, const std::string& name);
+	static void loadTiles(std::unordered_map<TileType,Ref<SpriteAsset>>& tiles, unsigned int& elementSize, tinyxml2::XMLHandle& handle, const std::string& name);
 	static void loadFlipbooks(tinyxml2::XMLHandle& handle, const std::string& name);
 
 	// Filling available assets lists

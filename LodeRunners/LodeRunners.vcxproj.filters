@@ -33,10 +33,10 @@
     <ClCompile Include="src\Assets\Assets.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\Assets\Sprite.cpp">
+    <ClCompile Include="src\Assets\SpriteAsset.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\Assets\Flipbook.cpp">
+    <ClCompile Include="src\Assets\FlipbookAsset.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="src\Entities\Components\FlipbookComponent.cpp">
@@ -74,10 +74,10 @@
     <ClInclude Include="src\Assets\Assets.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="src\Assets\Sprite.h">
+    <ClInclude Include="src\Assets\SpriteAsset.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="src\Assets\Flipbook.h">
+    <ClInclude Include="src\Assets\FlipbookAsset.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="src\Entities\Components\FlipbookComponent.h">

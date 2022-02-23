@@ -1,10 +1,10 @@
 #include "Assets.h"
 
 // Static variables declarations
-Ref<Sprite> Assets::m_SkinIcon = MakeRef<Sprite>();
+Ref<SpriteAsset> Assets::m_SkinIcon = MakeRef<SpriteAsset>();
 unsigned int Assets::m_ElementSize = 0;
-Ref<std::unordered_map<TileType, Ref<Sprite>>> Assets::m_Tiles = MakeRef<std::unordered_map<TileType, Ref<Sprite>>>();
-Ref<std::unordered_map<FlipbookType, Ref<Flipbook>>> Assets::m_Flipbooks = MakeRef<std::unordered_map<FlipbookType, Ref<Flipbook>>>();
+Ref<std::unordered_map<TileType, Ref<SpriteAsset>>> Assets::m_Tiles = MakeRef<std::unordered_map<TileType, Ref<SpriteAsset>>>();
+Ref<std::unordered_map<FlipbookType, Ref<FlipbookAsset>>> Assets::m_Flipbooks = MakeRef<std::unordered_map<FlipbookType, Ref<FlipbookAsset>>>();
 Ref<LevelAsset> Assets::m_CachedLevel = MakeRef<LevelAsset>();
 
 void Assets::load(const std::string& name)
@@ -13,7 +13,7 @@ void Assets::load(const std::string& name)
 	AssetLoader::loadSkin(name, m_Tiles, m_ElementSize, m_Flipbooks);
 }
 
-const Ref<LevelAsset> Assets::getLevelAsset(const std::string& name)
+const Ref<const LevelAsset> Assets::getLevelAsset(const std::string& name)
 {
 	if (m_CachedLevel->getName() != name)
 		AssetLoader::loadLevel(name, m_CachedLevel);

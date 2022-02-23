@@ -171,8 +171,8 @@
     <ClCompile Include="src\Assets\AssetLoader.cpp" />
     <ClCompile Include="src\States\EditorState.cpp" />
     <ClCompile Include="src\Entities\Components\FlipbookComponent.cpp" />
-    <ClCompile Include="src\Assets\Flipbook.cpp" />
-    <ClCompile Include="src\Assets\Sprite.cpp" />
+    <ClCompile Include="src\Assets\FlipbookAsset.cpp" />
+    <ClCompile Include="src\Assets\SpriteAsset.cpp" />
     <ClCompile Include="src\Assets\Assets.cpp" />
     <ClCompile Include="src\Core\Log.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
@@ -185,8 +185,8 @@
     <ClInclude Include="src\Assets\AssetLoader.h" />
     <ClInclude Include="src\States\EditorState.h" />
     <ClInclude Include="src\Entities\Components\FlipbookComponent.h" />
-    <ClInclude Include="src\Assets\Flipbook.h" />
-    <ClInclude Include="src\Assets\Sprite.h" />
+    <ClInclude Include="src\Assets\FlipbookAsset.h" />
+    <ClInclude Include="src\Assets\SpriteAsset.h" />
     <ClInclude Include="src\Assets\Assets.h" />
     <ClInclude Include="src\Core\Log.h" />
     <ClInclude Include="src\Core\Application.h" />

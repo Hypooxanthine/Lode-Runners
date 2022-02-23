@@ -25,7 +25,7 @@ Application::Application()
 void Application::run()
 {
 	const unsigned int& elementSize = Assets::getElementSize();
-	m_Window->create(sf::VideoMode(elementSize * TILES_WIDTH, elementSize * TILES_HEIGHT), "Lode Runners");
+	m_Window->create(sf::VideoMode::getDesktopMode(), "Lode Runners");
 
 	// For testing purpose
 	m_States.push(MakeRef<EditorState>());
@@ -46,14 +46,15 @@ void Application::updateEvents()
 	{
 		if (m_Event.type == sf::Event::Closed)
 			close();
+		if (m_Event.type == sf::Event::Resized)
+			m_States.top()->onResize({ m_Event.size.width, m_Event.size.height });
 	}
 }
 
 void Application::update()
 {
 	// States updating
-	if (!m_States.empty())
-		m_States.top()->update(m_DeltaTime);
+	m_States.top()->update(m_DeltaTime);
 }
 
 void Application::render()
@@ -61,8 +62,7 @@ void Application::render()
 	m_Window->clear();
 	
 	// States rendering
-	if(!m_States.empty())
-		m_States.top()->render(m_Window);
+	m_States.top()->render(m_Window);
 
 	m_Window->display();
 }
@@ -85,13 +85,17 @@ void Application::updateDt()
 {
 	#if defined(_DEBUG) && defined(SHOW_DELTA_TIME)
 
-	static float i = 0.f;
-	i += m_DeltaTime;
+	static float time = 0.f;
+	time += m_DeltaTime;
 
-	if (i > DELTA_TIME_LOG_STEP)
+	static size_t frameNb = 0;
+	frameNb++;
+
+	if (time > DELTA_TIME_LOG_STEP)
 	{
-		LOG_TRACE("Delta time : " + std::to_string(m_DeltaTime) + " s");
-		i -= DELTA_TIME_LOG_STEP;
+		LOG_TRACE("Delta time : " + std::to_string(time / (float)frameNb) + " s");
+		time -= DELTA_TIME_LOG_STEP;
+		frameNb = 0;
 	}
 
 	#endif

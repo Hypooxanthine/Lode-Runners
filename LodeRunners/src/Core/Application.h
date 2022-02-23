@@ -27,6 +27,9 @@ public:
 	// Called by the active state as he must stop.
 	void killState();
 
+	// Get the window ref (const).
+	inline Ref<const sf::RenderWindow> getWindow() const { return m_Window; }
+
 	// Big problem time.
 	[[noreturn]] void emergencyStop(const std::string& errMsg);
 
