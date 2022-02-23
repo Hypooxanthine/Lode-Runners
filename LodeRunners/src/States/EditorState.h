@@ -1,6 +1,7 @@
 #pragma once
 #include "States.h"
-#include "../Level/Level.h"
+
+class LevelAsset;
 
 class EditorState : public State
 {

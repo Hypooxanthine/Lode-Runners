@@ -174,7 +174,6 @@
     <ClCompile Include="src\Assets\Flipbook.cpp" />
     <ClCompile Include="src\Assets\Sprite.cpp" />
     <ClCompile Include="src\Assets\Assets.cpp" />
-    <ClCompile Include="src\Level\Level.cpp" />
     <ClCompile Include="src\Core\Log.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\tinyxml2.cpp" />
@@ -189,7 +188,6 @@
     <ClInclude Include="src\Assets\Flipbook.h" />
     <ClInclude Include="src\Assets\Sprite.h" />
     <ClInclude Include="src\Assets\Assets.h" />
-    <ClInclude Include="src\Level\Level.h" />
     <ClInclude Include="src\Core\Log.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\Base.h" />
