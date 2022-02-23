@@ -192,7 +192,7 @@ void AssetLoader::loadLevel(const std::string& name, Ref<LevelAsset> level)
 		ASSERT(tile >= (int)TileType::Blank && tile <= (int)TileType::EnnemyStart, "Found invalid tile value in " + levelPath + ". Tile number : " + std::to_string(i + 1) + ", invalid value : " + std::to_string(tile) + ".");
 
 		level->m_Data[i] = MakeRef<Sprite>(*Assets::getTile((TileType)tile));
-		level->m_Data[i]->setPosition((i % TILES_WIDTH) * m_ElementSize, (int)(i / TILES_WIDTH) * m_ElementSize);
+		level->m_Data[i]->setPosition((i % TILES_WIDTH) * (float)m_ElementSize, (unsigned int)(i / TILES_WIDTH) * (float)m_ElementSize);
 		
 		// We're not supposed to reach the (TILES_HEIGHT*TILES_WIDTH+1)th value for i, so we never reach eofbit for a valid level save file.
 		ASSERT(file.rdstate() != std::ios::eofbit, "Couldn't load " + name + " : insufficient number of tiles. Found " + std::to_string(i) + ".");
