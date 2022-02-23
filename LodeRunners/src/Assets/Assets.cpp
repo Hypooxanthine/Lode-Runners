@@ -13,7 +13,7 @@ void Assets::load(const std::string& name)
 	AssetLoader::loadSkin(name, m_Tiles, m_ElementSize, m_Flipbooks);
 }
 
-Ref<LevelAsset> Assets::getLevelAsset(const std::string& name)
+const Ref<LevelAsset> Assets::getLevelAsset(const std::string& name)
 {
 	if (m_CachedLevel->getName() != name)
 		AssetLoader::loadLevel(name, m_CachedLevel);

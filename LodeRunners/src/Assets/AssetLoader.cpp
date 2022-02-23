@@ -17,6 +17,7 @@ std::map<TileType, std::string> AssetLoader::m_XMLTileNames;
 std::map<FlipbookType, std::string> AssetLoader::m_XMLFlipbookNames;
 std::vector<std::string> AssetLoader::m_AvailableSkins;
 std::vector<std::pair<std::string, std::string>> AssetLoader::m_AvailableLevels;
+unsigned int AssetLoader::m_ElementSize = 0;
 
 void AssetLoader::init()
 {
@@ -145,7 +146,8 @@ void AssetLoader::loadTiles(std::unordered_map<TileType,Ref<Sprite>>& tiles, uns
 	auto layoutElement = getLayout(handle, layoutName);
 
 	// Getting element size
-	CORRUPTED(layoutElement->QueryUnsignedAttribute("elementSize", &elementSize) == tinyxml2::XMLError::XML_SUCCESS);
+	CORRUPTED(layoutElement->QueryUnsignedAttribute("elementSize", &m_ElementSize) == tinyxml2::XMLError::XML_SUCCESS);
+	elementSize = m_ElementSize;
 
 	// Getting Tiles
 	auto tilesElement = getTiles(handle);
@@ -189,7 +191,8 @@ void AssetLoader::loadLevel(const std::string& name, Ref<LevelAsset> level)
 
 		ASSERT(tile >= (int)TileType::Blank && tile <= (int)TileType::EnnemyStart, "Found invalid tile value in " + levelPath + ". Tile number : " + std::to_string(i + 1) + ", invalid value : " + std::to_string(tile) + ".");
 
-		level->m_Data[i] = Assets::getTile((TileType)tile);
+		level->m_Data[i] = MakeRef<Sprite>(*Assets::getTile((TileType)tile));
+		level->m_Data[i]->setPosition((i % TILES_WIDTH) * m_ElementSize, (int)(i / TILES_WIDTH) * m_ElementSize);
 		
 		// We're not supposed to reach the (TILES_HEIGHT*TILES_WIDTH+1)th value for i, so we never reach eofbit for a valid level save file.
 		ASSERT(file.rdstate() != std::ios::eofbit, "Couldn't load " + name + " : insufficient number of tiles. Found " + std::to_string(i) + ".");

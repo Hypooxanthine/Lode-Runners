@@ -12,7 +12,7 @@ public: // Public methods
 	static inline const unsigned int& getElementSize() { return m_ElementSize; }
 	static inline const Ref<Sprite> getTile(const TileType& tile) { return (*m_Tiles)[tile]; }
 	static inline const Ref<Flipbook> getFlipbook(const FlipbookType& fb) { return (*m_Flipbooks)[fb]; }
-	static Ref<LevelAsset> getLevelAsset(const std::string& name);
+	static const Ref<LevelAsset> getLevelAsset(const std::string& name);
 
 private: // Private attributes
 	// Loaded data

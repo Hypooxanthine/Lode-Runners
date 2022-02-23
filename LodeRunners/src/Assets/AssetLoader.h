@@ -89,6 +89,9 @@ private: // Private members
 	static std::vector<std::string> m_AvailableSkins;
 	static std::vector<std::pair<std::string, std::string>> m_AvailableLevels; // first = name, second = path
 
+	// Element size. Needed to load a level and to set tiles positions.
+	static unsigned int m_ElementSize;
+
 	// Spritesheet is managed differently. It is treated like a static member, but sf::Texture objects need a valid OpenGL context to be created. We have to make it this way because we can't know when static member definitions are taken in account.
 	// Spritesheet is stored in AssetLoader because Assets container class shouldn't access it.
 	static sf::Texture& getSpriteSheet()
