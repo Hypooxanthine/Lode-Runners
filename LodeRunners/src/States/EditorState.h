@@ -1,5 +1,6 @@
 #pragma once
 #include "States.h"
+#include "../Assets/Assets.h"
 
 class LevelAsset;
 
@@ -24,3 +25,17 @@ private:
 	sf::RectangleShape m_Highlight;
 };
 
+class EditorToolkit
+{
+public:
+	EditorToolkit();
+
+	inline Ref<const SpriteAsset> getSelectedTile() const { return m_SelectedTile; }
+
+	void update(const float& dt);
+	void render(Ref<sf::RenderWindow> window);
+
+private: // Private attributes
+	std::vector<Ref<SpriteAsset>> m_Tiles;
+	Ref<SpriteAsset> m_SelectedTile = nullptr;
+};

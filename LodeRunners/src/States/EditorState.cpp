@@ -1,5 +1,6 @@
 #include "EditorState.h"
-#include "../Assets/Assets.h"
+
+/* EditorState class. */
 
 EditorState::EditorState()
 	: m_LevelView(sf::FloatRect(0.f, 0.f, (float)Assets::getElementSize() * TILES_WIDTH, (float)Assets::getElementSize() * TILES_HEIGHT)),
@@ -74,4 +75,19 @@ void EditorState::onResize(const sf::Vector2u& size)
 	}
 
 	m_LevelView.setViewport(m_LevelViewport);
+}
+
+/* EditorToolkit class. */
+
+EditorToolkit::EditorToolkit()
+{
+	
+}
+
+void EditorToolkit::update(const float& dt)
+{
+}
+
+void EditorToolkit::render(Ref<sf::RenderWindow> window)
+{
 }
