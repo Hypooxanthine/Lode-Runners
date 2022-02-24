@@ -7,12 +7,11 @@ class State
 public:
 	State() = default;
 
+	// To be overriden by children
 	virtual void init() {}
 	virtual void update(const float& dt) {}
 	virtual void render(Ref<sf::RenderWindow>& window) {}
-
-	// To be overriden by children
-	virtual void onResize(const sf::Vector2u& size) = 0;
+	virtual void onResize() {}
 
 protected:
 	inline void kill() { Application::get()->killState(); }

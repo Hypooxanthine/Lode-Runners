@@ -27,6 +27,8 @@ void AssetLoader::init()
 	FILL_XML_TILE_NAMES(Bridge);
 	FILL_XML_TILE_NAMES(Gold);
 	FILL_XML_TILE_NAMES(Ladder);
+	FILL_XML_TILE_NAMES(PlayerStart);
+	FILL_XML_TILE_NAMES(EnnemyStart);
 
 	FILL_XML_FLIPBOOKS_NAMES(PlayerLeft);
 	FILL_XML_FLIPBOOKS_NAMES(PlayerRight);

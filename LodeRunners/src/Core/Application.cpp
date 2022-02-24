@@ -47,7 +47,7 @@ void Application::updateEvents()
 		if (m_Event.type == sf::Event::Closed)
 			close();
 		if (m_Event.type == sf::Event::Resized)
-			m_States.top()->onResize({ m_Event.size.width, m_Event.size.height });
+			m_States.top()->onResize();
 	}
 }
 
