@@ -6,13 +6,13 @@ Entity::Entity()
 	auto test = makeComponent<FlipbookComponent>();
 }
 
-void Entity::update(const float& dt)
+void Entity::updateComponents(const float& dt)
 {
 	for (Ref<Component> c : m_Components)
 		c->update(dt);
 }
 
-void Entity::render(Ref<sf::RenderWindow> window)
+void Entity::renderComponents(Ref<sf::RenderWindow> window)
 {
 	for (Ref<Component> c : m_Components)
 		c->render(window);
