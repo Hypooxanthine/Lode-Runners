@@ -167,10 +167,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Components\Component.cpp" />
+    <ClCompile Include="src\Entities\Entity.cpp" />
     <ClCompile Include="src\Assets\LevelAsset.cpp" />
     <ClCompile Include="src\Assets\AssetLoader.cpp" />
     <ClCompile Include="src\States\EditorState.cpp" />
-    <ClCompile Include="src\Entities\Components\FlipbookComponent.cpp" />
+    <ClCompile Include="src\Components\FlipbookComponent.cpp" />
     <ClCompile Include="src\Assets\FlipbookAsset.cpp" />
     <ClCompile Include="src\Assets\SpriteAsset.cpp" />
     <ClCompile Include="src\Assets\Assets.cpp" />
@@ -181,10 +183,12 @@
     <ClCompile Include="src\States\State.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Components\Component.h" />
+    <ClInclude Include="src\Entities\Entity.h" />
     <ClInclude Include="src\Assets\LevelAsset.h" />
     <ClInclude Include="src\Assets\AssetLoader.h" />
     <ClInclude Include="src\States\EditorState.h" />
-    <ClInclude Include="src\Entities\Components\FlipbookComponent.h" />
+    <ClInclude Include="src\Components\FlipbookComponent.h" />
     <ClInclude Include="src\Assets\FlipbookAsset.h" />
     <ClInclude Include="src\Assets\SpriteAsset.h" />
     <ClInclude Include="src\Assets\Assets.h" />

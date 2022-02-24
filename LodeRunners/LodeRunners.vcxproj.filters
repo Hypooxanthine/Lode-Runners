@@ -39,7 +39,7 @@
     <ClCompile Include="src\Assets\FlipbookAsset.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\Entities\Components\FlipbookComponent.cpp">
+    <ClCompile Include="src\Components\FlipbookComponent.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="src\States\EditorState.cpp">
@@ -49,6 +49,12 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="src\Assets\LevelAsset.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Entities\Entity.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\Component.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -80,7 +86,7 @@
     <ClInclude Include="src\Assets\FlipbookAsset.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="src\Entities\Components\FlipbookComponent.h">
+    <ClInclude Include="src\Components\FlipbookComponent.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="src\States\EditorState.h">
@@ -90,6 +96,12 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="src\Assets\LevelAsset.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entities\Entity.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\Component.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
