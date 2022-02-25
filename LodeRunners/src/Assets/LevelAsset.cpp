@@ -10,7 +10,6 @@ LevelAsset::LevelAsset()
 
 LevelAsset::LevelAsset(const LevelAsset& other)
 {
-	LOG_TRACE("Copy constructor called");
 	for (size_t i = 0; i < other.getSize(); i++)
 		m_Data[i] = MakeRef<SpriteAsset>(*other.m_Data[i]);
 }
