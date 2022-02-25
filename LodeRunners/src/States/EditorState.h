@@ -40,11 +40,17 @@ class EditorState : public State
 public:
 	EditorState();
 
-	virtual void init();
-	virtual void update(const float& dt);
-	virtual void render(Ref<sf::RenderWindow>& window);
+	virtual void init() override;
+	virtual void update(const float& dt) override;
+	virtual void render(Ref<sf::RenderWindow>& window) override;
 
-	virtual void onResize();
+	virtual void onResize() override;
+
+	virtual inline const sf::Color& getClearColor() const override
+	{
+		static auto c = sf::Color::Color(20, 20, 20);
+		return c;
+	}
 
 private:
 	Ref<LevelAsset> m_LevelAsset;

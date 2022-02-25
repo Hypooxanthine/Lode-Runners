@@ -25,7 +25,7 @@ Application::Application()
 void Application::run()
 {
 	const unsigned int& elementSize = Assets::getElementSize();
-	m_Window->create(sf::VideoMode::getDesktopMode(), "Lode Runners");
+	m_Window->create(sf::VideoMode::getDesktopMode(), "Lode Runners", sf::Style::Fullscreen);
 
 	// For testing purpose
 	m_States.push(MakeRef<EditorState>());
@@ -59,7 +59,7 @@ void Application::update()
 
 void Application::render()
 {
-	m_Window->clear();
+	m_Window->clear(m_States.top()->getClearColor());
 	
 	// States rendering
 	m_States.top()->render(m_Window);
@@ -69,6 +69,12 @@ void Application::render()
 
 void Application::checkState()
 {
+	if (m_PopStateRequest)
+	{
+		m_States.pop();
+		m_PopStateRequest = false;
+	}
+
 	if (m_NextState) // If there is another state to push
 	{
 		m_States.push(m_NextState);
@@ -113,8 +119,7 @@ void Application::killState()
 {
 	LOG_INFO("State killed.");
 
-	if (!m_States.empty())
-		m_States.pop();
+	m_PopStateRequest = true;
 }
 
 [[noreturn]] void Application::emergencyStop(const std::string& errMsg)

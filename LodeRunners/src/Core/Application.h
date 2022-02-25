@@ -66,5 +66,6 @@ private: // Private attributes
 	// State stack
 	std::stack<Ref<State>> m_States;
 	Ref<State> m_NextState;
+	bool m_PopStateRequest = false;
 };
 

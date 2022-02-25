@@ -13,6 +13,7 @@
 #include <string>
 #include <unordered_map>
 #include <map>
+#include <source_location> // C++20 is wonderful
 
 /* SFML Graphic component */
 #include <SFML/Graphics.hpp>
@@ -38,9 +39,9 @@ constexpr Ref<T> MakeRef(Args&& ... args)
 
 /* Assertion system. */
 #if defined(_DEBUG)
-#define ASSERT(condition, msg) if(!(condition)) Application::get()->emergencyStop((std::string)"Assertion failed, file " + __FILE__ + ", line " + std::to_string(__LINE__) + ". Details : " + msg)
+#define ASSERT(condition, msg) if(!(condition)) Application::get()->emergencyStop((std::string)"Assertion failed, file " + std::source_location::current().file_name() + ", line " + std::to_string(std::source_location::current().line()) + ". Details : " + msg)
 #else
-#define ASSERT(condition, msg) if(!(condition)) Application::get()->emergencyStop((std::string)"Assertion failed. " + msg)
+#define ASSERT(condition, msg) if(!(condition)) Application::get()->emergencyStop((std::string)"Assertion failed. Details : " + msg)
 #endif
 
 /* Global defines */
