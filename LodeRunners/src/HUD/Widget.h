@@ -23,6 +23,8 @@ public:
 	operator bool() const { return !m_Consumed; }
 
 	const sf::Vector2f& getPosition() const { return m_Position; }
+	operator sf::Vector2f() { return m_Position; }
+
 	const bool& isPressed() const { return m_Pressed; }
 private:
 	// When a CursorRay is used (example : it hovers a button, so the button changes his color and consumes the ray), the widget that uses it has to make this value to true. No verification is done when trying to access data. A widget can see data even if its m_Consumed member is true. It is its own responsability to deal with this piece of information. Is there any way to make it safer without reducing performance ? Conceptually, there is probably no way to determine if a widgets really "consumes" a ray or not.

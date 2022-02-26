@@ -144,25 +144,21 @@ EditorState::EditorState()
 	// We need to edit the level, so we make a copy of it (LevelAsset is const because of code safety).
 	m_LevelAsset = MakeRef<LevelAsset>(*Assets::getLevelAsset("Level_1"));
 
-	m_LevelView.setViewport({ 0.f, 0.f, .9f, 1.f });
+	m_LevelView.setViewport({ 0.f, 0.f, .9f, .9f });
 
 	m_Highlight.setSize({ (float)Assets::getElementSize(), (float)Assets::getElementSize() });
 	m_Highlight.setFillColor(sf::Color::Transparent);
 	m_Highlight.setOutlineThickness(-(1.f / 16.f) * (float)Assets::getElementSize());
 	m_Highlight.setOutlineColor(sf::Color::Green);
 
-	m_HUD->setGlobalPosition({ .25f, .25f });
-	m_HUD->setGlobalSize({ .5f, .5f });
-	m_HUD->setFillColor(sf::Color::Red);
+	m_HUD->setViewport({ 0.f, .9f, 0.9f, .1f });
+	m_HUD->fillParent();
+	
+	auto button = MakeRef<ButtonWidget>();
+	Widget::addChild(button, m_HUD);
+	button->setRelativePosition({ .2f, .2f });
+	button->setRelativeSize({ .2f, .6f });
 
-	auto childWidget = MakeRef<ButtonWidget>();
-
-	Widget::addChild(childWidget, m_HUD);
-	childWidget->setRelativePosition({ .25f, .25f });
-	childWidget->setRelativeSize({ .5f, .5f });
-	childWidget->setFillColor(sf::Color::Blue);
-
-	m_HUD->setViewport({ 0.f, 0.f, 0.9f, 1.f });
 	onResize();
 }
 

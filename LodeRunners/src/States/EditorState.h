@@ -62,5 +62,5 @@ private:
 	bool m_RenderHighlighter = false;
 	sf::RectangleShape m_Highlight;
 
-	Ref<ButtonWidget> m_HUD = MakeRef<ButtonWidget>();
+	Ref<Widget> m_HUD = MakeRef<Widget>();
 };
