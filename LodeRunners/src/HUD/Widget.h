@@ -43,21 +43,46 @@ public:
 	void render(Ref<sf::RenderWindow> window);
 	void onResize();
 
-	void setParent(Ref<Widget> parent);
-	void addChild(Ref<Widget> child);
+	/* HIERARCHY */
 
+	static void addChild(Ref<Widget> child, Ref<Widget> parent);
+
+	/* POSITIONS */
+
+	// In Widget's coordinate system (0-1).
+	inline const sf::Vector2f& getRelativePosition() const { return { m_RelativeRect.left, m_RelativeRect.top }; }
 	// In Widget's coordinate system (0-1).
 	sf::Vector2f getGlobalPosition() const;
-	// In Widget's coordinate system (0-1).
-	inline const sf::Vector2f& getRelativePosition() const { return m_RelativePosition; }
 
-	// In SFML's coordinate system.
+	// In world's coordinate system.
 	sf::Vector2f getGlobalWorldPosition() const;
 
 	// In Widget's coordinate system (0-1).
 	void setRelativePosition(const sf::Vector2f& pos);
 	// In Widget's coordinate system (0-1).
 	void setGlobalPosition(const sf::Vector2f& pos);
+
+	/* SIZES */
+
+	// In Widget's coordinate system (0-1).
+	inline sf::Vector2f getRelativeSize() const { return { m_RelativeRect.width, m_RelativeRect.height }; }
+	// In Widget's coordinate system (0-1).
+	sf::Vector2f getGlobalSize() const;
+
+	// In world's coordinate system.
+	sf::Vector2f getGlobalWorldSize() const;
+
+	// In Widget's coordinate system (0-1).
+	void setRelativeSize(const sf::Vector2f& size);
+	// In Widget's coordinate system (0-1).
+	void setGlobalSize(const sf::Vector2f& size);
+
+	/* UTILITY */
+
+	// Makes this Widget fill his parent boundaries. If there isn't any parent set, the Widget will fill the viewport.
+	void fillParent();
+
+	/* Viewport */
 
 	// Sets viewport to this widget and all children. Viewport is a sf::FloatRect where values are between 0 and 1 : the edges of the window.
 	void setViewport(const sf::FloatRect& viewport);
@@ -68,6 +93,7 @@ protected: // Protected methods
 	virtual void updateWidget(const float& dt) {}
 	virtual void renderWidget(Ref<sf::RenderWindow> window) {}
 	virtual void onPositionUpdated() {}
+	virtual void onSizeUpdated() {}
 
 private: // Private methods
 	void handleRays(CursorRay& ray);
@@ -75,12 +101,18 @@ private: // Private methods
 	void updateWidgets(const float& dt);
 	// This function first updates "this" positions, then children positions. More aplxainations in implementaion.
 	void updatePositions();
+	// This functions first updates "this" sizes, then children sizes. More explainations in implementation.
+	void updateSizes();
+
+	// Set the view for all children
+	void setChildrenView(Ref<sf::View> view);
 
 	// For more readable code in Widget class only, because they shouldn't be needed in Widget-derived classes.
 	void handleRayChildren(CursorRay& ray);
 	void updateChildren(const float& dt);
 	void renderChildren(Ref<sf::RenderWindow> window);
 	void updateChildrenPosition();
+	void updateChildrenSize();
 
 	sf::IntRect getViewport() const;
 
@@ -91,5 +123,5 @@ private:
 	Ref<sf::View> m_View = MakeRef<sf::View>();
 
 	// Values bewteen 0 and 1 : the edges of the Widget's viewport. "True" position value is processed each time we move a Widget and given to SFML drawables. This gives an abstraction to the programmer to use Widgets with percentages. We don't want to bother with variable position values (because of resizing and flexible viewport size).
-	sf::Vector2f m_RelativePosition;
+	sf::FloatRect m_RelativeRect;
 };

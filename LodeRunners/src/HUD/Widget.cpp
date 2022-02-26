@@ -28,31 +28,32 @@ void Widget::onResize()
 	m_View->setSize(size);
 
 	updatePositions();
+	updateSizes();
 }
 
-void Widget::setParent(Ref<Widget> parent)
-{
-	m_Parent = parent;
-	m_View->setCenter(parent->m_View->getCenter());
-	m_View->setSize(parent->m_View->getSize());
-	m_View->setViewport(parent->m_View->getViewport());
-	updatePositions();
-}
+/* HIERARCHY */
 
-void Widget::addChild(Ref<Widget> child)
+void Widget::addChild(Ref<Widget> child, Ref<Widget> parent)
 {
-	m_Children.push_back(child);
-	child->m_View->setCenter(m_View->getCenter());
-	child->m_View->setSize(m_View->getSize());
-	child->m_View->setViewport(m_View->getViewport());
+	parent->m_Children.push_back(child);
+	child->m_Parent = parent;
+	child->m_View = parent->m_View;
+	child->setChildrenView(parent->m_View);
 	child->updatePositions();
+	child->updateSizes();
 }
 
 sf::Vector2f Widget::getGlobalPosition() const
 {
-	if (m_Parent == nullptr) return m_RelativePosition;
-	
-	return m_Parent->getGlobalPosition() + m_RelativePosition;
+	if (m_Parent == nullptr) return { m_RelativeRect.left, m_RelativeRect.top };
+
+	const auto parentGlobalSize = m_Parent->getGlobalSize();
+
+	return m_Parent->getGlobalPosition() + sf::Vector2f
+	(
+		m_RelativeRect.left * parentGlobalSize.x,
+		m_RelativeRect.top * parentGlobalSize.y
+	);
 }
 
 sf::Vector2f Widget::getGlobalWorldPosition() const
@@ -65,7 +66,8 @@ sf::Vector2f Widget::getGlobalWorldPosition() const
 
 void Widget::setRelativePosition(const sf::Vector2f& pos)
 {
-	m_RelativePosition = pos;
+	m_RelativeRect.left = pos.x;
+	m_RelativeRect.top = pos.y;
 	updatePositions();
 }
 
@@ -75,6 +77,50 @@ void Widget::setGlobalPosition(const sf::Vector2f& pos)
 		setRelativePosition(pos - m_Parent->getGlobalPosition());
 	else
 		setRelativePosition(pos);
+}
+
+/* Sizes */
+
+sf::Vector2f Widget::getGlobalSize() const
+{
+	if (m_Parent == nullptr) return { m_RelativeRect.width, m_RelativeRect.height };
+	
+	const auto parentGlobalSize = m_Parent->getGlobalSize();
+	return { m_RelativeRect.width * parentGlobalSize.x, m_RelativeRect.height * parentGlobalSize.y };
+}
+
+sf::Vector2f Widget::getGlobalWorldSize() const
+{
+	const auto viewport = getViewport();
+	const auto globalSize = getGlobalSize();
+
+	return { m_View->getSize().x * globalSize.x, m_View->getSize().y * globalSize.y };
+}
+
+void Widget::setRelativeSize(const sf::Vector2f& size)
+{
+	m_RelativeRect.width = size.x;
+	m_RelativeRect.height = size.y;
+	updateSizes();
+}
+
+void Widget::setGlobalSize(const sf::Vector2f& size)
+{
+	if (m_Parent)
+	{
+		const auto parentGlobalSize = m_Parent->getGlobalSize();
+		setRelativeSize({ size.x / parentGlobalSize.x, size.y / parentGlobalSize.y });
+	}
+	else
+		setRelativeSize(size);
+}
+
+/* Utility */
+
+void Widget::fillParent()
+{
+	setRelativePosition({ 0.f, 0.f });
+	setRelativeSize({ 1.f, 1.f });
 }
 
 void Widget::updateChildren(const float& dt)
@@ -93,6 +139,18 @@ void Widget::renderChildren(Ref<sf::RenderWindow> window)
 {
 	for (auto& child : m_Children)
 		child->render(window);
+}
+
+void Widget::updateChildrenPosition()
+{
+	for (auto& child : m_Children)
+		child->updatePositions();
+}
+
+void Widget::updateChildrenSize()
+{
+	for (auto& child : m_Children)
+		child->updateSizes();
 }
 
 sf::IntRect Widget::getViewport() const
@@ -118,9 +176,22 @@ void Widget::updateWidgets(const float& dt)
 void Widget::updatePositions()
 {
 	onPositionUpdated();
+	updateChildrenPosition();
+}
 
+void Widget::updateSizes()
+{
+	onSizeUpdated();
+	updateChildrenSize();
+}
+
+void Widget::setChildrenView(Ref<sf::View> view)
+{
 	for (auto& child : m_Children)
-		child->updatePositions();
+	{
+		child->m_View = view;
+		child->setChildrenView(view);
+	}
 }
 
 void Widget::setViewport(const sf::FloatRect& viewport)

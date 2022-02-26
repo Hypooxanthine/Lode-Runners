@@ -145,15 +145,25 @@ EditorState::EditorState()
 	m_LevelAsset = MakeRef<LevelAsset>(*Assets::getLevelAsset("Level_1"));
 
 	m_LevelView.setViewport({ 0.f, 0.f, .9f, 1.f });
-	onResize();
 
 	m_Highlight.setSize({ (float)Assets::getElementSize(), (float)Assets::getElementSize() });
 	m_Highlight.setFillColor(sf::Color::Transparent);
 	m_Highlight.setOutlineThickness(-(1.f / 16.f) * (float)Assets::getElementSize());
 	m_Highlight.setOutlineColor(sf::Color::Green);
 
-	m_HUD.setViewport({ 0.f, 0.f, 0.9f, 1.f });
-	m_HUD.setGlobalPosition({ .5f, .5f });
+	m_HUD->setGlobalPosition({ .25f, .25f });
+	m_HUD->setGlobalSize({ .5f, .5f });
+	m_HUD->setFillColor(sf::Color::Red);
+
+	auto childWidget = MakeRef<ButtonWidget>();
+
+	Widget::addChild(childWidget, m_HUD);
+	childWidget->setRelativePosition({ .25f, .25f });
+	childWidget->setRelativeSize({ .5f, .5f });
+	childWidget->setFillColor(sf::Color::Blue);
+
+	m_HUD->setViewport({ 0.f, 0.f, 0.9f, 1.f });
+	onResize();
 }
 
 void EditorState::init()
@@ -195,7 +205,7 @@ void EditorState::update(const float& dt)
 
 	m_Toolkit.update(dt);
 
-	m_HUD.update(dt);
+	m_HUD->update(dt);
 }
 
 void EditorState::render(Ref<sf::RenderWindow>& window)
@@ -206,7 +216,7 @@ void EditorState::render(Ref<sf::RenderWindow>& window)
 		window->draw(m_Highlight);
 	window->setView(window->getDefaultView());
 	m_Toolkit.render(window);
-	m_HUD.render(window);
+	m_HUD->render(window);
 }
 
 void EditorState::onResize()
@@ -240,5 +250,5 @@ void EditorState::onResize()
 	}
 
 	m_Toolkit.onResize();
-	m_HUD.onResize();
+	m_HUD->onResize();
 }

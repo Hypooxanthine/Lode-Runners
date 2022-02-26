@@ -2,8 +2,7 @@
 
 ButtonWidget::ButtonWidget()
 {
-	m_Surface.setFillColor(sf::Color::Red);
-	m_Surface.setSize({ 50.f, 50.f });
+	
 }
 
 void ButtonWidget::handleWidgetRay(CursorRay& ray)
@@ -12,13 +11,16 @@ void ButtonWidget::handleWidgetRay(CursorRay& ray)
 	{
 		if (m_Surface.getGlobalBounds().contains(ray.getPosition()))
 		{
-			LOG_TRACE("Hovered.");
+			m_Surface.setFillColor(sf::Color::Green);
+			ray.consume();
 		}
 		else
 		{
-			LOG_TRACE("Not hovered.");
+			m_Surface.setFillColor(originalColor);
 		}
 	}
+	else
+		m_Surface.setFillColor(originalColor);
 }
 
 void ButtonWidget::renderWidget(Ref<sf::RenderWindow> window)
@@ -29,4 +31,13 @@ void ButtonWidget::renderWidget(Ref<sf::RenderWindow> window)
 void ButtonWidget::onPositionUpdated()
 {
 	m_Surface.setPosition(getGlobalWorldPosition());
+	LOG_TRACE(std::string("Position : ") + std::to_string(m_Surface.getPosition().x) + ", "
+		+ std::to_string(m_Surface.getPosition().y));
+}
+
+void ButtonWidget::onSizeUpdated()
+{
+	m_Surface.setSize(getGlobalWorldSize());
+	LOG_TRACE(std::string("Size : ") + std::to_string(m_Surface.getSize().x) + ", "
+		+ std::to_string(m_Surface.getSize().y));
 }
