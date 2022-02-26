@@ -1,5 +1,8 @@
 #include "EditorState.h"
 
+#include "../HUD/ButtonWidget.h"
+#include "../HUD/TextWidget.h"
+
 /* EditorToolkit class. */
 
 #define ADD_TOOLKIT_TILE(tile) \
@@ -158,6 +161,11 @@ EditorState::EditorState()
 	Widget::addChild(button, m_HUD);
 	button->setRelativePosition({ .2f, .2f });
 	button->setRelativeSize({ .2f, .6f });
+
+	auto text = MakeRef<TextWidget>();
+	Widget::addChild(text, button);
+	text->setText("Text");
+	text->fillParent();
 
 	onResize();
 }

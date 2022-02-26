@@ -1,7 +1,7 @@
 #pragma once
 #include "States.h"
 #include "../Assets/Assets.h"
-#include "../HUD/ButtonWidget.h"
+#include "../HUD/Widget.h"
 
 class EditorToolkit
 {

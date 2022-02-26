@@ -176,7 +176,7 @@ void AssetLoader::loadFlipbooks(tinyxml2::XMLHandle& handle, const std::string& 
 void AssetLoader::loadFont(Ref<FontAsset> font, tinyxml2::XMLHandle& handle, const std::string& name)
 {
 	std::string path = getFontsPath(handle) + getFontFileName(handle, name);
-	ASSERT(font->load(path), "Couldn't load " + path + ".");
+	ASSERT(font->loadFromFile(path), "Couldn't load " + path + ".");
 }
 
 void AssetLoader::loadLevel(const std::string& name, Ref<LevelAsset> level)

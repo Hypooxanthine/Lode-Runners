@@ -8,7 +8,7 @@ class TextWidget : public Widget
 public:
 	TextWidget();
 
-	inline void setText(const std::string& text) { m_Text.setString(text); }
+	void setText(const std::string& text) { m_Text.setString(text); }
 
 protected:
 	//virtual void handleWidgetRay(CursorRay& ray) override;
@@ -18,10 +18,10 @@ protected:
 	virtual void onSizeUpdated() override;
 
 private: // Private methods
+	void center();
 
 private: // Private members
+	Ref<FontAsset> m_Font;
 	sf::Text m_Text;
-	sf::RenderTexture m_RendTex;
-	sf::Sprite m_Sprite;
 };
 
