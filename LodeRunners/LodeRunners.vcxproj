@@ -167,6 +167,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Assets\FontAsset.cpp" />
     <ClCompile Include="src\HUD\ButtonWidget.cpp" />
     <ClCompile Include="src\Components\Component.cpp" />
     <ClCompile Include="src\Entities\Entity.cpp" />
@@ -183,8 +184,10 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\States\State.cpp" />
     <ClCompile Include="src\HUD\Widget.cpp" />
+    <ClCompile Include="src\HUD\TextWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Assets\FontAsset.h" />
     <ClInclude Include="src\HUD\ButtonWidget.h" />
     <ClInclude Include="src\Components\Component.h" />
     <ClInclude Include="src\Entities\Entity.h" />
@@ -203,6 +206,7 @@
     <ClInclude Include="src\States\States.h" />
     <ClInclude Include="src\States\State.h" />
     <ClInclude Include="src\HUD\Widget.h" />
+    <ClInclude Include="src\HUD\TextWidget.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config.xml" />

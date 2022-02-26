@@ -88,12 +88,16 @@
 
     <Skins>
       <!-- DO NOT REMOVE DEFAULT SKIN -->
-      <Skin name="default" layout="default" fileName="skin_default.png"/>
+      <Skin name="default" layout="default" fileName="skin_default.png" font="default"/>
       
       <!-- You can add you own skins here. Please type the layout to use (default or custom) and its path. -->
-      <Skin name="skin1" layout="default" fileName="skintest.png"/>
+      <Skin name="skin1" layout="default" fileName="skintest.png" font="default"/>
     </Skins>
   </Spritesheets>
+
+  <Fonts>
+    <Font name="default" fileName="font_default.ttf" />
+  </Fonts>
 
   <Levels>
     <Level name="Level_1" fileName="Level_1.txt" />
@@ -104,6 +108,7 @@
   <Paths>
     <!-- Please type slash terminated addresses. -->
     <Skins path="Resources/Skins/" />
+    <Fonts path="Resources/Fonts/" />
     <Levels path="Resources/Levels/" />
   </Paths>
 

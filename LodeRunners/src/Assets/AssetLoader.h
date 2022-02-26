@@ -5,6 +5,7 @@
 #include "SpriteAsset.h"
 #include "FlipbookAsset.h"
 #include "LevelAsset.h"
+#include "FontAsset.h"
 
 enum class TileType
 {
@@ -43,7 +44,7 @@ public:
 	static void init();
 
 	static inline const std::vector<std::string> getAvailableSkins() { return m_AvailableSkins; }
-	static void loadSkin(const std::string& skinName, Ref<std::unordered_map<TileType,Ref<SpriteAsset>>> tiles, unsigned int& elementSize, Ref<std::unordered_map<FlipbookType,Ref<FlipbookAsset>>> flipbooks);
+	static void loadSkin(const std::string& skinName, Ref<std::unordered_map<TileType,Ref<SpriteAsset>>> tiles, unsigned int& elementSize, Ref<FontAsset> font, Ref<std::unordered_map<FlipbookType,Ref<FlipbookAsset>>> flipbooks);
 
 	static inline const std::vector<std::pair<std::string, std::string>> getAvailableLevels() { return m_AvailableLevels; }
 	static void loadLevel(const std::string& name, Ref<LevelAsset> level);
@@ -56,6 +57,7 @@ private: // Private methods : interactions with config.xml
 	static void LoadSpritesheet(tinyxml2::XMLHandle& handle, const std::string& name);
 	static void loadTiles(std::unordered_map<TileType,Ref<SpriteAsset>>& tiles, unsigned int& elementSize, tinyxml2::XMLHandle& handle, const std::string& name);
 	static void loadFlipbooks(tinyxml2::XMLHandle& handle, const std::string& name);
+	static void loadFont(Ref<FontAsset> font, tinyxml2::XMLHandle& handle, const std::string& name);
 
 	// Filling available assets lists
 	static void fillAvailableSkins(tinyxml2::XMLHandle& handle);
@@ -72,9 +74,13 @@ private: // Private methods : interactions with config.xml
 	static tinyxml2::XMLElement* getTiles(tinyxml2::XMLHandle& handle);
 	static ElementPosition getTilePosition(const tinyxml2::XMLElement* tilesElement, const std::string& name);
 
+	// Font
+	static std::string getFontsPath(tinyxml2::XMLHandle& handle);
+	static std::string getFontFileName(tinyxml2::XMLHandle& handle, const std::string& name);
+
 	// TODO : Flipbooks
 
-	// TODO : Levels
+	// Levels
 	static tinyxml2::XMLElement* getLevels(tinyxml2::XMLHandle& handle);
 	static tinyxml2::XMLElement* getLevel(tinyxml2::XMLHandle& handle, const std::string& name);
 	static std::string getLevelsPath(tinyxml2::XMLHandle& handle);

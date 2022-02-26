@@ -106,7 +106,7 @@ void AssetLoader::fillAvailableLevels(tinyxml2::XMLHandle& handle)
 	}
 }
 
-void AssetLoader::loadSkin(const std::string& skinName, Ref<std::unordered_map<TileType,Ref<SpriteAsset>>> tiles, unsigned int& elementSize, Ref<std::unordered_map<FlipbookType,Ref<FlipbookAsset>>> flipbooks)
+void AssetLoader::loadSkin(const std::string& skinName, Ref<std::unordered_map<TileType,Ref<SpriteAsset>>> tiles, unsigned int& elementSize, Ref<FontAsset> font, Ref<std::unordered_map<FlipbookType,Ref<FlipbookAsset>>> flipbooks)
 {
 	tinyxml2::XMLDocument doc;
 	ASSERT(doc.LoadFile("config.xml") == tinyxml2::XMLError::XML_SUCCESS, "Couldn't open config.xml.");
@@ -114,6 +114,7 @@ void AssetLoader::loadSkin(const std::string& skinName, Ref<std::unordered_map<T
 
 	LoadSpritesheet(docHandle, skinName);
 	loadTiles(*tiles, elementSize, docHandle, skinName);
+	loadFont(font, docHandle, skinName);
 	loadFlipbooks(docHandle, skinName);
 }
 
@@ -170,6 +171,12 @@ void AssetLoader::loadTiles(std::unordered_map<TileType,Ref<SpriteAsset>>& tiles
 void AssetLoader::loadFlipbooks(tinyxml2::XMLHandle& handle, const std::string& name)
 {
 	LOG_INFO("Flipbooks loaded.");
+}
+
+void AssetLoader::loadFont(Ref<FontAsset> font, tinyxml2::XMLHandle& handle, const std::string& name)
+{
+	std::string path = getFontsPath(handle) + getFontFileName(handle, name);
+	ASSERT(font->load(path), "Couldn't load " + path + ".");
 }
 
 void AssetLoader::loadLevel(const std::string& name, Ref<LevelAsset> level)
@@ -300,6 +307,42 @@ AssetLoader::ElementPosition AssetLoader::getTilePosition(const tinyxml2::XMLEle
 	}
 	else
 		Application::get()->emergencyStop("config.xml file corrupted.");
+}
+
+std::string AssetLoader::getFontsPath(tinyxml2::XMLHandle& handle)
+{
+	auto fontsPathElement = handle.FirstChildElement("App").FirstChildElement("Paths").FirstChildElement("Fonts").ToElement();
+	CORRUPTED(fontsPathElement);
+	
+	const char* fontsPath = nullptr;
+	CORRUPTED(fontsPathElement->QueryStringAttribute("path", &fontsPath) == tinyxml2::XMLError::XML_SUCCESS);
+
+
+	return fontsPath;
+}
+
+std::string AssetLoader::getFontFileName(tinyxml2::XMLHandle& handle, const std::string& name)
+{
+	auto skin = getSkin(handle, name);
+
+	const char* fontName;
+	CORRUPTED(skin->QueryStringAttribute("font", &fontName) == tinyxml2::XMLError::XML_SUCCESS);
+
+	auto fontsElement = handle.FirstChildElement("App").FirstChildElement("Fonts").ToElement();
+	CORRUPTED(fontsElement);
+
+	auto fontElement = fontsElement->FirstChildElement("Font");
+	CORRUPTED(fontElement);
+
+	for (fontElement;
+		fontElement != nullptr && fontElement->Attribute("name") != (std::string)fontName;
+		fontsElement->NextSiblingElement("Font"));
+	CANT_FIND(fontElement, fontName);
+
+	const char* fontFileName = nullptr;
+	CORRUPTED(fontElement->QueryStringAttribute("fileName", &fontFileName) == tinyxml2::XMLError::XML_SUCCESS);
+
+	return fontFileName;
 }
 
 tinyxml2::XMLElement* AssetLoader::getLevels(tinyxml2::XMLHandle& handle)

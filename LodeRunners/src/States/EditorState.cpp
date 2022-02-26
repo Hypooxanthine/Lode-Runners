@@ -248,3 +248,4 @@ void EditorState::onResize()
 	m_Toolkit.onResize();
 	m_HUD->onResize();
 }
+

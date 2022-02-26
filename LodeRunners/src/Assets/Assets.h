@@ -13,6 +13,8 @@ public: // Public methods
 	static inline Ref<const SpriteAsset> getTile(const TileType& tile) { return (*m_Tiles)[tile]; }
 	static inline Ref<const FlipbookAsset> getFlipbook(const FlipbookType& fb) { return (*m_Flipbooks)[fb]; }
 	static const Ref<const LevelAsset> getLevelAsset(const std::string& name);
+	static inline Ref<const FontAsset> getFontAsset() { return m_Font; }
+
 
 private: // Private attributes
 	// Loaded data
@@ -21,5 +23,6 @@ private: // Private attributes
 	static Ref<std::unordered_map<TileType, Ref<SpriteAsset>>> m_Tiles;
 	static Ref<std::unordered_map<FlipbookType, Ref<FlipbookAsset>>> m_Flipbooks;
 	static Ref<LevelAsset> m_CachedLevel; // We can't load every levels because it could be a huge amount of data. But we can't reload the same level if it's asked multiple times, so we cache the last used level.
+	static Ref<FontAsset> m_Font;
 };
 
