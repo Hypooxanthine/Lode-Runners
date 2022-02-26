@@ -181,12 +181,14 @@
     <ClCompile Include="src\Core\tinyxml2.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\States\State.cpp" />
+    <ClCompile Include="src\HUD\Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Components\Component.h" />
     <ClInclude Include="src\Entities\Entity.h" />
     <ClInclude Include="src\Assets\LevelAsset.h" />
     <ClInclude Include="src\Assets\AssetLoader.h" />
+    <ClInclude Include="src\HUD\Widgets.h" />
     <ClInclude Include="src\States\EditorState.h" />
     <ClInclude Include="src\Components\FlipbookComponent.h" />
     <ClInclude Include="src\Assets\FlipbookAsset.h" />
@@ -198,6 +200,7 @@
     <ClInclude Include="src\Core\tinyxml2.h" />
     <ClInclude Include="src\States\States.h" />
     <ClInclude Include="src\States\State.h" />
+    <ClInclude Include="src\HUD\Widget.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config.xml" />
