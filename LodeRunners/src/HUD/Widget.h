@@ -9,23 +9,25 @@ public:
 
 	void create(const sf::View& view)
 	{
-		consumed = false;
+		m_Consumed = false;
 		const auto window = Application::get()->getWindow();
 		const auto mousePos = sf::Mouse::getPosition(*window);
+		// Converting screen mouse position into widget's "true" coordinate system.
 		m_Position = window->mapPixelToCoords(mousePos, view);
 		m_Pressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
 	}
 
-	inline void consume() { consumed = true; }
-
+	inline void consume() { m_Consumed = true; }
+	inline const bool& isConsumed() const { return m_Consumed; }
 	// if(CursorRay) -> condition is true if the ray has not been consumed yet.
-	operator bool() const { return !consumed; }
+	operator bool() const { return !m_Consumed; }
 
 	const sf::Vector2f& getPosition() const { return m_Position; }
 	const bool& isPressed() const { return m_Pressed; }
 private:
-	// When a CursorRay is used (example : it hovers a button, so the button changes his color and consumes the ray), the widget that uses it has to make this value as true. No verification are done when trying to access data. A widget can see data even if his consumed member is true. He just has to know that another widget has responded to the position member value.
-	bool consumed = false;
+	// When a CursorRay is used (example : it hovers a button, so the button changes his color and consumes the ray), the widget that uses it has to make this value to true. No verification is done when trying to access data. A widget can see data even if its m_Consumed member is true. It is its own responsability to deal with this piece of information. Is there any way to make it safer without reducing performance ? Conceptually, there is probably no way to determine if a widgets really "consumes" a ray or not.
+	bool m_Consumed = false;
+	// Position is "world" position. This means the position is in the widget's "true" coordinate systems (this is NOT values between 0 and 1). It can directly be used with sf::Rect<T>::contains(const sf::Vector2<T>&) to check if the cursor hovers a widget bounding box (= hitbox).
 	sf::Vector2f m_Position;
 	bool m_Pressed = false;
 };
