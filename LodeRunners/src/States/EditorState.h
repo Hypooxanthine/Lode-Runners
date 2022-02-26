@@ -1,6 +1,7 @@
 #pragma once
 #include "States.h"
 #include "../Assets/Assets.h"
+#include "../HUD/ButtonWidget.h"
 
 class EditorToolkit
 {
@@ -60,4 +61,6 @@ private:
 
 	bool m_RenderHighlighter = false;
 	sf::RectangleShape m_Highlight;
+
+	ButtonWidget m_HUD;
 };

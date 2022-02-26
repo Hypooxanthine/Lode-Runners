@@ -35,7 +35,7 @@ private:
 class Widget
 {
 public:
-	Widget();
+	Widget() = default;
 
 	// This function first calculates a CursorRay then calls update(const float&, CursorRay&).
 	void update(const float& dt);
@@ -46,10 +46,15 @@ public:
 	void setParent(Ref<Widget> parent);
 	void addChild(Ref<Widget> child);
 
+	// In Widget's coordinate system (0-1).
 	sf::Vector2f getGlobalPosition() const;
+	// In Widget's coordinate system (0-1).
 	inline const sf::Vector2f& getRelativePosition() const { return m_RelativePosition; }
 
-	// In Widgt's coordinate system (0-1).
+	// In SFML's coordinate system.
+	sf::Vector2f getGlobalWorldPosition() const;
+
+	// In Widget's coordinate system (0-1).
 	void setRelativePosition(const sf::Vector2f& pos);
 	// In Widget's coordinate system (0-1).
 	void setGlobalPosition(const sf::Vector2f& pos);
@@ -83,7 +88,7 @@ private:
 	Ref<Widget> m_Parent = nullptr;
 	std::vector<Ref<Widget>> m_Children;
 
-	Ref<sf::View> m_View;
+	Ref<sf::View> m_View = MakeRef<sf::View>();
 
 	// Values bewteen 0 and 1 : the edges of the Widget's viewport. "True" position value is processed each time we move a Widget and given to SFML drawables. This gives an abstraction to the programmer to use Widgets with percentages. We don't want to bother with variable position values (because of resizing and flexible viewport size).
 	sf::Vector2f m_RelativePosition;

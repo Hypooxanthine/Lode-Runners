@@ -1,10 +1,5 @@
 #include "Widget.h"
 
-Widget::Widget()
-{
-	onResize();
-}
-
 void Widget::update(const float& dt)
 {
 	static CursorRay ray; // Instanciated once.
@@ -17,8 +12,10 @@ void Widget::update(const float& dt)
 // We must first render "this", then children. Children have to show in front of their parent.
 void Widget::render(Ref<sf::RenderWindow> window)
 {
+	window->setView(*m_View);
 	renderWidget(window);
 	renderChildren(window);
+	window->setView(window->getDefaultView());
 }
 
 void Widget::onResize()
@@ -33,34 +30,46 @@ void Widget::onResize()
 	updatePositions();
 }
 
-inline void Widget::setParent(Ref<Widget> parent)
+void Widget::setParent(Ref<Widget> parent)
 {
 	m_Parent = parent;
-	m_View = parent->m_View;
+	m_View->setCenter(parent->m_View->getCenter());
+	m_View->setSize(parent->m_View->getSize());
+	m_View->setViewport(parent->m_View->getViewport());
 	updatePositions();
 }
 
-inline void Widget::addChild(Ref<Widget> child)
+void Widget::addChild(Ref<Widget> child)
 {
 	m_Children.push_back(child);
-	child->m_View = m_View;
+	child->m_View->setCenter(m_View->getCenter());
+	child->m_View->setSize(m_View->getSize());
+	child->m_View->setViewport(m_View->getViewport());
 	child->updatePositions();
 }
 
-inline sf::Vector2f Widget::getGlobalPosition() const
+sf::Vector2f Widget::getGlobalPosition() const
 {
 	if (m_Parent == nullptr) return m_RelativePosition;
 	
 	return m_Parent->getGlobalPosition() + m_RelativePosition;
 }
 
-inline void Widget::setRelativePosition(const sf::Vector2f& pos)
+sf::Vector2f Widget::getGlobalWorldPosition() const
+{
+	const auto viewport = getViewport();
+	const auto globalPos = getGlobalPosition();
+
+	return { m_View->getSize().x * globalPos.x, m_View->getSize().y * globalPos.y };
+}
+
+void Widget::setRelativePosition(const sf::Vector2f& pos)
 {
 	m_RelativePosition = pos;
 	updatePositions();
 }
 
-inline void Widget::setGlobalPosition(const sf::Vector2f& pos)
+void Widget::setGlobalPosition(const sf::Vector2f& pos)
 {
 	if (m_Parent)
 		setRelativePosition(pos - m_Parent->getGlobalPosition());
@@ -86,7 +95,7 @@ void Widget::renderChildren(Ref<sf::RenderWindow> window)
 		child->render(window);
 }
 
-inline sf::IntRect Widget::getViewport() const
+sf::IntRect Widget::getViewport() const
 {
 	return Application::get()->getWindow()->getViewport(*m_View);
 }

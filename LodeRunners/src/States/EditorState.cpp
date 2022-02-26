@@ -151,6 +151,9 @@ EditorState::EditorState()
 	m_Highlight.setFillColor(sf::Color::Transparent);
 	m_Highlight.setOutlineThickness(-(1.f / 16.f) * (float)Assets::getElementSize());
 	m_Highlight.setOutlineColor(sf::Color::Green);
+
+	m_HUD.setViewport({ 0.f, 0.f, 0.9f, 1.f });
+	m_HUD.setGlobalPosition({ .5f, .5f });
 }
 
 void EditorState::init()
@@ -191,6 +194,8 @@ void EditorState::update(const float& dt)
 	}
 
 	m_Toolkit.update(dt);
+
+	m_HUD.update(dt);
 }
 
 void EditorState::render(Ref<sf::RenderWindow>& window)
@@ -201,6 +206,7 @@ void EditorState::render(Ref<sf::RenderWindow>& window)
 		window->draw(m_Highlight);
 	window->setView(window->getDefaultView());
 	m_Toolkit.render(window);
+	m_HUD.render(window);
 }
 
 void EditorState::onResize()
@@ -234,4 +240,5 @@ void EditorState::onResize()
 	}
 
 	m_Toolkit.onResize();
+	m_HUD.onResize();
 }
