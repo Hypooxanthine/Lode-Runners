@@ -26,12 +26,14 @@ void TextWidget::onSizeUpdated()
 
 void TextWidget::center()
 {
-	const auto requestedRect = sf::FloatRect(getGlobalWorldPosition(), getGlobalWorldSize());
-	const auto textRect = m_Text.getGlobalBounds();
+	const auto pos = getGlobalWorldPosition();
+	const auto size = getGlobalWorldSize();
+	const auto textRect = m_Text.getLocalBounds();
 
+	// sf::Text bounds are not exactly placed at its position, so we have to fix this little difference ourselves.
 	m_Text.setPosition
 	(
-		requestedRect.left + (requestedRect.width - textRect.width) / 2.f,
-		requestedRect.top + (requestedRect.height - textRect.height) / 2.f
+		pos.x + (size.x - textRect.width) / 2.f - textRect.left,
+		pos.y + (size.y - textRect.height) / 2.f - textRect.top
 	);
 }

@@ -11,6 +11,8 @@ public:
 	LevelAsset();
 	LevelAsset(const LevelAsset& other); // Copy constructor has to be redefined
 
+	void fill(const TileType& type);
+
 	inline const std::string& getName() const { return m_Name; }
 	inline constexpr size_t getSize() const { return m_Data.size(); }
 	inline Ref<const SpriteAsset> operator[](const size_t& index) const { return m_Data[index]; }
@@ -31,6 +33,6 @@ public:
 
 private:
 	std::string m_Name;
-	std::array<Ref<SpriteAsset>, TILES_WIDTH* TILES_HEIGHT> m_Data;
+	std::array<Ref<SpriteAsset>, TILES_WIDTH * TILES_HEIGHT> m_Data;
 };
 

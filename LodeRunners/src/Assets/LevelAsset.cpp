@@ -1,5 +1,7 @@
 #include "LevelAsset.h"
 
+#include "Assets.h"
+
 LevelAsset::LevelAsset()
 {
 	for (size_t i = 0; i < m_Data.size(); i++)
@@ -12,6 +14,19 @@ LevelAsset::LevelAsset(const LevelAsset& other)
 {
 	for (size_t i = 0; i < other.getSize(); i++)
 		m_Data[i] = MakeRef<SpriteAsset>(*other.m_Data[i]);
+}
+
+void LevelAsset::fill(const TileType& type)
+{
+	for (size_t i = 0; i < getSize(); i++)
+	{
+		m_Data[i] = MakeRef<SpriteAsset>(*Assets::getTile(type));
+		m_Data[i]->setPosition
+		(
+			(float)(i % TILES_WIDTH) * Assets::getElementSize(),
+			(float)(i / TILES_WIDTH) * Assets::getElementSize()
+		);
+	}
 }
 
 void LevelAsset::changeSprite(const size_t& index, Ref<const SpriteAsset> sprite)

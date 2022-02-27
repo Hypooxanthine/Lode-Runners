@@ -146,6 +146,7 @@ EditorState::EditorState()
 {
 	// We need to edit the level, so we make a copy of it (LevelAsset is const because of code safety).
 	m_LevelAsset = MakeRef<LevelAsset>(*Assets::getLevelAsset("Level_1"));
+	m_LevelAsset->fill(TileType::Blank);
 
 	m_LevelView.setViewport({ 0.f, 0.f, .9f, .9f });
 
