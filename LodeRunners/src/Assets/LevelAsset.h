@@ -25,9 +25,9 @@ public:
 	inline void setSprite(const size_t& x, const size_t& y, Ref<SpriteAsset> sprite) { m_Data[y * TILES_WIDTH + x] = sprite; }
 	inline void setSprite(const sf::Vector2u& pos, Ref<SpriteAsset> sprite) { m_Data[(size_t)pos.y * TILES_WIDTH + (size_t)pos.x] = sprite; }
 
-	void changeSprite(const size_t& index, Ref<const SpriteAsset> sprite);
-	void changeSprite(const size_t& x, const size_t& y, Ref<const SpriteAsset> sprite);
-	void changeSprite(const sf::Vector2u& pos, Ref<const SpriteAsset> sprite);
+	bool changeSprite(const size_t& index, Ref<const SpriteAsset> sprite);
+	bool changeSprite(const size_t& x, const size_t& y, Ref<const SpriteAsset> sprite);
+	bool changeSprite(const sf::Vector2u& pos, Ref<const SpriteAsset> sprite);
 
 	void render(const Ref<sf::RenderWindow>& window) const;
 

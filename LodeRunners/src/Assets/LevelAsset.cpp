@@ -14,6 +14,7 @@ LevelAsset::LevelAsset(const LevelAsset& other)
 {
 	for (size_t i = 0; i < other.getSize(); i++)
 		m_Data[i] = MakeRef<SpriteAsset>(*other.m_Data[i]);
+	m_Name = other.getName();
 }
 
 void LevelAsset::fill(const TileType& type)
@@ -29,20 +30,23 @@ void LevelAsset::fill(const TileType& type)
 	}
 }
 
-void LevelAsset::changeSprite(const size_t& index, Ref<const SpriteAsset> sprite)
+bool LevelAsset::changeSprite(const size_t& index, Ref<const SpriteAsset> sprite)
 {
+	if (sprite->getType() == m_Data[index]->getType()) return false;
+
 	m_Data[index]->setTextureRect(sprite->getTextureRect());
 	m_Data[index]->setType(sprite->getType());
+	return true;
 }
 
-void LevelAsset::changeSprite(const size_t& x, const size_t& y, Ref<const SpriteAsset> sprite)
+bool LevelAsset::changeSprite(const size_t& x, const size_t& y, Ref<const SpriteAsset> sprite)
 {
-	changeSprite(y * TILES_WIDTH + x, sprite);
+	return changeSprite(y * TILES_WIDTH + x, sprite);
 }
 
-void LevelAsset::changeSprite(const sf::Vector2u& pos, Ref<const SpriteAsset> sprite)
+bool LevelAsset::changeSprite(const sf::Vector2u& pos, Ref<const SpriteAsset> sprite)
 {
-	changeSprite((size_t)pos.y * TILES_WIDTH + (size_t)pos.x, sprite);
+	return changeSprite((size_t)pos.y * TILES_WIDTH + (size_t)pos.x, sprite);
 }
 
 void LevelAsset::render(const Ref<sf::RenderWindow>& window) const

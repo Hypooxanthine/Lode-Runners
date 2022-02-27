@@ -40,24 +40,33 @@ private: // Private attributes
 class EditorUI
 {
 public:
-	EditorUI(std::function<void(const std::string&)> loadCallback);
+	EditorUI(Ref<LevelAsset>& levelRef);
 
 	void update(const float& dt);
 	void render(Ref<sf::RenderWindow> window);
 	void onResize();
+	void onEdited();
 
 private: // Private methods
 	// Callbacks
 	void previousLevel();
 	void nextLevel();
+	void updateSelectorStyle();
+
+	void loadLevel();
+	void saveLevel();
+	void clearLevel();
 
 private: // Private members
 	Ref<Widget> m_HUD;
 	Ref<TextWidget> m_LevelSelector;
 
 	size_t m_SelectedLevel;
+	std::optional<size_t> m_LoadedLevel;
+	// When a loaded level is edited, we need to know it to change its color, letting the user know its work has not been saved yet.
+	bool m_Edited = false;
 
-	std::function<void(const std::string&)> m_LoadCallback;
+	Ref<LevelAsset>& m_LevelRef;
 
 };
 
@@ -77,8 +86,6 @@ public:
 		static auto c = sf::Color::Color(20, 20, 20);
 		return c;
 	}
-
-	void loadLevel(const std::string& name);
 
 private:
 	EditorToolkit m_Toolkit;

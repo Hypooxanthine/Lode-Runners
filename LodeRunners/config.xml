@@ -1,128 +1,116 @@
 <?xml version="1.0" ?>
-
 <App>
-  <Spritesheets>
-    <Layouts>
-      
-      <!-- DO NOT REMOVE DEFAULT LAYOUT -->
-      <Layout name="default" elementSize="32">
-        <SkinIcon x="0" y="0" />
-        <Tiles>
-          <Tile name="Blank"         x="0" y="1" />
-          <Tile name="Brick"         x="0" y="2" />
-          <Tile name="Stone"         x="0" y="3" />
-          <Tile name="Ladder"        x="0" y="4" />
-          <Tile name="Bridge"        x="0" y="5" />
-          <Tile name="Gold"          x="0" y="6" />
-          <Tile name="PlayerStart"   x="0" y="7" />
-          <Tile name="EnnemyStart"   x="0" y="8" />
-        </Tiles>
-        <Flipbooks>
-          <Flipbook name="PlayerLeft">
-            <Frame id="0" x="1" y="0" />
-            <Frame id="1" x="1" y="1" />
-            <Frame id="2" x="1" y="2" />
-            <Frame id="3" x="1" y="3" />
-          </Flipbook>
-          <Flipbook name="PlayerRight">
-            <Frame id="0" x="2" y="0" />
-            <Frame id="1" x="2" y="1" />
-            <Frame id="2" x="2" y="2" />
-            <Frame id="3" x="2" y="3" />
-          </Flipbook>
-          <Flipbook name="PlayerDigLeft">
-            <Frame id="0" x="3" y="0" />
-            <Frame id="1" x="3" y="1" />
-            <Frame id="2" x="3" y="2" />
-            <Frame id="3" x="3" y="3" />
-          </Flipbook>
-          <Flipbook name="PlayerDigRight">
-            <Frame id="0" x="4" y="0" />
-            <Frame id="1" x="4" y="1" />
-            <Frame id="2" x="4" y="2" />
-            <Frame id="3" x="4" y="3" />
-          </Flipbook>
-          <Flipbook name="PlayerClimbLadder">
-            <Frame id="0" x="5" y="0" />
-            <Frame id="1" x="5" y="1" />
-          </Flipbook>
-          <Flipbook name="PlayerClimbBridge">
-            <Frame id="0" x="6" y="0" />
-            <Frame id="1" x="6" y="1" />
-          </Flipbook>
-          <Flipbook name="PlayerFall">
-            <Frame id="0" x="7" y="0" />
-            <Frame id="1" x="7" y="1" />
-          </Flipbook>
-          <Flipbook name="EnnemyLeft">
-            <Frame id="0" x="8" y="0" />
-            <Frame id="1" x="8" y="1" />
-            <Frame id="2" x="8" y="2" />
-            <Frame id="3" x="8" y="3" />
-          </Flipbook>
-          <Flipbook name="EnnemyRight">
-            <Frame id="0" x="9" y="0" />
-            <Frame id="1" x="9" y="1" />
-            <Frame id="2" x="9" y="2" />
-            <Frame id="3" x="9" y="3" />
-          </Flipbook>
-          <Flipbook name="EnnemyClimbLadder">
-            <Frame id="0" x="10" y="0" />
-            <Frame id="1" x="10" y="1" />
-          </Flipbook>
-          <Flipbook name="EnnemyClimbBridge">
-            <Frame id="0" x="11" y="0" />
-            <Frame id="1" x="11" y="1" />
-          </Flipbook>
-          <Flipbook name="EnnemyFall">
-            <Frame id="0" x="12" y="0" />
-            <Frame id="1" x="12" y="1" />
-          </Flipbook>
-        </Flipbooks>
-      </Layout>
-        
-      <!-- You can add your custom layouts here. Please use the same names as in the default layout. You can use as many frame for every flipbook as you want. A flipbook sequence
+    <Spritesheets>
+        <Layouts>
+            <!-- DO NOT REMOVE DEFAULT LAYOUT -->
+            <Layout name="default" elementSize="32">
+                <SkinIcon x="0" y="0"/>
+                <Tiles>
+                    <Tile name="Blank" x="0" y="1"/>
+                    <Tile name="Brick" x="0" y="2"/>
+                    <Tile name="Stone" x="0" y="3"/>
+                    <Tile name="Ladder" x="0" y="4"/>
+                    <Tile name="Bridge" x="0" y="5"/>
+                    <Tile name="Gold" x="0" y="6"/>
+                    <Tile name="PlayerStart" x="0" y="7"/>
+                    <Tile name="EnnemyStart" x="0" y="8"/>
+                </Tiles>
+                <Flipbooks>
+                    <Flipbook name="PlayerLeft">
+                        <Frame id="0" x="1" y="0"/>
+                        <Frame id="1" x="1" y="1"/>
+                        <Frame id="2" x="1" y="2"/>
+                        <Frame id="3" x="1" y="3"/>
+                    </Flipbook>
+                    <Flipbook name="PlayerRight">
+                        <Frame id="0" x="2" y="0"/>
+                        <Frame id="1" x="2" y="1"/>
+                        <Frame id="2" x="2" y="2"/>
+                        <Frame id="3" x="2" y="3"/>
+                    </Flipbook>
+                    <Flipbook name="PlayerDigLeft">
+                        <Frame id="0" x="3" y="0"/>
+                        <Frame id="1" x="3" y="1"/>
+                        <Frame id="2" x="3" y="2"/>
+                        <Frame id="3" x="3" y="3"/>
+                    </Flipbook>
+                    <Flipbook name="PlayerDigRight">
+                        <Frame id="0" x="4" y="0"/>
+                        <Frame id="1" x="4" y="1"/>
+                        <Frame id="2" x="4" y="2"/>
+                        <Frame id="3" x="4" y="3"/>
+                    </Flipbook>
+                    <Flipbook name="PlayerClimbLadder">
+                        <Frame id="0" x="5" y="0"/>
+                        <Frame id="1" x="5" y="1"/>
+                    </Flipbook>
+                    <Flipbook name="PlayerClimbBridge">
+                        <Frame id="0" x="6" y="0"/>
+                        <Frame id="1" x="6" y="1"/>
+                    </Flipbook>
+                    <Flipbook name="PlayerFall">
+                        <Frame id="0" x="7" y="0"/>
+                        <Frame id="1" x="7" y="1"/>
+                    </Flipbook>
+                    <Flipbook name="EnnemyLeft">
+                        <Frame id="0" x="8" y="0"/>
+                        <Frame id="1" x="8" y="1"/>
+                        <Frame id="2" x="8" y="2"/>
+                        <Frame id="3" x="8" y="3"/>
+                    </Flipbook>
+                    <Flipbook name="EnnemyRight">
+                        <Frame id="0" x="9" y="0"/>
+                        <Frame id="1" x="9" y="1"/>
+                        <Frame id="2" x="9" y="2"/>
+                        <Frame id="3" x="9" y="3"/>
+                    </Flipbook>
+                    <Flipbook name="EnnemyClimbLadder">
+                        <Frame id="0" x="10" y="0"/>
+                        <Frame id="1" x="10" y="1"/>
+                    </Flipbook>
+                    <Flipbook name="EnnemyClimbBridge">
+                        <Frame id="0" x="11" y="0"/>
+                        <Frame id="1" x="11" y="1"/>
+                    </Flipbook>
+                    <Flipbook name="EnnemyFall">
+                        <Frame id="0" x="12" y="0"/>
+                        <Frame id="1" x="12" y="1"/>
+                    </Flipbook>
+                </Flipbooks>
+            </Layout>
+            <!-- You can add your custom layouts here. Please use the same names as in the default layout. You can use as many frame for every flipbook as you want. A flipbook sequence
            will always last the same time. -->
-        
-    </Layouts>
-
-    <Skins>
-      <!-- DO NOT REMOVE DEFAULT SKIN -->
-      <Skin name="default" layout="default" fileName="skin_default.png" font="default"/>
-      
-      <!-- You can add you own skins here. Please type the layout to use (default or custom) and its path. -->
-      <Skin name="skin1" layout="default" fileName="skintest.png" font="default"/>
-    </Skins>
-  </Spritesheets>
-
-  <Fonts>
-    <Font name="default" fileName="font_default.ttf" />
-  </Fonts>
-
-  <Levels>
-    <Level name="Level 1" fileName="Level_1.txt" />
-    <Level name="Level 2" fileName="Level_2.txt" />
-    <Level name="Level 3" fileName="Level_3.txt" />
-  </Levels>
-
-  <Paths>
-    <!-- Please type slash terminated addresses. -->
-    <Skins path="Resources/Skins/" />
-    <Fonts path="Resources/Fonts/" />
-    <Levels path="Resources/Levels/" />
-  </Paths>
-
-  <Settings>
-    <Skin selected="default" />
-    <Audio volume="0.5" />
-    <Animation time="0.5" />
-  </Settings>
-
-  <Network>
-    <!-- GlobalServer is matchmaking and ladder server. You can type your own server adress. -->
-    <GlobalServer ip="127.0.0.1" port="60000" />
-    
-    <!-- Port used when creating a lobby. -->
-    <ServerSetup port="60000" />
-  </Network>
+        </Layouts>
+        <Skins>
+            <!-- DO NOT REMOVE DEFAULT SKIN -->
+            <Skin name="default" layout="default" fileName="skin_default.png" font="default"/>
+            <!-- You can add you own skins here. Please type the layout to use (default or custom) and its path. -->
+            <Skin name="skin1" layout="default" fileName="skintest.png" font="default"/>
+        </Skins>
+    </Spritesheets>
+    <Fonts>
+        <Font name="default" fileName="font_default.ttf"/>
+    </Fonts>
+    <Levels>
+        <Level name="Level 1" fileName="Level_1.txt"/>
+        <Level name="Level 2" fileName="Level_2.txt"/>
+        <Level name="Level 3" fileName="Level_3.txt"/>
+    </Levels>
+    <Paths>
+        <!-- Please type slash terminated addresses. -->
+        <Skins path="Resources/Skins/"/>
+        <Fonts path="Resources/Fonts/"/>
+        <Levels path="Resources/Levels/"/>
+    </Paths>
+    <Settings>
+        <Skin selected="default"/>
+        <Audio volume="0.5"/>
+        <Animation time="0.5"/>
+    </Settings>
+    <Network>
+        <!-- GlobalServer is matchmaking and ladder server. You can type your own server adress. -->
+        <GlobalServer ip="127.0.0.1" port="60000"/>
+        <!-- Port used when creating a lobby. -->
+        <ServerSetup port="60000"/>
+    </Network>
 </App>

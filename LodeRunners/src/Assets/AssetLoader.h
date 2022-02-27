@@ -48,6 +48,7 @@ public:
 
 	static inline const std::vector<std::pair<std::string, std::string>>& getAvailableLevels() { return m_AvailableLevels; }
 	static void loadLevel(const std::string& name, Ref<LevelAsset> level);
+	static void saveLevel(Ref<const LevelAsset> level);
 
 private:
 	struct ElementPosition { unsigned int x = 0, y = 0; };
@@ -85,6 +86,7 @@ private: // Private methods : interactions with config.xml
 	static tinyxml2::XMLElement* getLevel(tinyxml2::XMLHandle& handle, const std::string& name);
 	static std::string getLevelsPath(tinyxml2::XMLHandle& handle);
 	static std::string getLevelPath(tinyxml2::XMLHandle& handle, const std::string& name);
+	static void saveLevel(Ref<const LevelAsset> level, const std::string& path);
 
 private: // Private members
 	// Links between xml config file IDs/names and enums. Simple maps to be able to iterate through them.

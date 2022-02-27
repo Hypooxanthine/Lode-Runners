@@ -153,10 +153,11 @@ EditorState::EditorState()
 		(float)Assets::getElementSize() * TILES_HEIGHT)
 	),
 	m_Toolkit(EditorToolkit()),
-	m_UI([this](const std::string& name) { this->loadLevel(name); })
+	m_UI(m_LevelAsset)
 {
 	// We need to edit the level, so we make a copy of it (LevelAsset is const because of code safety).
 	m_LevelAsset = MakeRef<LevelAsset>();
+	m_LevelAsset->setName("New Level");
 	m_LevelAsset->fill(TileType::Blank);
 
 	m_LevelView.setViewport(LEVEL_VIEWPORT);
@@ -183,7 +184,8 @@ void EditorState::update(const float& dt)
 	const sf::Vector2i mousePos = sf::Mouse::getPosition(*Application::get()->getWindow());
 	const sf::IntRect viewPort = Application::get()->getWindow()->getViewport(m_LevelView);
 	const Ref<const sf::RenderWindow> window = Application::get()->getWindow();
-	const sf::Vector2f mouseWorld = window->mapPixelToCoords(mousePos, m_LevelView); // World position pointed by mouse cursor.
+	// World position pointed by mouse cursor.
+	const sf::Vector2f mouseWorld = window->mapPixelToCoords(mousePos, m_LevelView);
 	const sf::Vector2i hoveredTile =
 	{
 		(int)std::floor(mouseWorld.x / (float)(Assets::getElementSize())),
@@ -197,9 +199,15 @@ void EditorState::update(const float& dt)
 		m_Highlight.setPosition(m_LevelAsset->at(hoveredTile.x, hoveredTile.y)->getPosition());
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-			m_LevelAsset->changeSprite((sf::Vector2u)hoveredTile, m_Toolkit.getSelectedTile());
+		{
+			if (m_LevelAsset->changeSprite((sf::Vector2u)hoveredTile, m_Toolkit.getSelectedTile()))
+				m_UI.onEdited();
+		}
 		else if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
-			m_LevelAsset->changeSprite((sf::Vector2u)hoveredTile, Assets::getTile(TileType::Blank));
+		{
+			if (m_LevelAsset->changeSprite((sf::Vector2u)hoveredTile, Assets::getTile(TileType::Blank)))
+				m_UI.onEdited();
+		}
 	}
 	else
 	{
@@ -255,16 +263,10 @@ void EditorState::onResize()
 	m_UI.onResize();
 }
 
-void EditorState::loadLevel(const std::string& name)
-{
-	LOG_TRACE(name);
-	m_LevelAsset = MakeRef<LevelAsset>(*Assets::getLevelAsset(name));
-}
-
 /* EditorUI Class. */
 
-EditorUI::EditorUI(std::function<void(const std::string&)> loadCallback)
-	: m_LoadCallback(loadCallback)
+EditorUI::EditorUI(Ref<LevelAsset>& levelRef)
+	: m_LevelRef(levelRef)
 {
 	m_HUD = MakeRef<Widget>();
 
@@ -305,17 +307,36 @@ EditorUI::EditorUI(std::function<void(const std::string&)> loadCallback)
 
 	auto loadButton = MakeRef<ButtonWidget>();
 	loadButton->setRelativePosition({ .56f, .1f });
-	loadButton->setRelativeSize({ .1f, .8f });
-	loadButton->bindCallback([this]()
-		{
-			this->m_LoadCallback(AssetLoader::getAvailableLevels()[this->m_SelectedLevel].first);
-		});
+	loadButton->setRelativeSize({ .1f, .38f });
+	loadButton->bindCallback(BIND_FN(loadLevel));
 	Widget::addChild(loadButton, m_HUD);
 
 	auto loadText = MakeRef<TextWidget>();
 	loadText->fillParent();
-	loadText->setText("Charger");
+	loadText->setText("Load");
 	Widget::addChild(loadText, loadButton);
+
+	auto saveButton = MakeRef<ButtonWidget>();
+	saveButton->setRelativePosition({ .56f, .52f });
+	saveButton->setRelativeSize({ .1f, .38f });
+	saveButton->bindCallback(BIND_FN(saveLevel));
+	Widget::addChild(saveButton, m_HUD);
+
+	auto saveText = MakeRef<TextWidget>();
+	saveText->fillParent();
+	saveText->setText("Save");
+	Widget::addChild(saveText, saveButton);
+
+	auto clearButton = MakeRef<ButtonWidget>();
+	clearButton->setRelativePosition({ .68f, .1f });
+	clearButton->setRelativeSize({ .1f, .8f });
+	clearButton->bindCallback(BIND_FN(clearLevel));
+	Widget::addChild(clearButton, m_HUD);
+
+	auto clearText = MakeRef<TextWidget>();
+	clearText->fillParent();
+	clearText->setText("Clear");
+	Widget::addChild(clearText, clearButton);
 }
 
 void EditorUI::update(const float& dt)
@@ -333,14 +354,62 @@ void EditorUI::onResize()
 	m_HUD->onResize();
 }
 
+void EditorUI::onEdited()
+{
+	// We don't need to update style if m_Edited was already set to true.
+	if (!m_Edited)
+	{
+		m_Edited = true;
+		updateSelectorStyle();
+	}
+}
+
 void EditorUI::previousLevel()
 {
 	m_SelectedLevel = (m_SelectedLevel + AssetLoader::getAvailableLevels().size() - 1) % AssetLoader::getAvailableLevels().size();
 	m_LevelSelector->setText(AssetLoader::getAvailableLevels()[m_SelectedLevel].first);
+	updateSelectorStyle();
 }
 
 void EditorUI::nextLevel()
 {
 	m_SelectedLevel = (m_SelectedLevel + 1) % AssetLoader::getAvailableLevels().size();
 	m_LevelSelector->setText(AssetLoader::getAvailableLevels()[m_SelectedLevel].first);
+	updateSelectorStyle();
+}
+
+void EditorUI::updateSelectorStyle()
+{
+	if (m_SelectedLevel == m_LoadedLevel)
+	{
+		m_LevelSelector->setColor(m_Edited ? sf::Color::Color(255, 127, 0) : sf::Color::Green);
+		m_LevelSelector->setBold();
+	}
+	else
+	{
+		m_LevelSelector->setColor(sf::Color::White);
+		m_LevelSelector->setBold(false);
+	}
+}
+
+void EditorUI::loadLevel()
+{
+	// For loading, we want to force reload, to take save in account. If we just want to get a level without bothering with in between saves, we can let it to its false default value.
+	m_LevelRef = MakeRef<LevelAsset>(*Assets::getLevelAsset(m_LevelSelector->getText(), true));
+	m_LoadedLevel = m_SelectedLevel;
+	m_Edited = false;
+	updateSelectorStyle();
+}
+
+void EditorUI::saveLevel()
+{
+	AssetLoader::saveLevel(m_LevelRef);
+	m_Edited = false;
+	updateSelectorStyle();
+}
+
+void EditorUI::clearLevel()
+{
+	m_LevelRef->fill(TileType::Blank);
+	onEdited();
 }

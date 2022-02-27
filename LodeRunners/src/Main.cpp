@@ -1,5 +1,7 @@
 #include "Core/Application.h"
 
+//#define SHOW_DELTA_TIME
+
 int main(int argc, char** argv)
 {
 	Log::init();
@@ -8,6 +10,11 @@ int main(int argc, char** argv)
 	Application* app = new Application();
 	app->run();
 	delete app;
+
+	#ifdef _DEBUG
+	LOG_TRACE("\n\nPress any key to close.");
+	std::cin.get();
+	#endif
 
 	return 0;
 }

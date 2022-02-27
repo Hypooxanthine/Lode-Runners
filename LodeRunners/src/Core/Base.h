@@ -1,7 +1,6 @@
 #pragma once
 
 /* Defines */
-#define SHOW_DELTA_TIME // For debugging purpose
 #define DELTA_TIME_LOG_STEP 1.f
 
 /* Main STL libraries. */

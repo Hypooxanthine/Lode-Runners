@@ -15,6 +15,33 @@ void TextWidget::setText(const std::string& text)
 	center();
 }
 
+void TextWidget::setBold(const bool& val)
+{
+	if (val)
+		m_Text.setStyle(m_Text.getStyle() | sf::Text::Bold);
+	else
+		m_Text.setStyle(m_Text.getStyle() & ~sf::Text::Bold);
+	center();
+}
+
+void TextWidget::setUnderlined(const bool& val)
+{
+	if (val)
+		m_Text.setStyle(m_Text.getStyle() | sf::Text::Underlined);
+	else
+		m_Text.setStyle(m_Text.getStyle() & ~sf::Text::Underlined);
+	center();
+}
+
+void TextWidget::setItalic(const bool& val)
+{
+	if (val)
+		m_Text.setStyle(m_Text.getStyle() | sf::Text::Italic);
+	else
+		m_Text.setStyle(m_Text.getStyle() & ~sf::Text::Italic);
+	center();
+}
+
 void TextWidget::renderWidget(Ref<sf::RenderWindow> window)
 {
 	window->draw(m_Text);

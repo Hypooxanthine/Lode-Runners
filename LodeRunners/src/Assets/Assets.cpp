@@ -10,13 +10,12 @@ Ref<FontAsset> Assets::m_Font = MakeRef<FontAsset>();
 
 void Assets::load(const std::string& name)
 {
-
 	AssetLoader::loadSkin(name, m_Tiles, m_ElementSize, m_Font, m_Flipbooks);
 }
 
-const Ref<const LevelAsset> Assets::getLevelAsset(const std::string& name)
+const Ref<const LevelAsset> Assets::getLevelAsset(const std::string& name, const bool& forceReload)
 {
-	if (m_CachedLevel->getName() != name)
+	if (forceReload || m_CachedLevel->getName() != name)
 		AssetLoader::loadLevel(name, m_CachedLevel);
 
 	return m_CachedLevel;

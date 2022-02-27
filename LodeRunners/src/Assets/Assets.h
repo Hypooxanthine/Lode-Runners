@@ -12,7 +12,7 @@ public: // Public methods
 	static inline const unsigned int& getElementSize() { return m_ElementSize; }
 	static inline Ref<const SpriteAsset> getTile(const TileType& tile) { return (*m_Tiles)[tile]; }
 	static inline Ref<const FlipbookAsset> getFlipbook(const FlipbookType& fb) { return (*m_Flipbooks)[fb]; }
-	static const Ref<const LevelAsset> getLevelAsset(const std::string& name);
+	static const Ref<const LevelAsset> getLevelAsset(const std::string& name, const bool& forceReload = false);
 	static inline Ref<const FontAsset> getFontAsset() { return m_Font; }
 
 

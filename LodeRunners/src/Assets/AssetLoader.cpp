@@ -84,6 +84,7 @@ void AssetLoader::fillAvailableSkins(tinyxml2::XMLHandle& handle)
 
 void AssetLoader::fillAvailableLevels(tinyxml2::XMLHandle& handle)
 {
+	m_AvailableLevels.clear();
 	auto levelsElement = getLevels(handle);
 
 	auto levelElement = levelsElement->FirstChildElement();
@@ -212,6 +213,43 @@ void AssetLoader::loadLevel(const std::string& name, Ref<LevelAsset> level)
 	level->setName(name);
 
 	file.close();
+
+	LOG_INFO((std::string)"Loaded level \"" + name + "\".");
+}
+
+void AssetLoader::saveLevel(Ref<const LevelAsset> level)
+{
+	tinyxml2::XMLDocument doc;
+	ASSERT(doc.LoadFile("config.xml") == tinyxml2::XMLError::XML_SUCCESS, "Couldn't open config.xml.");
+	tinyxml2::XMLHandle docHandle(&doc);
+
+	auto levelsElement = getLevels(docHandle);
+	auto levelElement = levelsElement->FirstChildElement("Level");
+	for (levelElement;
+		levelElement != nullptr && levelElement->Attribute("name") != level->getName();
+		levelElement = levelElement->NextSiblingElement("Level"));
+
+	if (levelElement)
+	{
+		const char* path = nullptr;
+	}
+	else
+	{
+		std::string fileName = level->getName();
+
+		for (char& c : fileName)
+			if (c == ' ') c = '_';
+		fileName += ".txt";
+
+		auto newLevelElement = doc.NewElement("Level");
+		newLevelElement->SetAttribute("name", level->getName().c_str());
+		newLevelElement->SetAttribute("fileName", fileName.c_str());
+		levelsElement->InsertEndChild(newLevelElement);
+		doc.SaveFile("config.xml");
+	}
+
+	fillAvailableLevels(docHandle);
+	saveLevel(level, getLevelPath(docHandle, level->getName()));
 }
 
 tinyxml2::XMLElement* AssetLoader::getSkins(tinyxml2::XMLHandle& handle)
@@ -387,6 +425,21 @@ std::string AssetLoader::getLevelPath(tinyxml2::XMLHandle& handle, const std::st
 			return p.second;
 	}
 
-	Application::get()->emergencyStop("Couldn't find " + name + " path.");
+	ASSERT(false, "Couldn't find " + name + " path.");
+}
+
+void AssetLoader::saveLevel(Ref<const LevelAsset> level, const std::string& path)
+{
+	std::ofstream ofs;
+	ofs.open(path, std::ofstream::out | std::ofstream::trunc);
+
+	ASSERT(ofs.is_open(), "Couldn't open file " + path + ".");
+
+	for (size_t i = 0; i < level->getSize(); i++)
+	{
+		ofs << (int)level->at(i)->getType() << " ";
+	}
+
+	ofs.close();
 }
 
