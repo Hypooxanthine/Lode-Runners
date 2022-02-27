@@ -8,7 +8,7 @@ class TextWidget : public Widget
 public:
 	TextWidget();
 
-	void setText(const std::string& text) { m_Text.setString(text); }
+	void setText(const std::string& text);
 
 protected:
 	//virtual void handleWidgetRay(CursorRay& ray) override;

@@ -9,6 +9,12 @@ TextWidget::TextWidget()
 	m_Text.setFont(*m_Font);
 }
 
+void TextWidget::setText(const std::string& text)
+{
+	m_Text.setString(text);
+	center();
+}
+
 void TextWidget::renderWidget(Ref<sf::RenderWindow> window)
 {
 	window->draw(m_Text);
