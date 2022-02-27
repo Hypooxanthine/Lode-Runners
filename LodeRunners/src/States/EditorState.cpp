@@ -9,6 +9,10 @@
 m_Tiles.push_back(MakeRef<SpriteAsset>(*Assets::getTile(tile))); \
 m_Tiles[m_Tiles.size() - 1]->setPosition((float)Assets::getElementSize() / 2.f, (float)Assets::getElementSize() / 2.f + (float)(m_Tiles.size() - 1) * (float)Assets::getElementSize() * (3.f / 2.f));
 
+const sf::FloatRect LEVEL_VIEWPORT = { 0.f, 0.f, .9f, .9f };
+const sf::FloatRect TOOLKIT_VIEWPORT = { .9f, 0.f, .1f, 1.f };
+const sf::FloatRect UI_VIEWPORT = { 0.f, .9f, 0.9f, .1f };
+
 EditorToolkit::EditorToolkit()
 {
 	//ADD_TOOLKIT_TILE(TileType::Blank); // Blank tile is right click. We could add it tho.
@@ -37,7 +41,7 @@ EditorToolkit::EditorToolkit()
 		(float)(2.f * Assets::getElementSize()), 
 		(1.5f * m_Tiles.size() + .5f) * (float)Assets::getElementSize()
 	));
-	m_ToolkitView.setViewport({ .9f, 0.f, .1f, 1.f });
+	m_ToolkitView.setViewport(TOOLKIT_VIEWPORT);
 
 	onResize();
 	select(m_Tiles[0]);
@@ -141,32 +145,26 @@ Ref<SpriteAsset> EditorToolkit::getHoveredTile()
 /* EditorState class. */
 
 EditorState::EditorState()
-	: m_LevelView(sf::FloatRect(0.f, 0.f, (float)Assets::getElementSize() * TILES_WIDTH, (float)Assets::getElementSize() * TILES_HEIGHT)),
-	m_Toolkit(EditorToolkit())
+	: m_LevelView(sf::FloatRect
+	(
+		0.f,
+		0.f,
+		(float)Assets::getElementSize() * TILES_WIDTH,
+		(float)Assets::getElementSize() * TILES_HEIGHT)
+	),
+	m_Toolkit(EditorToolkit()),
+	m_UI([this](const std::string& name) { this->loadLevel(name); })
 {
 	// We need to edit the level, so we make a copy of it (LevelAsset is const because of code safety).
-	m_LevelAsset = MakeRef<LevelAsset>(*Assets::getLevelAsset("Level_1"));
+	m_LevelAsset = MakeRef<LevelAsset>();
 	m_LevelAsset->fill(TileType::Blank);
 
-	m_LevelView.setViewport({ 0.f, 0.f, .9f, .9f });
+	m_LevelView.setViewport(LEVEL_VIEWPORT);
 
 	m_Highlight.setSize({ (float)Assets::getElementSize(), (float)Assets::getElementSize() });
 	m_Highlight.setFillColor(sf::Color::Transparent);
 	m_Highlight.setOutlineThickness(-(1.f / 16.f) * (float)Assets::getElementSize());
 	m_Highlight.setOutlineColor(sf::Color::Green);
-
-	m_HUD->setViewport({ 0.f, .9f, 0.9f, .1f });
-	m_HUD->fillParent();
-	
-	auto button = MakeRef<ButtonWidget>();
-	Widget::addChild(button, m_HUD);
-	button->setRelativePosition({ .2f, .2f });
-	button->setRelativeSize({ .2f, .6f });
-
-	auto text = MakeRef<TextWidget>();
-	Widget::addChild(text, button);
-	text->setText("Text");
-	text->fillParent();
 
 	onResize();
 }
@@ -209,11 +207,10 @@ void EditorState::update(const float& dt)
 	}
 
 	m_Toolkit.update(dt);
-
-	m_HUD->update(dt);
+	m_UI.update(dt);
 }
 
-void EditorState::render(Ref<sf::RenderWindow>& window)
+void EditorState::render(Ref<sf::RenderWindow> window)
 {
 	window->setView(m_LevelView);
 	m_LevelAsset->render(window);
@@ -221,7 +218,7 @@ void EditorState::render(Ref<sf::RenderWindow>& window)
 		window->draw(m_Highlight);
 	window->setView(window->getDefaultView());
 	m_Toolkit.render(window);
-	m_HUD->render(window);
+	m_UI.render(window);
 }
 
 void EditorState::onResize()
@@ -255,6 +252,95 @@ void EditorState::onResize()
 	}
 
 	m_Toolkit.onResize();
+	m_UI.onResize();
+}
+
+void EditorState::loadLevel(const std::string& name)
+{
+	LOG_TRACE(name);
+	m_LevelAsset = MakeRef<LevelAsset>(*Assets::getLevelAsset(name));
+}
+
+/* EditorUI Class. */
+
+EditorUI::EditorUI(std::function<void(const std::string&)> loadCallback)
+	: m_LoadCallback(loadCallback)
+{
+	m_HUD = MakeRef<Widget>();
+
+	m_HUD->setViewport(UI_VIEWPORT);
+	m_HUD->fillParent();
+	
+	auto previousLevelButton = MakeRef<ButtonWidget>();
+	previousLevelButton->setRelativePosition({ .05f, .1f });
+	previousLevelButton->setRelativeSize({ .05f, .8f });
+	previousLevelButton->bindCallback(BIND_FN(previousLevel));
+	Widget::addChild(previousLevelButton, m_HUD);
+
+	auto nextLevelButton = MakeRef<ButtonWidget>();
+	nextLevelButton->setRelativePosition({ .5f, .1f });
+	nextLevelButton->setRelativeSize({ .05f, .8f });
+	nextLevelButton->bindCallback(BIND_FN(nextLevel));
+	Widget::addChild(nextLevelButton, m_HUD);
+
+	auto previousLevelText = MakeRef<TextWidget>();
+	previousLevelText->fillParent();
+	previousLevelText->setText("<");
+	Widget::addChild(previousLevelText, previousLevelButton);
+
+	auto nextLevelText = MakeRef<TextWidget>();
+	nextLevelText->fillParent();
+	nextLevelText->setText(">");
+	Widget::addChild(nextLevelText, nextLevelButton);
+
+	m_LevelSelector = MakeRef<TextWidget>();
+	if (!AssetLoader::getAvailableLevels().empty())
+	{
+		m_LevelSelector->setText(AssetLoader::getAvailableLevels()[0].first);
+		m_SelectedLevel = 0;
+	}
+	m_LevelSelector->setRelativePosition({ .11f, .1f });
+	m_LevelSelector->setRelativeSize({ .38f, .8f });
+	Widget::addChild(m_LevelSelector, m_HUD);
+
+	auto loadButton = MakeRef<ButtonWidget>();
+	loadButton->setRelativePosition({ .56f, .1f });
+	loadButton->setRelativeSize({ .1f, .8f });
+	loadButton->bindCallback([this]()
+		{
+			this->m_LoadCallback(AssetLoader::getAvailableLevels()[this->m_SelectedLevel].first);
+		});
+	Widget::addChild(loadButton, m_HUD);
+
+	auto loadText = MakeRef<TextWidget>();
+	loadText->fillParent();
+	loadText->setText("Charger");
+	Widget::addChild(loadText, loadButton);
+}
+
+void EditorUI::update(const float& dt)
+{
+	m_HUD->update(dt);
+}
+
+void EditorUI::render(Ref<sf::RenderWindow> window)
+{
+	m_HUD->render(window);
+}
+
+void EditorUI::onResize()
+{
 	m_HUD->onResize();
 }
 
+void EditorUI::previousLevel()
+{
+	m_SelectedLevel = (m_SelectedLevel + AssetLoader::getAvailableLevels().size() - 1) % AssetLoader::getAvailableLevels().size();
+	m_LevelSelector->setText(AssetLoader::getAvailableLevels()[m_SelectedLevel].first);
+}
+
+void EditorUI::nextLevel()
+{
+	m_SelectedLevel = (m_SelectedLevel + 1) % AssetLoader::getAvailableLevels().size();
+	m_LevelSelector->setText(AssetLoader::getAvailableLevels()[m_SelectedLevel].first);
+}

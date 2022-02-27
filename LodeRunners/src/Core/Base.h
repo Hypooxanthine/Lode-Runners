@@ -44,6 +44,10 @@ constexpr Ref<T> MakeRef(Args&& ... args)
 #define ASSERT(condition, msg) if(!(condition)) Application::get()->emergencyStop((std::string)"Assertion failed. Details : " + msg)
 #endif
 
+/* Callbacks */
+using Callback = std::function<void(void)>;
+#define BIND_FN(f) [this]() -> void { this->f(); }
+
 /* Global defines */
 #define TILES_WIDTH 26
 #define TILES_HEIGHT 16

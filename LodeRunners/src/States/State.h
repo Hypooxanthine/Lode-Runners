@@ -10,7 +10,7 @@ public:
 	// To be overriden by children
 	virtual void init() {}
 	virtual void update(const float& dt) {}
-	virtual void render(Ref<sf::RenderWindow>& window) {}
+	virtual void render(Ref<sf::RenderWindow> window) {}
 	virtual void onResize() {}
 	virtual inline const sf::Color& getClearColor() const
 	{

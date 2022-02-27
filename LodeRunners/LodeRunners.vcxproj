@@ -213,6 +213,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\Levels\Level_1.txt" />
+    <Text Include="Resources\Levels\Level_2.txt" />
+    <Text Include="Resources\Levels\Level_3.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

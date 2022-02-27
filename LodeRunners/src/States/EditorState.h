@@ -2,18 +2,21 @@
 #include "States.h"
 #include "../Assets/Assets.h"
 #include "../HUD/Widget.h"
+#include "../HUD/TextWidget.h"
 
-class EditorToolkit
+class LevelAsset;
+
+class EditorToolkit : State
 {
 public:
 	EditorToolkit();
 
 	inline Ref<const SpriteAsset> getSelectedTile() const { return m_SelectedTile; }
 
-	void update(const float& dt);
-	void render(Ref<sf::RenderWindow> window);
+	virtual void update(const float& dt) override;
+	virtual void render(Ref<sf::RenderWindow> window) override;
 
-	void onResize();
+	virtual void onResize() override;
 
 private: // Private methods
 	void select(Ref<SpriteAsset> tile);
@@ -34,7 +37,29 @@ private: // Private attributes
 	sf::RectangleShape m_SelectedHighlight;
 };
 
-class LevelAsset;
+class EditorUI
+{
+public:
+	EditorUI(std::function<void(const std::string&)> loadCallback);
+
+	void update(const float& dt);
+	void render(Ref<sf::RenderWindow> window);
+	void onResize();
+
+private: // Private methods
+	// Callbacks
+	void previousLevel();
+	void nextLevel();
+
+private: // Private members
+	Ref<Widget> m_HUD;
+	Ref<TextWidget> m_LevelSelector;
+
+	size_t m_SelectedLevel;
+
+	std::function<void(const std::string&)> m_LoadCallback;
+
+};
 
 class EditorState : public State
 {
@@ -43,7 +68,7 @@ public:
 
 	virtual void init() override;
 	virtual void update(const float& dt) override;
-	virtual void render(Ref<sf::RenderWindow>& window) override;
+	virtual void render(Ref<sf::RenderWindow> window) override;
 
 	virtual void onResize() override;
 
@@ -53,14 +78,16 @@ public:
 		return c;
 	}
 
+	void loadLevel(const std::string& name);
+
 private:
-	Ref<LevelAsset> m_LevelAsset;
 	EditorToolkit m_Toolkit;
+	EditorUI m_UI;
+
+	Ref<LevelAsset> m_LevelAsset;
 
 	sf::View m_LevelView;
 
 	bool m_RenderHighlighter = false;
 	sf::RectangleShape m_Highlight;
-
-	Ref<Widget> m_HUD = MakeRef<Widget>();
 };

@@ -2,13 +2,8 @@
 
 #include "Widget.h"
 
-#define BIND_FN(f) [this]() -> void { this.f(); }
-
 class ButtonWidget : public Widget
 {
-public:
-	using Callback = std::function<void(void)>;
-
 public: // Public methods
 	ButtonWidget();
 	ButtonWidget(const sf::Color& normalCol, const sf::Color& hoveredCol, const sf::Color& pressedCol);

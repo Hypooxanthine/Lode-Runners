@@ -46,7 +46,7 @@ public:
 	static inline const std::vector<std::string> getAvailableSkins() { return m_AvailableSkins; }
 	static void loadSkin(const std::string& skinName, Ref<std::unordered_map<TileType,Ref<SpriteAsset>>> tiles, unsigned int& elementSize, Ref<FontAsset> font, Ref<std::unordered_map<FlipbookType,Ref<FlipbookAsset>>> flipbooks);
 
-	static inline const std::vector<std::pair<std::string, std::string>> getAvailableLevels() { return m_AvailableLevels; }
+	static inline const std::vector<std::pair<std::string, std::string>>& getAvailableLevels() { return m_AvailableLevels; }
 	static void loadLevel(const std::string& name, Ref<LevelAsset> level);
 
 private:
