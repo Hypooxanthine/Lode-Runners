@@ -48,6 +48,7 @@ public:
 	/* HIERARCHY */
 
 	static void addChild(Ref<Widget> child, Ref<Widget> parent);
+	Ref<Widget> getParent() { return m_Parent; }
 
 	/* POSITIONS */
 

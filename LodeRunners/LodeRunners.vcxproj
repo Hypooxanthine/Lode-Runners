@@ -173,6 +173,7 @@
     <ClCompile Include="src\Entities\Entity.cpp" />
     <ClCompile Include="src\Assets\LevelAsset.cpp" />
     <ClCompile Include="src\Assets\AssetLoader.cpp" />
+    <ClCompile Include="src\HUD\TextBoxWidget.cpp" />
     <ClCompile Include="src\States\EditorState.cpp" />
     <ClCompile Include="src\Components\FlipbookComponent.cpp" />
     <ClCompile Include="src\Assets\FlipbookAsset.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="src\Entities\Entity.h" />
     <ClInclude Include="src\Assets\LevelAsset.h" />
     <ClInclude Include="src\Assets\AssetLoader.h" />
+    <ClInclude Include="src\HUD\TextBoxWidget.h" />
     <ClInclude Include="src\HUD\Widgets.h" />
     <ClInclude Include="src\States\EditorState.h" />
     <ClInclude Include="src\Components\FlipbookComponent.h" />
@@ -210,11 +212,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Resources\Levels\Level_1.txt" />
-    <Text Include="Resources\Levels\Level_2.txt" />
-    <Text Include="Resources\Levels\Level_3.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

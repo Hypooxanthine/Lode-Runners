@@ -3,6 +3,7 @@
 #include "../Assets/Assets.h"
 #include "../HUD/Widget.h"
 #include "../HUD/TextWidget.h"
+#include "../HUD/TextBoxWidget.h"
 
 class LevelAsset;
 
@@ -56,13 +57,15 @@ private: // Private methods
 	void loadLevel();
 	void saveLevel();
 	void clearLevel();
+	void createLevel();
 
 private: // Private members
 	Ref<Widget> m_HUD;
 	Ref<TextWidget> m_LevelSelector;
+	Ref<TextBoxWidget> m_CreateLevelBox;
 
 	size_t m_SelectedLevel;
-	std::optional<size_t> m_LoadedLevel;
+	size_t m_LoadedLevel;
 	// When a loaded level is edited, we need to know it to change its color, letting the user know its work has not been saved yet.
 	bool m_Edited = false;
 

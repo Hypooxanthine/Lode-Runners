@@ -38,10 +38,16 @@ void Application::run()
 	}
 }
 
+const Event& Application::getEvent(const EventType& type) const
+{
+	return m_Events.at(type);
+}
+
 void Application::updateEvents()
 {
-	m_Events[EventType::Text].activated = false;
-	m_Events[EventType::Text].text = "";
+	m_Events[EventType::TextEntered].activated = false;
+	m_Events[EventType::TextErased].activated = false;
+	m_Events[EventType::TextEntered].text = "";
 
 	while (m_Window->pollEvent(m_SFMLEvent))
 	{
@@ -54,9 +60,17 @@ void Application::updateEvents()
 			m_States.top()->onResize();
 			break;
 		case sf::Event::TextEntered:
-			m_Events[EventType::Text].activated = true;
-			m_Events[EventType::Text].text += m_SFMLEvent.text.unicode;
+		{
+			char c = m_SFMLEvent.text.unicode;
+			if (c >= ' ' && c <= '~')
+			{
+				m_Events[EventType::TextEntered].activated = true;
+				m_Events[EventType::TextEntered].text += c;
+			}
+			break;
+		}
 		case sf::Event::KeyPressed:
+		{
 			switch (m_SFMLEvent.key.code)
 			{
 			case sf::Keyboard::Z:
@@ -77,9 +91,14 @@ void Application::updateEvents()
 			case sf::Keyboard::E:
 				m_Events[EventType::DigLeft].activated = true;
 				break;
+			case sf::Keyboard::BackSpace:
+				m_Events[EventType::TextErased].activated = true;
+				break;
 			}
 			break;
+		}
 		case sf::Event::KeyReleased:
+		{
 			switch (m_SFMLEvent.key.code)
 			{
 			case sf::Keyboard::Z:
@@ -102,6 +121,7 @@ void Application::updateEvents()
 				break;
 			}
 			break;
+		}
 		}
 	}
 }

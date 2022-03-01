@@ -88,7 +88,7 @@ void AssetLoader::fillAvailableLevels(tinyxml2::XMLHandle& handle)
 	auto levelsElement = getLevels(handle);
 
 	auto levelElement = levelsElement->FirstChildElement();
-	CORRUPTED(levelElement);
+	if(!levelElement) return; // If no level does exist, we just don't fill the levels list.
 
 	std::string levelsPath = getLevelsPath(handle);
 	m_AvailableLevels.clear();

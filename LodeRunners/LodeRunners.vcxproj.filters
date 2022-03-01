@@ -69,6 +69,9 @@
     <ClCompile Include="src\Assets\FontAsset.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\HUD\TextBoxWidget.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\tinyxml2.h">
@@ -131,13 +134,11 @@
     <ClInclude Include="src\Assets\FontAsset.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="src\HUD\TextBoxWidget.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Resources\Levels\Level_1.txt" />
-    <Text Include="Resources\Levels\Level_2.txt" />
-    <Text Include="Resources\Levels\Level_3.txt" />
   </ItemGroup>
 </Project>

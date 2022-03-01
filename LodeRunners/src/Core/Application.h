@@ -7,7 +7,8 @@
 
 enum class EventType
 {
-	Text,
+	TextEntered,
+	TextErased,
 	MoveLeft,
 	MoveRight,
 	MoveUp,
@@ -43,6 +44,9 @@ public:
 
 	// Handling the main loop
 	void run();
+
+	// Getting an Application event.
+	const Event& getEvent(const EventType& type) const;
 
 	// Called by the active state to push another one. The caller doesn't die, he will wake up when he'll be on the top of the stack (when all his descendants will be killed).
 	void pushState(const Ref<State>& newState);
