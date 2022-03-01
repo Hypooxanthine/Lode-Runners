@@ -11,15 +11,13 @@ Application* Application::m_Singleton = nullptr;
 Application::Application()
 	:
 	m_Window(MakeRef<sf::RenderWindow>()),
-	m_Event(sf::Event())
+	m_SFMLEvent(sf::Event())
 {
+	ASSERT(m_Singleton == nullptr, "Application already exists.");
+	m_Singleton = this;
+
 	AssetLoader::init();
 	Assets::load();
-
-	if (m_Singleton)
-		emergencyStop("Application already exists.");
-
-	m_Singleton = this;
 }
 
 void Application::run()
@@ -42,12 +40,69 @@ void Application::run()
 
 void Application::updateEvents()
 {
-	while (m_Window->pollEvent(m_Event))
+	m_Events[EventType::Text].activated = false;
+	m_Events[EventType::Text].text = "";
+
+	while (m_Window->pollEvent(m_SFMLEvent))
 	{
-		if (m_Event.type == sf::Event::Closed)
+		switch (m_SFMLEvent.type)
+		{
+		case sf::Event::Closed:
 			close();
-		if (m_Event.type == sf::Event::Resized)
+			break;
+		case sf::Event::Resized:
 			m_States.top()->onResize();
+			break;
+		case sf::Event::TextEntered:
+			m_Events[EventType::Text].activated = true;
+			m_Events[EventType::Text].text += m_SFMLEvent.text.unicode;
+		case sf::Event::KeyPressed:
+			switch (m_SFMLEvent.key.code)
+			{
+			case sf::Keyboard::Z:
+				m_Events[EventType::MoveUp].activated = true;
+				break;
+			case sf::Keyboard::Q:
+				m_Events[EventType::MoveLeft].activated = true;
+				break;
+			case sf::Keyboard::S:
+				m_Events[EventType::MoveDown].activated = true;
+				break;
+			case sf::Keyboard::D:
+				m_Events[EventType::MoveRight].activated = true;
+				break;
+			case sf::Keyboard::A:
+				m_Events[EventType::DigRight].activated = true;
+				break;
+			case sf::Keyboard::E:
+				m_Events[EventType::DigLeft].activated = true;
+				break;
+			}
+			break;
+		case sf::Event::KeyReleased:
+			switch (m_SFMLEvent.key.code)
+			{
+			case sf::Keyboard::Z:
+				m_Events[EventType::MoveUp].activated = false;
+				break;
+			case sf::Keyboard::Q:
+				m_Events[EventType::MoveLeft].activated = false;
+				break;
+			case sf::Keyboard::S:
+				m_Events[EventType::MoveDown].activated = false;
+				break;
+			case sf::Keyboard::D:
+				m_Events[EventType::MoveRight].activated = false;
+				break;
+			case sf::Keyboard::A:
+				m_Events[EventType::DigRight].activated = false;
+				break;
+			case sf::Keyboard::E:
+				m_Events[EventType::DigLeft].activated = false;
+				break;
+			}
+			break;
+		}
 	}
 }
 

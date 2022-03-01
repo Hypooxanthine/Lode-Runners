@@ -5,6 +5,29 @@
 
 #include "Base.h"
 
+enum class EventType
+{
+	Text,
+	MoveLeft,
+	MoveRight,
+	MoveUp,
+	MoveDown,
+	DigLeft,
+	DigRight
+};
+
+struct Event
+{
+	friend class Application;
+	Event() = default;
+
+	operator bool() const { return activated; }
+
+	std::string text = "";
+
+	bool activated = false;
+};
+
 class State;
 
 class Application
@@ -57,7 +80,8 @@ private: // Private attributes
 
 	// Windowing and event handling
 	Ref<sf::RenderWindow> m_Window;
-	sf::Event m_Event;
+	sf::Event m_SFMLEvent;
+	std::map<EventType, Event> m_Events;
 
 	// Delta time handling
 	sf::Clock m_DtClock;
