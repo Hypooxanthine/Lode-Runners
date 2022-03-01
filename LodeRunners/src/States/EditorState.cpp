@@ -175,6 +175,9 @@ void EditorState::update(const float& dt)
 	if (!Application::get()->getWindow()->hasFocus())
 		return;
 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+		Application::get()->killState();
+
 	if(m_LevelAsset)
 	{
 		// Useful variables. Their names speak for themselves.

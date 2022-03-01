@@ -1,6 +1,6 @@
 #include "PreMenuState.h"
 
-#include "EditorState.h"
+#include "MainMenuState.h"
 
 #include "../HUD/TextWidget.h"
 #include "../HUD/ButtonWidget.h"
@@ -42,7 +42,7 @@ PreMenuState::PreMenuState()
 	launchButton->bindCallback([this]()
 		{
 			Application::get()->killState();
-			Application::get()->pushState(MakeRef<EditorState>());
+			Application::get()->pushState(MakeRef<MainMenuState>());
 		});
 
 	auto launchText = MakeRef<TextWidget>();

@@ -167,6 +167,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\States\MainMenuState.cpp" />
     <ClCompile Include="src\States\PreMenuState.cpp" />
     <ClCompile Include="src\Assets\FontAsset.cpp" />
     <ClCompile Include="src\HUD\ButtonWidget.cpp" />
@@ -189,6 +190,7 @@
     <ClCompile Include="src\HUD\TextWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\States\MainMenuState.h" />
     <ClInclude Include="src\States\PreMenuState.h" />
     <ClInclude Include="src\Assets\FontAsset.h" />
     <ClInclude Include="src\HUD\ButtonWidget.h" />
