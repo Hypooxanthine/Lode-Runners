@@ -12,6 +12,7 @@ TextWidget::TextWidget()
 void TextWidget::setText(const std::string& text)
 {
 	m_Text.setString(text);
+	m_FullText = text;
 	center();
 }
 
@@ -49,16 +50,21 @@ void TextWidget::renderWidget(Ref<sf::RenderWindow> window)
 
 void TextWidget::onPositionUpdated()
 {
+	if (m_WrapText)
+		wrap();
 	center();
 }
 
 void TextWidget::onSizeUpdated()
 {
+	if (m_WrapText)
+		wrap();
 	center();
 }
 
 void TextWidget::center()
 {
+	m_Text.setCharacterSize((int)(30.f * (float)Application::get()->getWindow()->getSize().x / 1920.f));
 	const auto pos = getGlobalWorldPosition();
 	const auto size = getGlobalWorldSize();
 	const auto textRect = m_Text.getLocalBounds();
@@ -69,4 +75,64 @@ void TextWidget::center()
 		pos.x + (size.x - textRect.width) / 2.f - textRect.left,
 		pos.y + (size.y - textRect.height) / 2.f - textRect.top
 	);
+}
+
+// Wraps the "str" string, and returns the remaining str.
+std::string WrapLine(std::string& str, const sf::Text& ref, const float& maxWidth)
+{
+	std::stringstream ss(str);
+	str = "";
+
+	sf::Text lineText = sf::Text(ref);
+	lineText.setString("");
+
+	bool end = false;
+	while (!end)
+	{
+		std::string word;
+		ss >> word,
+		lineText.setString(str + word);
+
+		if (lineText.getGlobalBounds().width > maxWidth || ss.str().length() == 0)
+		{
+			ss << word;
+			end = true;
+		}
+		else
+		{
+			str += " " + word;
+		}
+	}
+
+	return ss.str();
+
+}
+
+// TODO : make it work.
+void TextWidget::wrap()
+{
+	const sf::FloatRect box(getGlobalWorldPosition(), getGlobalWorldSize());
+
+	std::string str = m_FullText;
+	std::string rest;
+
+	bool end = false;
+
+	while (!end)
+	{
+		rest = WrapLine(str, m_Text, box.width);
+		sf::Text temp = sf::Text(m_Text);
+
+		temp.setString(temp.getString() + str);
+
+		if (rest.size() > 0 && m_Text.getGlobalBounds().height < box.height)
+		{
+			str = rest;
+			m_Text.setString(temp.getString() + "\n");
+		}
+		else
+		{
+			end = true;
+		}
+	} 
 }

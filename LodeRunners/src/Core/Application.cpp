@@ -1,10 +1,7 @@
 #include "Application.h"
-#include "../States/State.h"
 #include "../Assets/Assets.h"
 #include "../Assets/AssetLoader.h"
-
-// For testing purpose
-#include "../States/EditorState.h"
+#include "../States/PreMenuState.h"
 
 Application* Application::m_Singleton = nullptr;
 
@@ -26,7 +23,7 @@ void Application::run()
 	m_Window->create(sf::VideoMode::getDesktopMode(), "Lode Runners");
 
 	// For testing purpose
-	m_States.push(MakeRef<EditorState>());
+	m_States.push(MakeRef<PreMenuState>());
 
 	while (m_Window->isOpen())
 	{
