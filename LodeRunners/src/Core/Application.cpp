@@ -20,7 +20,7 @@ Application::Application()
 void Application::run()
 {
 	const unsigned int& elementSize = Assets::getElementSize();
-	m_Window->create(sf::VideoMode::getDesktopMode(), "Lode Runners", sf::Style::Fullscreen);
+	m_Window->create(sf::VideoMode::getDesktopMode(), "Lode Runners");
 
 	// For testing purpose
 	m_States.push(MakeRef<PreMenuState>());
