@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 	delete app;
 
 	#ifdef _DEBUG
-	LOG_TRACE("\n\nPress any key to close.");
+	LOG_TRACE("\n\nPress Enter key to close.");
 	std::cin.get();
 	#endif
 
