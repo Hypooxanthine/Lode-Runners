@@ -26,7 +26,11 @@ PreMenuState::PreMenuState()
 	(
 		"Ce programme est un build d'un projet universitaire, UE \"Systèmes d'Exploitation\", UFR Sciences & Techniques, Dijon.\n"
 		"Il s'agit d'un remake du jeu \"Lone Runner\", en réseau, avec un ou plusieurs joueurs alliés, et un nombre fixe d'ennemis,\n"
-		"dont tous peuvent être contrôlés, ou non, pas des joueurs."
+		"dont tous peuvent être contrôlés, ou non, par des joueurs.\n\n"
+		"Professeurs encadrants : Annabelle Gillet, Eric Leclercq\n"
+		"Programmation : Alexandre Beaujon\n"
+		"Textures du skin \"default\" : Guillaume Côte\n"
+		"Police par défaut : fontsquirrel.com"
 	);
 	bodyText->setGlobalPosition({ .05f, .2f });
 	bodyText->setGlobalSize({ .9f, .5f });
@@ -64,7 +68,6 @@ void PreMenuState::update(const float& dt)
 
 	m_AnimEllapsedTime += dt * 20.f;
 	if (m_AnimEllapsedTime > 255.f) m_AnimEllapsedTime = 255.f;
-	LOG_TRACE(m_AnimEllapsedTime);
 
 	m_AnimShape.setFillColor(sf::Color::Color(0, 0, 0, (sf::Uint8)(255.f - m_AnimEllapsedTime)));
 }

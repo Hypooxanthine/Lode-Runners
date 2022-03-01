@@ -20,7 +20,7 @@ Application::Application()
 void Application::run()
 {
 	const unsigned int& elementSize = Assets::getElementSize();
-	m_Window->create(sf::VideoMode::getDesktopMode(), "Lode Runners");
+	m_Window->create(sf::VideoMode::getDesktopMode(), "Lode Runners", sf::Style::Fullscreen);
 
 	// For testing purpose
 	m_States.push(MakeRef<PreMenuState>());
@@ -141,22 +141,28 @@ void Application::render()
 
 void Application::checkState()
 {
-	if (m_PopStateRequest)
+	if( m_PopStateRequest || m_NextState)
 	{
-		m_States.pop();
-		m_PopStateRequest = false;
-	}
+		if (m_PopStateRequest)
+		{
+			m_States.pop();
+			m_PopStateRequest = false;
+			LOG_INFO("State killed.");
+		}
 
-	if (m_NextState) // If there is another state to push
-	{
-		m_States.push(m_NextState);
-		m_NextState->init();
-		m_NextState = nullptr;
+		if (m_NextState) // If there is another state to push
+		{
+			m_States.push(m_NextState);
+			m_NextState->init();
+			m_NextState = nullptr;
+			LOG_INFO("New State pushed.");
+		}
+
+		if (m_States.empty())
+			close();
+		else
+			m_States.top()->init();	
 	}
-	else if (!m_States.empty()) // I there isn't any state to push but another state remains on the stack
-		m_States.top()->init();
-	else // If there isn't any state to push, plus the states stack is empty, the application has to stop
-		close();
 }
 
 void Application::updateDt()
@@ -183,13 +189,13 @@ void Application::updateDt()
 
 void Application::pushState(const Ref<State>& newState)
 {
-	LOG_INFO("New state pushed.");
+	LOG_INFO("Requested new state.");
 	m_NextState = newState;
 }
 
 void Application::killState()
 {
-	LOG_INFO("State killed.");
+	LOG_INFO("Requested kill state.");
 
 	m_PopStateRequest = true;
 }
