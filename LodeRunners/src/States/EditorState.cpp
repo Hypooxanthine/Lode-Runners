@@ -175,7 +175,7 @@ void EditorState::update(const float& dt)
 	if (!Application::get()->getWindow()->hasFocus())
 		return;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	if (Application::get()->getEvent(EventType::Escape))
 		Application::get()->killState();
 
 	if(m_LevelAsset)
@@ -276,9 +276,20 @@ EditorUI::EditorUI(Ref<LevelAsset>& levelRef)
 
 	m_HUD->setViewport(UI_VIEWPORT);
 	m_HUD->fillParent();
+
+	auto quitButton = MakeRef<ButtonWidget>();
+	quitButton->setRelativePosition({ .04f, .1f });
+	quitButton->setRelativeSize({ .1f, .8f });
+	quitButton->bindCallback([]() { Application::get()->killState(); });
+	Widget::addChild(quitButton, m_HUD);
+
+	auto quitText = MakeRef<TextWidget>();
+	quitText->fillParent();
+	quitText->setText("Quit");
+	Widget::addChild(quitText, quitButton);
 	
 	auto previousLevelButton = MakeRef<ButtonWidget>();
-	previousLevelButton->setRelativePosition({ .05f, .1f });
+	previousLevelButton->setRelativePosition({ .15f, .1f });
 	previousLevelButton->setRelativeSize({ .05f, .8f });
 	previousLevelButton->bindCallback(BIND_FN(previousLevel));
 	Widget::addChild(previousLevelButton, m_HUD);
@@ -305,8 +316,8 @@ EditorUI::EditorUI(Ref<LevelAsset>& levelRef)
 		m_LevelSelector->setText(AssetLoader::getAvailableLevels()[0].first);
 		m_SelectedLevel = 0;
 	}
-	m_LevelSelector->setRelativePosition({ .11f, .1f });
-	m_LevelSelector->setRelativeSize({ .38f, .8f });
+	m_LevelSelector->setRelativePosition({ .21f, .1f });
+	m_LevelSelector->setRelativeSize({ .28f, .8f });
 	Widget::addChild(m_LevelSelector, m_HUD);
 
 	auto loadButton = MakeRef<ButtonWidget>();
@@ -332,7 +343,7 @@ EditorUI::EditorUI(Ref<LevelAsset>& levelRef)
 	Widget::addChild(saveText, saveButton);
 
 	auto clearButton = MakeRef<ButtonWidget>();
-	clearButton->setRelativePosition({ .68f, .1f });
+	clearButton->setRelativePosition({ .67f, .1f });
 	clearButton->setRelativeSize({ .1f, .8f });
 	clearButton->bindCallback(BIND_FN(clearLevel));
 	Widget::addChild(clearButton, m_HUD);
@@ -344,12 +355,12 @@ EditorUI::EditorUI(Ref<LevelAsset>& levelRef)
 
 	m_CreateLevelBox = MakeRef<TextBoxWidget>();
 	m_CreateLevelBox->setText("Level name");
-	m_CreateLevelBox->setRelativePosition({ .8f, .1f });
+	m_CreateLevelBox->setRelativePosition({ .78f, .1f });
 	m_CreateLevelBox->setRelativeSize({ .2f, .38f });
 	Widget::addChild(m_CreateLevelBox, m_HUD);
 
 	auto createButton = MakeRef<ButtonWidget>();
-	createButton->setRelativePosition({ .8f, .5f });
+	createButton->setRelativePosition({ .78f, .5f });
 	createButton->setRelativeSize({ .2f, .38f });
 	createButton->bindCallback(BIND_FN(createLevel));
 	Widget::addChild(createButton, m_HUD);

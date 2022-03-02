@@ -57,7 +57,7 @@ void MainMenuState::update(const float& dt)
 {
 	m_HUD->update(dt);
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	if (Application::get()->getEvent(EventType::Escape))
 		Application::get()->killState();
 }
 

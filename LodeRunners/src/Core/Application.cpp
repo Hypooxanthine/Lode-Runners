@@ -20,6 +20,7 @@ Application::Application()
 void Application::run()
 {
 	const unsigned int& elementSize = Assets::getElementSize();
+	m_Window->setVerticalSyncEnabled(true);
 	m_Window->create(sf::VideoMode::getDesktopMode(), "Lode Runners");
 
 	// For testing purpose
@@ -42,8 +43,11 @@ const Event& Application::getEvent(const EventType& type) const
 
 void Application::updateEvents()
 {
+	// Action events. These actions trigger with the OS' delay between key presses. So we need to disable them this way, not only when the key is released.
 	m_Events[EventType::TextEntered].activated = false;
 	m_Events[EventType::TextErased].activated = false;
+	m_Events[EventType::Escape].activated = false;
+
 	m_Events[EventType::TextEntered].text = "";
 
 	while (m_Window->pollEvent(m_SFMLEvent))
@@ -90,6 +94,9 @@ void Application::updateEvents()
 				break;
 			case sf::Keyboard::BackSpace:
 				m_Events[EventType::TextErased].activated = true;
+				break;
+			case sf::Keyboard::Escape:
+				m_Events[EventType::Escape].activated = true;
 				break;
 			}
 			break;

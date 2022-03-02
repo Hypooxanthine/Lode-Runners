@@ -7,8 +7,11 @@
 
 enum class EventType
 {
+	Escape,
+	
 	TextEntered,
 	TextErased,
+
 	MoveLeft,
 	MoveRight,
 	MoveUp,
