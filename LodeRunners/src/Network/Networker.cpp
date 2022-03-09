@@ -16,7 +16,7 @@ namespace Network
 	bool Networker::createServer(const size_t& maxClients, const uint32_t& port)
 	{
 		if (m_InterfaceType != InterfaceType::None) return false;
-		LOG_TRACE("Creating Networker.");
+		LOG_TRACE("Creating Server.");
 
 		if (!m_Server.create(maxClients, port))
 			return false;
@@ -30,16 +30,21 @@ namespace Network
 		LOG_INFO("Server listening to entering data.");
 
 		m_InterfaceType = InterfaceType::Server;
+		m_Server.bindOnAllClientsDisconnected([this]() {this->reset(); });
+
 		return true;
 	}
 
 	bool Networker::createClient(const std::string& address, const uint32_t& port)
 	{
 		if (m_InterfaceType != InterfaceType::None) return false;
-		LOG_TRACE("Creating Networker.");
+		LOG_TRACE("Creating Client.");
 
 		if (!m_Client.create(address, port))
+		{
+			LOG_WARN("Aborting...");
 			return false;
+		}
 		LOG_INFO("Client connected successfully to server.");
 
 		m_Client.acceptData([this](const size_t& GUID, ByteArray& args)
@@ -50,12 +55,14 @@ namespace Network
 		LOG_INFO("Client listening to entering data.");
 
 		m_InterfaceType = InterfaceType::Client;
+		m_Client.bindOnServerDisconnected([this]() { this->reset(); });
+
 		return true;
 	}
 
 	void Networker::registerFunc(std::function<void(ByteArray&)> func, const size_t& GUID)
 	{
-		// ASSERT(!m_Functions.contains(GUID), "Registered two replicated functions with the same GUID. Function details : " + func.target_type().name() + ".");	
+		ASSERT(!m_Functions.contains(GUID), "Registered two replicated functions with the same GUID. Function details : " + func.target_type().name() + ".");	
 
 		m_Functions[GUID] = func;
 	}
@@ -113,6 +120,12 @@ namespace Network
 				m_Server.send(GUID, args);
 			}
 		}
+	}
+
+	void Networker::reset()
+	{
+		m_InterfaceType = InterfaceType::None;
+		LOG_INFO("Networker reset.");
 	}
 
 }

@@ -53,14 +53,16 @@ namespace Network
 
 	void Server::acceptData()
 	{
-		while (true)
+		while (m_Clients.size() > 0)
 		{
-			if(m_Selector.wait(sf::milliseconds(50)))
+			if(m_Selector.wait())
 			{
 				LOG_INFO("Data received.");
 
-				for (auto& c : m_Clients)
+				for (size_t i = m_Clients.size(); i > 0 ; i--)
 				{
+					auto& c = m_Clients[i-1];
+
 					if (m_Selector.isReady(*c))
 					{
 						LOG_INFO("Server received data.");
@@ -68,23 +70,39 @@ namespace Network
 						sf::Packet packet;
 						c->receive(packet);
 
-						size_t GUID;
-						ByteArray args;
-						args.reserve(packet.getDataSize() - sizeof(size_t));
+						if (packet.getDataSize() < sizeof(size_t))
+						{
+							m_Selector.remove(*c);
+							m_Clients.erase(m_Clients.begin() + i - 1);
+						}
+						else
+						{
+							size_t GUID;
+							ByteArray args;
+							args.reserve(packet.getDataSize() - sizeof(size_t));
 
-						packet >> GUID;
-						std::byte* argsPtr = (std::byte*)packet.getData() + sizeof(size_t);
-						std::byte* argsEnd = (std::byte*)packet.getData() + packet.getDataSize();
-						for (argsPtr; argsPtr < argsEnd; argsPtr++)
-							args.push_back(*argsPtr);
+							packet >> GUID;
+							std::byte* argsPtr = (std::byte*)packet.getData() + sizeof(size_t);
+							std::byte* argsEnd = (std::byte*)packet.getData() + packet.getDataSize();
+							for (argsPtr; argsPtr < argsEnd; argsPtr++)
+								args.push_back(*argsPtr);
 
-						m_Callback(GUID, args);
+							m_Callback(GUID, args);
+						}
 					}
 				}
 			}
 		}
 
-		LOG_INFO("Server stopped accepting data.");
+		LOG_INFO("All clients disconnected.");
+
+		m_Callback = nullptr;
+		m_Listener.close();
+		m_Selector.clear();
+
+		LOG_INFO("Server closed.");
+
+		m_OnAllClientsDisconnected();
 	}
 
 }

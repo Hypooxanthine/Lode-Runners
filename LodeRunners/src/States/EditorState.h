@@ -84,12 +84,6 @@ public:
 
 	virtual void onResize() override;
 
-	virtual inline const sf::Color& getClearColor() const override
-	{
-		static auto c = sf::Color::Color(20, 20, 20);
-		return c;
-	}
-
 private:
 	EditorToolkit m_Toolkit;
 	EditorUI m_UI;

@@ -13,6 +13,8 @@ int main(int argc, char** argv)
 	auto app = std::make_unique<Application>();
 	app->run();
 
+	networker.release();
+
 	#ifdef _DEBUG
 	LOG_TRACE("\n\nPress Enter key to close.");
 	std::cin.get();

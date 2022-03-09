@@ -176,7 +176,7 @@ void EditorState::update(const float& dt)
 		return;
 
 	if (Application::get()->getEvent(EventType::Escape))
-		Application::get()->killState();
+		kill();
 
 	if(m_LevelAsset)
 	{

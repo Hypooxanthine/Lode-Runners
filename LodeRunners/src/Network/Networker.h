@@ -32,6 +32,8 @@ namespace Network
 
 		void call(const ReplicationMode& mode, const size_t& GUID, ByteArray& args);
 
+		void reset();
+
 	private:
 		static Networker* s_Instance;
 

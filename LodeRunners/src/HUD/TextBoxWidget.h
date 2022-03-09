@@ -29,5 +29,6 @@ private:
 	sf::RectangleShape m_Blinker;
 
 	bool m_HasFocus = false;
+	bool m_WasPressed = false;
 };
 

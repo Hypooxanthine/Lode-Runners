@@ -11,11 +11,10 @@ TextBoxWidget::TextBoxWidget()
 
 void TextBoxWidget::handleWidgetRay(CursorRay& ray)
 {
-	static bool wasPressed = false;
 	const sf::FloatRect buttonSurface = sf::FloatRect(getGlobalWorldPosition(), getGlobalWorldSize());
 
 	// If we just press anywhere but in the button rect, TextBox releases focus.
-	if (!wasPressed && ray.isPressed())
+	if (!m_WasPressed && ray.isPressed())
 	{
 		if (buttonSurface.contains(ray))
 			m_HasFocus = true;
@@ -23,7 +22,7 @@ void TextBoxWidget::handleWidgetRay(CursorRay& ray)
 			m_HasFocus = false;
 	}
 
-	wasPressed = ray.isPressed();
+	m_WasPressed = ray.isPressed();
 }
 
 void TextBoxWidget::updateWidget(const float& dt)

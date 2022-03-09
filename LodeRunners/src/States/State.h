@@ -14,7 +14,7 @@ public:
 	virtual void onResize() {}
 	virtual inline const sf::Color& getClearColor() const
 	{
-		static auto c = sf::Color::Black;
+		static auto c = sf::Color::Color(10, 10, 10);
 		return c;
 	}
 

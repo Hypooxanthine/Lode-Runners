@@ -196,6 +196,7 @@
   <ItemGroup>
     <ClInclude Include="src\Network\Base.h" />
     <ClInclude Include="src\Network\Client.h" />
+    <ClInclude Include="src\Network\Network.h" />
     <ClInclude Include="src\Network\Networker.h" />
     <ClInclude Include="src\Network\ReplicatedFunc.h" />
     <ClInclude Include="src\Network\Server.h" />

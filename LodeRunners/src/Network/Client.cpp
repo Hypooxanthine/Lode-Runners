@@ -11,6 +11,12 @@ namespace Network
 	{
 	}
 
+	Client::~Client()
+	{
+		m_Server->disconnect();
+
+	}
+
 	bool Client::create(const std::string& address, const uint32_t& port)
 	{
 		m_Server = std::make_unique<sf::TcpSocket>();
@@ -74,6 +80,14 @@ namespace Network
 		}
 
 		LOG_INFO("Server disconnected.");
+
+		m_Server.release();
+		m_Callback = nullptr;
+
+		LOG_INFO("Client closed.");
+
+		m_OnServerDisconnected();
+
 	}
 
 }

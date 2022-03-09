@@ -1,6 +1,7 @@
 #include "MainMenuState.h"
 
 #include "EditorState.h"
+#include "PreLobbyState.h"
 
 #include "../HUD/ButtonWidget.h"
 #include "../HUD/TextWidget.h"
@@ -15,6 +16,10 @@ MainMenuState::MainMenuState()
 	Widget::addChild(playButton, m_HUD);
 	playButton->setGlobalPosition({ .35f, .3f });
 	playButton->setGlobalSize({ .3f, .1f });
+	playButton->bindCallback([this]()
+		{
+			this->pushState(MakeRef<PreLobbyState>());
+		});
 	
 	auto playText = MakeRef<TextWidget>();
 	Widget::addChild(playText, playButton);
@@ -28,7 +33,7 @@ MainMenuState::MainMenuState()
 	editorButton->setGlobalSize({ .3f, .1f });
 	editorButton->bindCallback([this]()
 		{
-			Application::get()->pushState(MakeRef<EditorState>());
+			this->pushState(MakeRef<EditorState>());
 		});
 
 	auto editorText = MakeRef<TextWidget>();
@@ -58,7 +63,7 @@ void MainMenuState::update(const float& dt)
 	m_HUD->update(dt);
 
 	if (Application::get()->getEvent(EventType::Escape))
-		Application::get()->killState();
+		kill();
 }
 
 void MainMenuState::render(Ref<sf::RenderWindow> window)
