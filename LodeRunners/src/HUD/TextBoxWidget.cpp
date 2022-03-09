@@ -87,6 +87,8 @@ void TextBoxWidget::centerText()
 	const auto size = getGlobalWorldSize();
 	const auto textRect = m_Text.getLocalBounds();
 
+	m_Text.setCharacterSize((int)(30.f * (float)Application::get()->getWindow()->getSize().x / 1920.f));
+
 	// sf::Text bounds are not exactly placed at its position, so we have to fix this little difference ourselves.
 	m_Text.setPosition
 	(
