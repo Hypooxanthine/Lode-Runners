@@ -95,8 +95,6 @@
         <Level name="Level 1" fileName="Level_1.txt"/>
         <Level name="Level 2" fileName="Level_2.txt"/>
         <Level name="Level 3" fileName="Level_3.txt"/>
-        <Level name="Level 4" fileName="Level_4.txt"/>
-        <Level name="Level 5" fileName="Level_5.txt"/>
     </Levels>
     <Paths>
         <!-- Please type slash terminated addresses. -->
