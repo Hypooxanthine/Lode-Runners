@@ -167,6 +167,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Network\Client.cpp" />
+    <ClCompile Include="src\Network\Networker.cpp" />
+    <ClCompile Include="src\Network\Server.cpp" />
+    <ClCompile Include="src\States\PreLobbyState.cpp" />
     <ClCompile Include="src\States\MainMenuState.cpp" />
     <ClCompile Include="src\States\PreMenuState.cpp" />
     <ClCompile Include="src\Assets\FontAsset.cpp" />
@@ -190,6 +194,12 @@
     <ClCompile Include="src\HUD\TextWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Network\Base.h" />
+    <ClInclude Include="src\Network\Client.h" />
+    <ClInclude Include="src\Network\Networker.h" />
+    <ClInclude Include="src\Network\ReplicatedFunc.h" />
+    <ClInclude Include="src\Network\Server.h" />
+    <ClInclude Include="src\States\PreLobbyState.h" />
     <ClInclude Include="src\States\MainMenuState.h" />
     <ClInclude Include="src\States\PreMenuState.h" />
     <ClInclude Include="src\Assets\FontAsset.h" />

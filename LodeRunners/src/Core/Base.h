@@ -12,6 +12,8 @@
 #include <string>
 #include <unordered_map>
 #include <map>
+#include <vector>
+#include <cinttypes>
 #include <source_location> // C++20 is wonderful
 
 /* SFML Graphic component */

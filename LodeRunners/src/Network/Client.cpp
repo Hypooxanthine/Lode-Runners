@@ -56,7 +56,7 @@ namespace Network
 					continue;
 				}
 
-				DEBUG_ONLY(std::cout << "Packet received.\n");
+				LOG_TRACE("Packet received.");
 
 				size_t GUID;
 				ByteArray args;
@@ -73,7 +73,7 @@ namespace Network
 			}
 		}
 
-		DEBUG_ONLY(std::cout << "Server disconnected.\n");
+		LOG_INFO("Server disconnected.");
 	}
 
 }

@@ -1,4 +1,5 @@
 #include "Core/Application.h"
+#include "Network/Networker.h"
 
 //#define SHOW_DELTA_TIME
 
@@ -6,10 +7,11 @@ int main(int argc, char** argv)
 {
 	Log::init();
 
+	auto networker = std::make_unique<Network::Networker>();
+
 	// Who knows how big the app will get ? It is safer to allocate it on the heap.
-	Application* app = new Application();
+	auto app = std::make_unique<Application>();
 	app->run();
-	delete app;
 
 	#ifdef _DEBUG
 	LOG_TRACE("\n\nPress Enter key to close.");

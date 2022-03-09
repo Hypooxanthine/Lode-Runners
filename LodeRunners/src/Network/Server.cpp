@@ -29,7 +29,7 @@ namespace Network
 
 	void Server::send(const size_t& GUID, ByteArray& args)
 	{
-		DEBUG_ONLY(std::cout << "Sending from server to all clients." << std::endl);
+		LOG_INFO("Sending from server to all clients.");
 		sf::Packet packet;
 
 		packet << GUID;
@@ -57,13 +57,13 @@ namespace Network
 		{
 			if(m_Selector.wait(sf::milliseconds(50)))
 			{
-				DEBUG_ONLY(std::cout << "Data received.\n");
+				LOG_INFO("Data received.");
 
 				for (auto& c : m_Clients)
 				{
 					if (m_Selector.isReady(*c))
 					{
-						DEBUG_ONLY(std::cout << "Server received data.\n");
+						LOG_INFO("Server received data.");
 
 						sf::Packet packet;
 						c->receive(packet);
@@ -84,7 +84,7 @@ namespace Network
 			}
 		}
 
-		DEBUG_ONLY(std::cout << "Server stopped accepting data.\n");
+		LOG_INFO("Server stopped accepting data.");
 	}
 
 }

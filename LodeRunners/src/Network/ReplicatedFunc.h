@@ -31,11 +31,9 @@ namespace Network
 
 		void call(const ReplicationMode& mode, Args&&... args)
 		{
-			#ifdef _DEBUG
-			std::cout << "ReplicatedFunc::call called. From : " <<
-				(Networker::get()->isServer() ? "Server" : "Client") <<
-				". Mode : ";
+			LOG_INFO("ReplicatedFunc::call called. From : ", (Networker::get()->isServer() ? "Server" : "Client"), ". Mode : ");
 
+			#ifdef _DEBUG
 			switch (mode)
 			{
 			case ReplicationMode::NotReplicated:
@@ -100,9 +98,6 @@ namespace Network
 
 				std::string str = reinterpret_cast<const char*>(buffer.data() + cursor);
 
-				//for (size_t i = 0; i < size; i++)
-				//	str += static_cast<char>(buffer[cursor + i]);
-
 				cursor += size;
 			
 				return str;
@@ -142,8 +137,6 @@ namespace Network
 		
 			for (size_t i = 0; i < size; i++)
 				serialized.push_back(dataAsBytePtr[i]);
-		
-			//serialized.push_back(std::byte(0));
 		
 			m_Buffer.insert(m_Buffer.begin(), serialized.begin(), serialized.end());
 		}

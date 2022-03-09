@@ -16,18 +16,18 @@ namespace Network
 	bool Networker::createServer(const size_t& maxClients, const uint32_t& port)
 	{
 		if (m_InterfaceType != InterfaceType::None) return false;
-		DEBUG_ONLY(std::cout << "Creating Networker.\n");
+		LOG_TRACE("Creating Networker.");
 
 		if (!m_Server.create(maxClients, port))
 			return false;
-		DEBUG_ONLY(std::cout << "Server connected successfully to 1 client.\n");
+		LOG_INFO("Server connected successfully to " + std::to_string(maxClients) + " client.");
 
 		m_Server.acceptData([this](const size_t& GUID, ByteArray& args)
 			{
 				this->call(ReplicationMode::NotReplicated, GUID, args);
 			});
 
-		DEBUG_ONLY(std::cout << "Server listening to entering data.\n");
+		LOG_INFO("Server listening to entering data.");
 
 		m_InterfaceType = InterfaceType::Server;
 		return true;
@@ -36,18 +36,18 @@ namespace Network
 	bool Networker::createClient(const std::string& address, const uint32_t& port)
 	{
 		if (m_InterfaceType != InterfaceType::None) return false;
-		DEBUG_ONLY(std::cout << "Creating Networker.\n");
+		LOG_TRACE("Creating Networker.");
 
 		if (!m_Client.create(address, port))
 			return false;
-		DEBUG_ONLY(std::cout << "Client connected successfully to server.\n");
+		LOG_INFO("Client connected successfully to server.");
 
 		m_Client.acceptData([this](const size_t& GUID, ByteArray& args)
 			{
 				this->call(ReplicationMode::NotReplicated, GUID, args);
 			});
 
-		DEBUG_ONLY(std::cout << "Client listening to entering data.\n");
+		LOG_INFO("Client listening to entering data.");
 
 		m_InterfaceType = InterfaceType::Client;
 		return true;
@@ -63,23 +63,24 @@ namespace Network
 	void Networker::call(const ReplicationMode& mode, const size_t& GUID, ByteArray& args)
 	{
 		#ifdef _DEBUG
-		std::cout << "Networker's call function invoked. From : " << (isServer() ? "Server" : "Client") << ". Mode : ";
+		std::string fromStr;
 
 		switch (mode)
 		{
 		case ReplicationMode::NotReplicated:
-			std::cout << "NotReplicated";
+			fromStr = "NotReplicated";
 			break;
 		case ReplicationMode::OnServer:
-			std::cout << "OnServer";
+			fromStr = "OnServer";
 			break;
 		case ReplicationMode::Multicast:
-			std::cout << "Multicast";
+			fromStr = "Multicast";
 			break;
 		default:
 			break;
 		}
-		std::cout << ".\n";
+
+		LOG_INFO("Networker's call function invoked. From : ", (isServer() ? "Server" : "Client"), ". Mode : ", fromStr, ".");
 		#endif
 
 		if (m_InterfaceType == InterfaceType::None) return;
@@ -92,16 +93,16 @@ namespace Network
 		{
 			if (m_InterfaceType == InterfaceType::Server)
 			{
-				//ASSERT(m_Functions.contains(GUID), "Trying to call an unregistered function. Details : " + func.target_type().name() + ".");	
+				ASSERT(m_Functions.contains(GUID), "Trying to call an unregistered function. GUID : " + std::to_string(GUID) + ".");	
 				m_Functions.at(GUID)(args);
 			}
 			else
 			{
-				DEBUG_ONLY(std::cout << "Trying to send data : from Client to Server. ReplicationMode : OnServer.\n");
+				LOG_INFO("Trying to send data : from Client to Server. ReplicationMode : OnServer.");
 				if (!m_Client.send(GUID, args))
-					DEBUG_ONLY(std::cerr << "Couldn't send data.\n");
+					LOG_WARN("Couldn't send data.");
 				else
-					DEBUG_ONLY(std::cout << "Data sent.\n");
+					LOG_TRACE("Data sent.");
 			}
 		}
 		else if (mode == ReplicationMode::Multicast)

@@ -14,8 +14,6 @@ namespace Network
 	using ByteArray = std::vector<std::byte>;
 }
 
-#ifdef _DEBUG
-#define DEBUG_ONLY(x) x
-#else
-#define DEBUG_ONLY(x)	
-#endif
+#include "../Core/Log.h"
+
+#include "../Core/Base.h"
