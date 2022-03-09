@@ -15,7 +15,9 @@ namespace Network
 	{
 		if (m_Listener.listen(port) != sf::Socket::Done) return false;
 
-		acceptClients(maxClients);
+		m_IsAcceptingClients = true;
+		m_MaxClients = maxClients;
+		m_ClientsAcceptor = std::jthread([this]() { this->acceptClients(); });
 
 		return true;
 	}
@@ -24,7 +26,7 @@ namespace Network
 	{
 		m_Callback = callback;
 
-		m_Acceptor = std::jthread([this]() {this->acceptData(); });		
+		m_DataAcceptor = std::jthread([this]() {this->acceptData(); });		
 	}
 
 	void Server::send(const size_t& GUID, ByteArray& args)
@@ -39,23 +41,40 @@ namespace Network
 			c->send(packet);
 	}
 
-	void Server::acceptClients(const size_t& maxClients)
+	void Server::acceptClients()
 	{
-		while(m_Clients.size() < maxClients)
+		// If the listner is blocking, it won't release this thread even if m_IsAcceptingClients is set to false, but we need this thread to check if it should acept clients or not !
+		m_Listener.setBlocking(false);
+
+		while(m_IsAcceptingClients)
 		{
-			auto socket = std::make_unique<sf::TcpSocket>();
-			m_Listener.accept(*socket);
-			m_Selector.add(*socket);
-			m_Clients.push_back(std::move(socket));
+			std::lock_guard<std::mutex> lock(m_ClientsLock);
+
+			if (m_Clients.size() < m_MaxClients)
+			{
+				auto socket = std::make_unique<sf::TcpSocket>();
+
+				if(m_Listener.accept(*socket) == sf::Socket::Done)
+				{
+					m_Selector.add(*socket);
+					m_Clients.push_back(std::move(socket));
+
+					LOG_INFO("Client connected. Connected clients : " + std::to_string(m_Clients.size()) + "/" + std::to_string(m_MaxClients));
+				}
+			}
 		}
 
+		std::lock_guard<std::mutex> lock(m_ClientsLock);
+		m_Listener.close();
 	}
 
 	void Server::acceptData()
 	{
-		while (m_Clients.size() > 0)
+		while (m_Clients.size() > 0 || m_IsAcceptingClients)
 		{
-			if(m_Selector.wait())
+			std::lock_guard<std::mutex> lock(m_ClientsLock);
+
+			if(m_Selector.wait(sf::milliseconds(30)))
 			{
 				LOG_INFO("Data received.");
 
@@ -74,6 +93,7 @@ namespace Network
 						{
 							m_Selector.remove(*c);
 							m_Clients.erase(m_Clients.begin() + i - 1);
+							LOG_WARN("Client disconnected. Connected clients : " + std::to_string(m_Clients.size()) + "/" + std::to_string(m_MaxClients));
 						}
 						else
 						{
@@ -99,6 +119,7 @@ namespace Network
 		m_Callback = nullptr;
 		m_Listener.close();
 		m_Selector.clear();
+		m_MaxClients = 0;
 
 		LOG_INFO("Server closed.");
 

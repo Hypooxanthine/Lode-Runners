@@ -41,7 +41,7 @@ namespace Network
 	{
 		m_Callback = callback;
 
-		m_Acceptor = std::jthread([this]() {this->acceptData(); });
+		m_DataAcceptor = std::jthread([this]() {this->acceptData(); });
 	}
 
 	void Client::acceptData()

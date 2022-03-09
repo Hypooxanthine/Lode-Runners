@@ -20,7 +20,6 @@ namespace Network
 
 		if (!m_Server.create(maxClients, port))
 			return false;
-		LOG_INFO("Server connected successfully to " + std::to_string(maxClients) + " client.");
 
 		m_Server.acceptData([this](const size_t& GUID, ByteArray& args)
 			{
@@ -124,6 +123,11 @@ namespace Network
 
 	void Networker::reset()
 	{
+		if (m_InterfaceType == InterfaceType::Server)
+			m_Server.stopAcceptingClients();
+		else if (m_InterfaceType == InterfaceType::Client)
+			m_Client.stop();
+
 		m_InterfaceType = InterfaceType::None;
 		LOG_INFO("Networker reset.");
 	}

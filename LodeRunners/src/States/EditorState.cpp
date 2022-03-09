@@ -172,9 +172,6 @@ void EditorState::init()
 
 void EditorState::update(const float& dt)
 {
-	if (!Application::get()->getWindow()->hasFocus())
-		return;
-
 	if (Application::get()->getEvent(EventType::Escape))
 		kill();
 

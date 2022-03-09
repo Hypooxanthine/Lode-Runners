@@ -18,6 +18,8 @@ namespace Network
 		bool send(const size_t& GUID, ByteArray& args);
 		void acceptData(std::function<void(const size_t&, ByteArray&)> callback);
 
+		inline void stop() { m_Server->disconnect(); }
+
 	private:
 		void acceptData();
 
@@ -27,7 +29,7 @@ namespace Network
 
 		std::function<void(void)> m_OnServerDisconnected;
 
-		std::jthread m_Acceptor;
+		std::jthread m_DataAcceptor;
 	};
 
 }

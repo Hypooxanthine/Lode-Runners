@@ -38,6 +38,18 @@ PreLobbyState::PreLobbyState()
 	m_CreateServerPortTextBox->setGlobalSize({ .05f, .04f });
 	m_CreateServerPortTextBox->setText("80");
 
+	auto createServerMaxClientsText = MakeRef<TextWidget>();
+	Widget::addChild(createServerMaxClientsText, m_HUD);
+	createServerMaxClientsText->setGlobalPosition({ .55f, .3f });
+	createServerMaxClientsText->setGlobalSize({ .05f, .04f });
+	createServerMaxClientsText->setText("Max clients");
+
+	m_CreateServerMaxClientsTextBox = MakeRef<TextBoxWidget>();
+	Widget::addChild(m_CreateServerMaxClientsTextBox, m_HUD);
+	m_CreateServerMaxClientsTextBox->setGlobalPosition({ .55f, .36f });
+	m_CreateServerMaxClientsTextBox->setGlobalSize({ .05f, .04f });
+	m_CreateServerMaxClientsTextBox->setText("1");
+
 	auto joinServerButton = MakeRef<ButtonWidget>();
 	Widget::addChild(joinServerButton, m_HUD);
 	joinServerButton->setGlobalPosition({ .1f, .45f });
@@ -85,7 +97,10 @@ void PreLobbyState::update(const float& dt)
 	m_HUD->update(dt);
 
 	if (Application::get()->getEvent(EventType::Escape))
+	{
+		Network::Networker::get()->reset();
 		kill();
+	}
 }
 
 void PreLobbyState::render(Ref<sf::RenderWindow> window)
@@ -102,10 +117,15 @@ void PreLobbyState::createServer() const
 {
 	// TODO : server creation and switching to lobby state
 	const uint32_t port = std::stoi(m_CreateServerPortTextBox->getText());
+	const size_t maxClients = std::abs(std::stoi(m_CreateServerMaxClientsTextBox->getText()));
 
-	if (Network::Networker::get()->createServer(1, port))
+	if (Network::Networker::get()->createServer(maxClients, port))
 	{
 
+	}
+	else
+	{
+		LOG_WARN("Couldn't create server.");
 	}
 }
 

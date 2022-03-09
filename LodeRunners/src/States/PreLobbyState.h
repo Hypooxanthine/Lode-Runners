@@ -23,6 +23,7 @@ private: // Private methods
 private:
 	Ref<Widget> m_HUD;
 	Ref<TextBoxWidget> m_CreateServerPortTextBox;
+	Ref<TextBoxWidget> m_CreateServerMaxClientsTextBox;
 	Ref<TextBoxWidget> m_JoinServerAddressTextBox;
 	Ref<TextBoxWidget> m_JoinServerPortTextBox;
 };

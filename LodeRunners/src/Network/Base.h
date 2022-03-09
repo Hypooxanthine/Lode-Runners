@@ -6,6 +6,7 @@
 #include <string>
 #include <memory>
 #include <thread>
+#include <mutex>
 
 #include <SFML/Network.hpp>
 
