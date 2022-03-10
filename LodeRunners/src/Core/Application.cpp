@@ -156,7 +156,7 @@ void Application::checkState()
 		{
 			m_States.pop();
 			m_PopStateRequest = false;
-			LOG_INFO("State killed.");
+			LOG_TRACE("State killed.");
 		}
 
 		if (m_NextState) // If there is another state to push
@@ -164,7 +164,7 @@ void Application::checkState()
 			m_States.push(m_NextState);
 			m_NextState->init();
 			m_NextState = nullptr;
-			LOG_INFO("New State pushed.");
+			LOG_TRACE("New State pushed.");
 		}
 
 		if (m_States.empty())
@@ -198,13 +198,13 @@ void Application::updateDt()
 
 void Application::pushState(const Ref<State>& newState)
 {
-	LOG_INFO("Requested new state.");
+	LOG_TRACE("Requested new state.");
 	m_NextState = newState;
 }
 
 void Application::killState()
 {
-	LOG_INFO("Requested kill state.");
+	LOG_TRACE("Requested kill state.");
 
 	m_PopStateRequest = true;
 }
