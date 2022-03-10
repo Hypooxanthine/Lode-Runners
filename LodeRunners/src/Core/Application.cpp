@@ -28,11 +28,9 @@ void Application::run()
 
 	while (m_Window->isOpen())
 	{
-		if (Application::get()->getWindow()->hasFocus())
-		{
-			updateEvents();
+		updateEvents();
+		if (m_Window->hasFocus())
 			update();
-		}
 
 		render();
 		checkState();
