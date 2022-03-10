@@ -11,22 +11,32 @@ namespace Network
 	{
 	}
 
-	bool Server::create(const size_t& maxClients, const uint32_t& port)
+	Server::~Server()
 	{
-		if (m_Listener.listen(port) != sf::Socket::Done) return false;
-
-		m_IsAcceptingClients = true;
-		m_MaxClients = maxClients;
-		m_ClientsAcceptor = std::jthread([this]() { this->acceptClients(); });
-
-		return true;
+		stop();
 	}
 
-	void Server::acceptData(std::function<void(const size_t&, ByteArray&)> callback)
+	bool Server::create(const size_t& maxClients, const uint32_t& port, std::function<void(const size_t&, ByteArray&)> callback)
 	{
+		LOG_TRACE("Creating Server...");
+
+		if (m_Listener.listen(port) != sf::Socket::Done)
+		{
+			LOG_WARN("Can't listen on port " + std::to_string(port) + ".");
+			return false;
+		}
+
+		m_IsAcceptingClients = true;
+		m_RequestedStop = false;
+		m_MaxClients = maxClients;
 		m_Callback = callback;
 
-		m_DataAcceptor = std::jthread([this]() {this->acceptData(); });		
+		m_ClientsAcceptor = std::jthread([this]() { this->acceptClients(); });
+		m_DataAcceptor = std::jthread([this]() {this->acceptData(); });	
+
+		LOG_INFO("Server created.");
+
+		return true;
 	}
 
 	void Server::send(const size_t& GUID, ByteArray& args)
@@ -41,12 +51,31 @@ namespace Network
 			c->send(packet);
 	}
 
+	void Server::stop()
+	{
+		m_IsAcceptingClients = false;
+		m_RequestedStop = true;
+
+		std::lock_guard<std::mutex> lock(m_ClientsLock);
+		m_Callback = nullptr;
+		m_Selector.clear();
+
+		for (auto& c : m_Clients)
+			c->disconnect();
+
+		m_Clients.clear();
+		m_Listener.close();
+		m_MaxClients = 0;
+
+		LOG_INFO("Server closed.");
+	}
+
 	void Server::acceptClients()
 	{
 		// If the listner is blocking, it won't release this thread even if m_IsAcceptingClients is set to false, but we need this thread to check if it should acept clients or not !
 		m_Listener.setBlocking(false);
 
-		while(m_IsAcceptingClients)
+		while(m_IsAcceptingClients && !m_RequestedStop)
 		{
 			std::lock_guard<std::mutex> lock(m_ClientsLock);
 
@@ -70,7 +99,7 @@ namespace Network
 
 	void Server::acceptData()
 	{
-		while (m_Clients.size() > 0 || m_IsAcceptingClients)
+		while ((m_Clients.size() > 0 || m_IsAcceptingClients) && !m_RequestedStop)
 		{
 			std::lock_guard<std::mutex> lock(m_ClientsLock);
 
@@ -87,16 +116,19 @@ namespace Network
 						LOG_INFO("Server received data.");
 
 						sf::Packet packet;
-						c->receive(packet);
+						sf::Socket::Status status = c->receive(packet);
 
-						if (packet.getDataSize() < sizeof(size_t))
+						if (status == sf::Socket::Status::Disconnected || status == sf::Socket::Status::Error)
 						{
 							m_Selector.remove(*c);
 							m_Clients.erase(m_Clients.begin() + i - 1);
-							LOG_WARN("Client disconnected. Connected clients : " + std::to_string(m_Clients.size()) + "/" + std::to_string(m_MaxClients));
+							LOG_INFO("Client disconnected. Connected clients : " + std::to_string(m_Clients.size()) + "/" + std::to_string(m_MaxClients));
 						}
-						else
+						else if(status == sf::Socket::Status::Done)
 						{
+							if (packet.getDataSize() < sizeof(size_t)) // Invalid data
+								continue;
+
 							size_t GUID;
 							ByteArray args;
 							args.reserve(packet.getDataSize() - sizeof(size_t));
@@ -114,16 +146,14 @@ namespace Network
 			}
 		}
 
-		LOG_INFO("All clients disconnected.");
+		LOG_INFO("Server stopped accepting data.");
 
-		m_Callback = nullptr;
-		m_Listener.close();
-		m_Selector.clear();
-		m_MaxClients = 0;
-
-		LOG_INFO("Server closed.");
-
-		m_OnAllClientsDisconnected();
+		// If we're here, it's not because stop were requested. So it's because all clients disconnected.
+		if (!m_RequestedStop)
+		{
+			LOG_INFO("All clients disconnected.");
+			m_OnAllClientsDisconnected();
+		}
 	}
 
 }

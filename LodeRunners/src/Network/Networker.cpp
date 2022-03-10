@@ -15,46 +15,66 @@ namespace Network
 
 	bool Networker::createServer(const size_t& maxClients, const uint32_t& port)
 	{
-		if (m_InterfaceType != InterfaceType::None) return false;
-		LOG_TRACE("Creating Server.");
-
-		if (!m_Server.create(maxClients, port))
+		if (m_InterfaceType != InterfaceType::None)
+		{
+			const std::string interfaceTypeStr = (m_InterfaceType == InterfaceType::Server ? "server" : "client");
+			LOG_WARN("Couldn't create server : an instance of " + interfaceTypeStr + " already exists.");
 			return false;
+		}
 
-		m_Server.acceptData([this](const size_t& GUID, ByteArray& args)
+		const bool creationResult = m_Server.create
+		(
+			maxClients,
+			port,
+			[this](const size_t& GUID, ByteArray& args)
 			{
 				this->call(ReplicationMode::NotReplicated, GUID, args);
-			});
+			}
+		);
 
-		LOG_INFO("Server listening to entering data.");
+		if(!creationResult)
+		{
+			LOG_WARN("Couldn't create server. Aborting...");
+			return false;
+		}
 
 		m_InterfaceType = InterfaceType::Server;
 		m_Server.bindOnAllClientsDisconnected([this]() {this->reset(); });
+
+		LOG_INFO("Networker set up.");
 
 		return true;
 	}
 
 	bool Networker::createClient(const std::string& address, const uint32_t& port)
 	{
-		if (m_InterfaceType != InterfaceType::None) return false;
-		LOG_TRACE("Creating Client.");
-
-		if (!m_Client.create(address, port))
+		if (m_InterfaceType != InterfaceType::None)
 		{
-			LOG_WARN("Aborting...");
+			const std::string interfaceTypeStr = (m_InterfaceType == InterfaceType::Server ? "server" : "client");
+			LOG_WARN("Couldn't create client : an instance of " + interfaceTypeStr + " already exists.");
 			return false;
 		}
-		LOG_INFO("Client connected successfully to server.");
 
-		m_Client.acceptData([this](const size_t& GUID, ByteArray& args)
+		const bool creationResult = m_Client.create
+		(
+			address,
+			port,
+			[this](const size_t& GUID, ByteArray& args)
 			{
 				this->call(ReplicationMode::NotReplicated, GUID, args);
-			});
+			}
+		);
 
-		LOG_INFO("Client listening to entering data.");
+		if(!creationResult)
+		{
+			LOG_WARN("Couldn't create client. Aborting...");
+			return false;
+		}
 
 		m_InterfaceType = InterfaceType::Client;
 		m_Client.bindOnServerDisconnected([this]() { this->reset(); });
+
+		LOG_INFO("Networker set up.");
 
 		return true;
 	}
@@ -124,7 +144,7 @@ namespace Network
 	void Networker::reset()
 	{
 		if (m_InterfaceType == InterfaceType::Server)
-			m_Server.stopAcceptingClients();
+			m_Server.stop();
 		else if (m_InterfaceType == InterfaceType::Client)
 			m_Client.stop();
 

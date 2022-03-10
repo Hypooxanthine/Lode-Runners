@@ -123,10 +123,6 @@ void PreLobbyState::createServer() const
 	{
 
 	}
-	else
-	{
-		LOG_WARN("Couldn't create server.");
-	}
 }
 
 void PreLobbyState::joinServer() const
@@ -137,9 +133,5 @@ void PreLobbyState::joinServer() const
 	if (Network::Networker::get()->createClient(m_JoinServerAddressTextBox->getText(), port))
 	{
 
-	}
-	else
-	{
-		LOG_WARN("Couldn't connect to server.");
 	}
 }
