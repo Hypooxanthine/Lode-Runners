@@ -103,7 +103,7 @@ namespace Network
 		{
 			std::lock_guard<std::mutex> lock(m_ClientsLock);
 
-			if(m_Selector.wait(sf::milliseconds(30)))
+			if(m_Selector.wait(sf::microseconds(50)))
 			{
 				LOG_INFO("Data received.");
 
@@ -113,7 +113,7 @@ namespace Network
 
 					if (m_Selector.isReady(*c))
 					{
-						LOG_INFO("Server received data.");
+						LOG_TRACE("Server received data.");
 
 						sf::Packet packet;
 						sf::Socket::Status status = c->receive(packet);

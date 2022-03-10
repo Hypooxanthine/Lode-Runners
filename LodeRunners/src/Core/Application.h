@@ -1,6 +1,8 @@
 #pragma once
 #define APPLICATION_CLASS_FILE
 
+//#define SHOW_DELTA_TIME
+
 #include <stack>
 
 #include "Base.h"

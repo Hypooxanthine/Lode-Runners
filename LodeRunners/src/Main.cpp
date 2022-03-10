@@ -1,8 +1,6 @@
 #include "Core/Application.h"
 #include "Network/Networker.h"
 
-//#define SHOW_DELTA_TIME
-
 int main(int argc, char** argv)
 {
 	Log::init();

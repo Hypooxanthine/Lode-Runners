@@ -20,8 +20,8 @@ Application::Application()
 void Application::run()
 {
 	const unsigned int& elementSize = Assets::getElementSize();
-	m_Window->setVerticalSyncEnabled(true);
 	m_Window->create(sf::VideoMode::getDesktopMode(), "Lode Runners");
+	m_Window->setVerticalSyncEnabled(true);
 
 	// For testing purpose
 	m_States.push(MakeRef<PreMenuState>());
