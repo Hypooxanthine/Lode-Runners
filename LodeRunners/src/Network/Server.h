@@ -21,14 +21,15 @@ namespace Network
 		inline void bindOnAllClientsDisconnected(const std::function<void(void)>& callback) { m_OnAllClientsDisconnected = callback; }
 
 	private: // Private methods
-		bool tryListen(const uint32_t& port);
+		bool tryListen();
 		void acceptClients();
 		void acceptData();
 
 	private: // Private members
 		std::vector<std::unique_ptr<sf::TcpSocket>> m_Clients;
 		std::mutex m_ClientsLock;
-		std::mutex m_MaxClientsLock;
+
+		uint32_t m_Port = 0;
 
 		bool m_IsAcceptingClients = false;
 		size_t m_MaxClients = 0;
@@ -46,6 +47,7 @@ namespace Network
 
 		std::jthread m_DataAcceptor;
 		std::jthread m_ClientsAcceptor;
+		bool m_ClientsAcceptorRunning = false;
 	};
 
 }

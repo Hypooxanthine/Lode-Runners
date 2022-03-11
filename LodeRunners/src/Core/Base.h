@@ -7,11 +7,11 @@
 #define TILES_WIDTH 26
 #define TILES_HEIGHT 16
 
-#define FPS 60
-#define DELTA_TIME_SECONDS 0.01666666f
+#define FIXED_FPS 60
+#define FIXED_DELTA_TIME_SECONDS 1.f / float(FIXED_FPS)
 #define DELTA_TIME_LOG_STEP 1.f
 
-#define NETWORK_DELTA_TIME_SECONDS 0.001f
+#define FIXED_NETWORK_DELTA_TIME_SECONDS 0.001f
 
 /* Main STL libraries. */
 #include <iostream>	

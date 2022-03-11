@@ -15,10 +15,12 @@ namespace Network
 
 		m_RequestedStop = false;
 		m_MaxClients = maxClients;
+		m_ClientsAcceptorRunning = false;
+		m_Port = port;
 
 		if (maxClients > 0)
 		{
-			if (!tryListen(port))
+			if (!tryListen())
 				return false;
 			m_IsAcceptingClients = true;
 			m_SinglePlayer = false;
@@ -31,7 +33,7 @@ namespace Network
 			// Only for maxClients > 0. No clients => no data to accept => no callback to call.
 			m_DataAcceptor = std::jthread([this]() {this->acceptData(); });
 
-			LOG_INFO("Server created (multi-player network).");
+			LOG_INFO("Server created (multi-player network). Max clients : " + std::to_string(m_MaxClients));
 		}
 		else
 		{
@@ -58,8 +60,9 @@ namespace Network
 
 	void Server::stop()
 	{
-		m_IsAcceptingClients = false;
 		m_RequestedStop = true;
+		m_IsAcceptingClients = false;
+		m_SinglePlayer = false;
 
 		std::lock_guard<std::mutex> lock(m_ClientsLock);
 		m_Selector.clear();
@@ -70,6 +73,7 @@ namespace Network
 		m_Clients.clear();
 		m_Listener.close();
 		m_MaxClients = 0;
+		m_Port = 0;
 
 		LOG_INFO("Server closed.");
 	}
@@ -79,61 +83,66 @@ namespace Network
 		m_IsAcceptingClients = false;
 	}
 
-	bool Server::tryListen(const uint32_t& port)
+	bool Server::tryListen()
 	{
-		if (m_Listener.listen(port) != sf::Socket::Done)
+		if (m_Listener.listen(m_Port) != sf::Socket::Done)
 		{
-			LOG_WARN("Can't listen on port " + std::to_string(port) + ".");
+			LOG_WARN("Can't listen on port " + std::to_string(m_Port) + ".");
 			return false;
 		}
 		else
 		{
-			LOG_INFO("Server listening on port " + std::to_string(port) + ".");
+			LOG_INFO("Server listening on port " + std::to_string(m_Port) + ".");
 			return true;
 		}
 	}
 
 	void Server::acceptClients()
 	{
+		{
+			std::lock_guard<std::mutex> lock(m_ClientsLock);
+			m_ClientsAcceptorRunning = true;
+		}
+
 		// If the listner is blocking, it won't release this thread even if m_IsAcceptingClients is set to false, but we need this thread to check if it should acept clients or not !
 		m_Listener.setBlocking(false);
 
-		while(m_IsAcceptingClients && !m_RequestedStop)
+		while(m_IsAcceptingClients && !m_RequestedStop && m_Clients.size() < m_MaxClients)
 		{
-			std::this_thread::sleep_for(std::chrono::duration<float>(NETWORK_DELTA_TIME_SECONDS));
+			std::this_thread::sleep_for(std::chrono::duration<float>(FIXED_NETWORK_DELTA_TIME_SECONDS));
 
 			std::lock_guard<std::mutex> lock(m_ClientsLock);
 
-			if (m_Clients.size() < m_MaxClients)
+			auto socket = std::make_unique<sf::TcpSocket>();
+
+			if(m_Listener.accept(*socket) == sf::Socket::Done)
 			{
-				auto socket = std::make_unique<sf::TcpSocket>();
+				m_Clients.push_back(std::move(socket));
+				m_Selector.add(*m_Clients.back());
+				m_Listener.setBlocking(false);
 
-				if(m_Listener.accept(*socket) == sf::Socket::Done)
-				{
-					m_Clients.push_back(std::move(socket));
-					m_Selector.add(*m_Clients.back());
-					m_Listener.setBlocking(false);
-
-					LOG_INFO("Client connected. Connected clients : " + std::to_string(m_Clients.size()) + "/" + std::to_string(m_MaxClients));
-				}
+				LOG_INFO("Client connected. Connected clients : " + std::to_string(m_Clients.size()) + "/" + std::to_string(m_MaxClients));
 			}
 		}
 
 		std::lock_guard<std::mutex> lock(m_ClientsLock);
 		m_Listener.close();
+		LOG_INFO("Server stopped listening on port " + std::to_string(m_Port) + ".");
+
+		m_ClientsAcceptorRunning = false;
 	}
 
 	void Server::acceptData()
 	{
 		while ((m_Clients.size() > 0 || m_IsAcceptingClients) && !m_RequestedStop)
 		{
-			std::this_thread::sleep_for(std::chrono::duration<float>(NETWORK_DELTA_TIME_SECONDS));
+			std::this_thread::sleep_for(std::chrono::duration<float>(FIXED_NETWORK_DELTA_TIME_SECONDS));
 			
 			std::lock_guard<std::mutex> lock(m_ClientsLock);
 
 			if(m_Selector.wait(sf::microseconds(50)))
 			{
-				LOG_INFO("Server received data.");
+				LOG_TRACE("Server received data.");
 
 				for (size_t i = m_Clients.size(); i > 0 ; i--)
 				{
@@ -149,6 +158,13 @@ namespace Network
 							m_Selector.remove(*c);
 							m_Clients.erase(m_Clients.begin() + i - 1);
 							LOG_INFO("Client disconnected. Connected clients : " + std::to_string(m_Clients.size()) + "/" + std::to_string(m_MaxClients));
+
+							if (!m_ClientsAcceptorRunning)
+							{
+								ASSERT(tryListen(), "Server couldn't listen back to its asked port.");
+								m_ClientsAcceptor = std::jthread([this]() {this->acceptClients(); });
+							}
+
 						}
 						else if(status == sf::Socket::Status::Done)
 						{
