@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-#pragma warning(disable : 26812) // "Enum instead of enum class" warning from SFML...
-
 namespace Network
 {
 
@@ -11,30 +9,37 @@ namespace Network
 	{
 	}
 
-	Server::~Server()
-	{
-		stop();
-	}
-
 	bool Server::create(const size_t& maxClients, const uint32_t& port, std::function<void(const size_t&, ByteArray&)> callback)
 	{
 		LOG_TRACE("Creating Server...");
 
-		if (m_Listener.listen(port) != sf::Socket::Done)
-		{
-			LOG_WARN("Can't listen on port " + std::to_string(port) + ".");
-			return false;
-		}
-
-		m_IsAcceptingClients = true;
 		m_RequestedStop = false;
 		m_MaxClients = maxClients;
-		m_Callback = callback;
 
-		m_ClientsAcceptor = std::jthread([this]() { this->acceptClients(); });
-		m_DataAcceptor = std::jthread([this]() {this->acceptData(); });	
+		if (maxClients > 0)
+		{
+			if (!tryListen(port))
+				return false;
+			m_IsAcceptingClients = true;
+			m_SinglePlayer = false;
 
-		LOG_INFO("Server created.");
+			// Only for maxClients > 0. We're not supposed to need any callback in solo mode (maxClients = 0)
+			m_Callback = callback;
+
+			m_ClientsAcceptor = std::jthread([this]() { this->acceptClients(); });
+
+			// Only for maxClients > 0. No clients => no data to accept => no callback to call.
+			m_DataAcceptor = std::jthread([this]() {this->acceptData(); });
+
+			LOG_INFO("Server created (multi-player network).");
+		}
+		else
+		{
+			m_IsAcceptingClients = false;
+			m_SinglePlayer = true;
+			LOG_INFO("Server created (single-player local).");
+		}
+
 
 		return true;
 	}
@@ -57,7 +62,6 @@ namespace Network
 		m_RequestedStop = true;
 
 		std::lock_guard<std::mutex> lock(m_ClientsLock);
-		m_Callback = nullptr;
 		m_Selector.clear();
 
 		for (auto& c : m_Clients)
@@ -70,6 +74,25 @@ namespace Network
 		LOG_INFO("Server closed.");
 	}
 
+	void Server::stopAcceptingClients()
+	{
+		m_IsAcceptingClients = false;
+	}
+
+	bool Server::tryListen(const uint32_t& port)
+	{
+		if (m_Listener.listen(port) != sf::Socket::Done)
+		{
+			LOG_WARN("Can't listen on port " + std::to_string(port) + ".");
+			return false;
+		}
+		else
+		{
+			LOG_INFO("Server listening on port " + std::to_string(port) + ".");
+			return true;
+		}
+	}
+
 	void Server::acceptClients()
 	{
 		// If the listner is blocking, it won't release this thread even if m_IsAcceptingClients is set to false, but we need this thread to check if it should acept clients or not !
@@ -77,6 +100,8 @@ namespace Network
 
 		while(m_IsAcceptingClients && !m_RequestedStop)
 		{
+			std::this_thread::sleep_for(std::chrono::duration<float>(NETWORK_DELTA_TIME_SECONDS));
+
 			std::lock_guard<std::mutex> lock(m_ClientsLock);
 
 			if (m_Clients.size() < m_MaxClients)
@@ -85,8 +110,9 @@ namespace Network
 
 				if(m_Listener.accept(*socket) == sf::Socket::Done)
 				{
-					m_Selector.add(*socket);
 					m_Clients.push_back(std::move(socket));
+					m_Selector.add(*m_Clients.back());
+					m_Listener.setBlocking(false);
 
 					LOG_INFO("Client connected. Connected clients : " + std::to_string(m_Clients.size()) + "/" + std::to_string(m_MaxClients));
 				}
@@ -101,11 +127,13 @@ namespace Network
 	{
 		while ((m_Clients.size() > 0 || m_IsAcceptingClients) && !m_RequestedStop)
 		{
+			std::this_thread::sleep_for(std::chrono::duration<float>(NETWORK_DELTA_TIME_SECONDS));
+			
 			std::lock_guard<std::mutex> lock(m_ClientsLock);
 
 			if(m_Selector.wait(sf::microseconds(50)))
 			{
-				LOG_INFO("Data received.");
+				LOG_INFO("Server received data.");
 
 				for (size_t i = m_Clients.size(); i > 0 ; i--)
 				{
@@ -113,8 +141,6 @@ namespace Network
 
 					if (m_Selector.isReady(*c))
 					{
-						LOG_TRACE("Server received data.");
-
 						sf::Packet packet;
 						sf::Socket::Status status = c->receive(packet);
 

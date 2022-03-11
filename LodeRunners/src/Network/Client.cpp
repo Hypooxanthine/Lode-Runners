@@ -2,18 +2,11 @@
 
 #include <iostream>
 
-#pragma warning(disable : 26812) // "Enum instead of enum class" warning from SFML...
-
 namespace Network
 {
 
 	Client::Client()
 	{
-	}
-
-	Client::~Client()
-	{
-		stop();
 	}
 
 	bool Client::create(const std::string& address, const uint32_t& port, std::function<void(const size_t&, ByteArray&)> callback)
@@ -56,7 +49,6 @@ namespace Network
 
 		std::lock_guard<std::mutex> lock(m_ServerMutex);
 		m_Server->disconnect();
-		m_Callback = nullptr;
 
 		LOG_INFO("Client closed.");
 	}

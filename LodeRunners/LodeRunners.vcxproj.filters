@@ -164,7 +164,7 @@
     <ClInclude Include="src\States\PreLobbyState.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="src\Network\Base.h">
+    <ClInclude Include="src\Network\NetworkBase.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="src\Network\Client.h">

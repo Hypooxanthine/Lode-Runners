@@ -9,8 +9,13 @@ namespace Network
 
 	Networker::Networker()
 	{
-		// ASSERT(s_Instance == nullptr, "Network instance already exists.");
+		ASSERT(s_Instance == nullptr, "Network instance already exists.");
 		s_Instance = this;
+	}
+
+	Networker::~Networker()
+	{
+		reset();
 	}
 
 	bool Networker::createServer(const size_t& maxClients, const uint32_t& port)
@@ -124,20 +129,17 @@ namespace Network
 			}
 			else
 			{
-				LOG_INFO("Trying to send data : from Client to Server. ReplicationMode : OnServer.");
+				LOG_TRACE("Trying to send data : from Client to Server. ReplicationMode : OnServer.");
 				if (!m_Client.send(GUID, args))
 					LOG_WARN("Couldn't send data.");
 				else
 					LOG_TRACE("Data sent.");
 			}
 		}
-		else if (mode == ReplicationMode::Multicast)
+		else if (mode == ReplicationMode::Multicast && m_InterfaceType == InterfaceType::Server)
 		{
-			if (m_InterfaceType == InterfaceType::Server) // Multicast asked by server
-			{
-				m_Functions.at(GUID)(args);
-				m_Server.send(GUID, args);
-			}
+			// Function is first called locally by the replicated function to avoid unnecessary packing/unpacking in single-player mode.
+			m_Server.send(GUID, args);
 		}
 	}
 

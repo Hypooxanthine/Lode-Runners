@@ -87,6 +87,11 @@ PreLobbyState::PreLobbyState()
 
 }
 
+PreLobbyState::~PreLobbyState()
+{
+	Network::Networker::get()->reset();
+}
+
 void PreLobbyState::init()
 {
 	onResize();
@@ -98,7 +103,6 @@ void PreLobbyState::update(const float& dt)
 
 	if (Application::get()->getEvent(EventType::Escape))
 	{
-		Network::Networker::get()->reset();
 		kill();
 	}
 }
@@ -117,7 +121,7 @@ void PreLobbyState::createServer() const
 {
 	// TODO : server creation and switching to lobby state
 	const uint32_t port = std::stoi(m_CreateServerPortTextBox->getText());
-	const size_t maxClients = std::abs(std::stoi(m_CreateServerMaxClientsTextBox->getText()));
+	const size_t maxClients = std::max(0, std::stoi(m_CreateServerMaxClientsTextBox->getText()));
 
 	if (Network::Networker::get()->createServer(maxClients, port))
 	{

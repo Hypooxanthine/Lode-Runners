@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Base.h"
+#include "NetworkBase.h"
 
 #include <iostream>
 
@@ -31,9 +31,9 @@ namespace Network
 
 		void call(const ReplicationMode& mode, Args&&... args)
 		{
-			LOG_INFO("ReplicatedFunc::call called. From : ", (Networker::get()->isServer() ? "Server" : "Client"), ". Mode : ");
-
 			#ifdef _DEBUG
+
+			LOG_INFO("ReplicatedFunc::call called. From : ", (Networker::get()->isServer() ? "Server" : "Client"), ". Mode : ");
 			switch (mode)
 			{
 			case ReplicationMode::NotReplicated:
@@ -48,28 +48,45 @@ namespace Network
 				break;
 			}
 			std::cout << ".\n";
+
 			#endif
 
+			#define call_networker Networker::get()->call(mode, m_GUID, convertToBuffer(std::forward<Args>(args)...))
+			#define call_local m_Function(std::forward<Args>(args)...)
 
 			switch (mode)
 			{
 			case ReplicationMode::NotReplicated:
-				m_Function(std::forward<Args>(args)...);
+				call_local;
 				break;
 			case ReplicationMode::OnServer:
+				if(Networker::get()->isServer())
+					call_local;
+				else
+					call_networker;
+
+				break;
 			case ReplicationMode::Multicast:
-				Networker::get()->call(mode, m_GUID, convertToBuffer(std::forward<Args>(args)...));
+				if (Networker::get()->isServer())
+				{
+					call_local;
+					if(!Networker::get()->isSinglePlayer()) // No unnecessary packing for single-player mode.
+						call_networker;
+				}
 				break;
 			default:
 				break;
 			}
+
+			#undef call_networker
+			#undef call_local
 		}
 
 		ByteArray& convertToBuffer(Args&&... args)
 		{
 			m_Buffer.clear();
 			(serializeArg(args), ...);
-
+			
 			return m_Buffer;
 		}
 

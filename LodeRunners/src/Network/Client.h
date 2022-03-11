@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Base.h"
+#include "NetworkBase.h"
 
 namespace Network
 {
@@ -9,7 +9,6 @@ namespace Network
 	{
 	public:
 		Client();
-		virtual ~Client();
 
 		bool create(const std::string& address, const uint32_t& port, std::function<void(const size_t&, ByteArray&)> callback);
 

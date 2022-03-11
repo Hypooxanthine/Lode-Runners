@@ -1,12 +1,21 @@
 #pragma once
 
+// "Enum instead of enum class" warning from libraries...
+#pragma warning(disable : 26812)
+
 /* Defines */
+#define TILES_WIDTH 26
+#define TILES_HEIGHT 16
+
+#define FPS 60
+#define DELTA_TIME_SECONDS 0.01666666f
 #define DELTA_TIME_LOG_STEP 1.f
+
+#define NETWORK_DELTA_TIME_SECONDS 0.001f
 
 /* Main STL libraries. */
 #include <iostream>	
 #include <memory>
-#include <thread>
 #include <functional>
 #include <optional>
 #include <string>
@@ -50,5 +59,3 @@ using Callback = std::function<void(void)>;
 #define BIND_FN(f) [this]() -> void { this->f(); }
 
 /* Global defines */
-#define TILES_WIDTH 26
-#define TILES_HEIGHT 16

@@ -10,6 +10,7 @@ class PreLobbyState : public State
 {
 public:
 	PreLobbyState();
+	virtual ~PreLobbyState();
 
 	virtual void init() override;
 	virtual void update(const float& dt) override;

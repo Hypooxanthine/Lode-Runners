@@ -36,6 +36,9 @@ void Application::run()
 		checkState();
 		updateDt();
 	}
+
+	while (!m_States.empty())
+		m_States.pop();
 }
 
 const Event& Application::getEvent(const EventType& type) const
