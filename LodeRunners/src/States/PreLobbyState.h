@@ -27,5 +27,6 @@ private:
 	Ref<TextBoxWidget> m_CreateServerMaxClientsTextBox;
 	Ref<TextBoxWidget> m_JoinServerAddressTextBox;
 	Ref<TextBoxWidget> m_JoinServerPortTextBox;
+	Ref<TextBoxWidget> m_PlayerNameTextBox;
 };
 

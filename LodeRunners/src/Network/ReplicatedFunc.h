@@ -10,7 +10,7 @@
 // id parameter (string) is to identify the function, if multiple instances could use it.
 // Variadic parameter pack is for parameter types.
 #define CREATE_REPLICATED_FUNCTION(funcName, func, id, ...) \
-auto funcName##Replicated = Network::ReplicatedFunc<__VA_ARGS__>(func, std::hash<std::string>()((std::string)#funcName + id))
+Network::ReplicatedFunc<__VA_ARGS__> funcName##Replicated = Network::ReplicatedFunc<__VA_ARGS__>(func, std::hash<std::string>()((std::string)#funcName + id))
 
 #define GET_REPLICATED_FUNCTION(funcName) funcName##Replicated
 
@@ -33,22 +33,27 @@ namespace Network
 		{
 			#ifdef _DEBUG
 
-			LOG_INFO("ReplicatedFunc::call called. From : ", (Networker::get()->isServer() ? "Server" : "Client"), ". Mode : ");
+			std::string logStr = "ReplicatedFunc::call called. Mode : ";
 			switch (mode)
 			{
 			case ReplicationMode::NotReplicated:
-				std::cout << "NotReplicated";
+				logStr += "NotReplicated";
 				break;
 			case ReplicationMode::OnServer:
-				std::cout << "OnServer";
+				logStr += "OnServer";
+				break;
+			case ReplicationMode::OnClients:
+				logStr += "OnClient";
 				break;
 			case ReplicationMode::Multicast:
-				std::cout << "Multicast";
+				logStr += "Multicast";
 			default:
 				break;
 			}
-			std::cout << ".\n";
+			logStr += ". From : ";
+			logStr += Networker::get()->isServer() ? "Server." : "Client.";
 
+			LOG_INFO(logStr);
 			#endif
 
 			#define call_networker Networker::get()->call(mode, m_GUID, convertToBuffer(std::forward<Args>(args)...))
@@ -64,7 +69,10 @@ namespace Network
 					call_local;
 				else
 					call_networker;
-
+				break;
+			case ReplicationMode::OnClients:
+				if (Networker::get()->isServer() && !Networker::get()->isSinglePlayer()) // No unnecessary packing for single-player mode.
+					call_networker;
 				break;
 			case ReplicationMode::Multicast:
 				if (Networker::get()->isServer())

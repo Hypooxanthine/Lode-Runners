@@ -3,6 +3,7 @@
 #include "NetworkBase.h"
 
 #include <unordered_map>
+#include <queue>
 
 #include "Server.h"
 #include "Client.h"
@@ -11,7 +12,7 @@ namespace Network
 {
 	using ByteArray = std::vector<std::byte>;
 
-	enum class ReplicationMode { NotReplicated, OnServer, Multicast };
+	enum class ReplicationMode { NotReplicated, OnServer, OnClients, Multicast };
 	enum class InterfaceType { None, Server, Client };
 
 	class Networker
@@ -36,7 +37,12 @@ namespace Network
 
 		void call(const ReplicationMode& mode, const size_t& GUID, ByteArray& args);
 
+		void executeCallQueue();
+
 		void reset();
+
+	private: // Private methods
+		void fillCallQueue(const size_t& GUID, ByteArray& args);
 
 	private:
 		static Networker* s_Instance;
@@ -45,6 +51,8 @@ namespace Network
 		Server m_Server;
 
 		std::unordered_map<size_t, std::function<void(ByteArray&)>> m_Functions;
+		std::queue<std::pair<size_t, ByteArray>> m_CallQueue; // FIFO array for call stack.
+		std::mutex m_CallQueueMutex;
 
 		InterfaceType m_InterfaceType = InterfaceType::None;
 	};

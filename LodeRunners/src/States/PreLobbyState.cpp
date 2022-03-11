@@ -1,6 +1,7 @@
 #include "PreLobbyState.h"
 
 #include "../Network/Network.h"
+#include "LobbyState.h"
 
 PreLobbyState::PreLobbyState()
 {
@@ -85,6 +86,12 @@ PreLobbyState::PreLobbyState()
 	m_JoinServerPortTextBox->setGlobalSize({ .05f, .04f });
 	m_JoinServerPortTextBox->setText("80");
 
+	m_PlayerNameTextBox = MakeRef<TextBoxWidget>();
+	Widget::addChild(m_PlayerNameTextBox, m_HUD);
+	m_PlayerNameTextBox->setGlobalPosition({ .3f, .7f });
+	m_PlayerNameTextBox->setGlobalSize({ .4f, .1f });
+	m_PlayerNameTextBox->setText("Player Name");
+
 }
 
 PreLobbyState::~PreLobbyState()
@@ -125,7 +132,7 @@ void PreLobbyState::createServer() const
 
 	if (Network::Networker::get()->createServer(maxClients, port))
 	{
-
+		pushState(MakeRef<LobbyState>(m_PlayerNameTextBox->getText()));
 	}
 }
 
@@ -136,6 +143,6 @@ void PreLobbyState::joinServer() const
 
 	if (Network::Networker::get()->createClient(m_JoinServerAddressTextBox->getText(), port))
 	{
-
+		pushState(MakeRef<LobbyState>(m_PlayerNameTextBox->getText()));
 	}
 }

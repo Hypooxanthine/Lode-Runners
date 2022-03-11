@@ -56,6 +56,7 @@ MainMenuState::MainMenuState()
 
 void MainMenuState::init()
 {
+	onResize();
 }
 
 void MainMenuState::update(const float& dt)

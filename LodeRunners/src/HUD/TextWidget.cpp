@@ -13,7 +13,7 @@ void TextWidget::setText(const std::string& text)
 {
 	m_Text.setString(text);
 	m_FullText = text;
-	center();
+	updateText();
 }
 
 void TextWidget::setBold(const bool& val)
@@ -22,7 +22,7 @@ void TextWidget::setBold(const bool& val)
 		m_Text.setStyle(m_Text.getStyle() | sf::Text::Bold);
 	else
 		m_Text.setStyle(m_Text.getStyle() & ~sf::Text::Bold);
-	center();
+	updateText();
 }
 
 void TextWidget::setUnderlined(const bool& val)
@@ -31,7 +31,7 @@ void TextWidget::setUnderlined(const bool& val)
 		m_Text.setStyle(m_Text.getStyle() | sf::Text::Underlined);
 	else
 		m_Text.setStyle(m_Text.getStyle() & ~sf::Text::Underlined);
-	center();
+	updateText();
 }
 
 void TextWidget::setItalic(const bool& val)
@@ -40,31 +40,44 @@ void TextWidget::setItalic(const bool& val)
 		m_Text.setStyle(m_Text.getStyle() | sf::Text::Italic);
 	else
 		m_Text.setStyle(m_Text.getStyle() & ~sf::Text::Italic);
-	center();
+	updateText();
 }
 
 void TextWidget::renderWidget(Ref<sf::RenderWindow> window)
 {
-	window->draw(m_Text);
+	try {
+		window->draw(m_Text);
+	}
+	catch (std::exception e)
+	{
+		LOG_ERROR(e.what());
+	}
 }
 
 void TextWidget::onPositionUpdated()
 {
-	if (m_WrapText)
-		wrap();
-	center();
+	updateText();
 }
 
 void TextWidget::onSizeUpdated()
 {
-	if (m_WrapText)
-		wrap();
-	center();
+	updateText();
 }
 
-void TextWidget::center()
+void TextWidget::updateText()
 {
-	m_Text.setCharacterSize((int)(30.f * (float)Application::get()->getWindow()->getSize().x / 1920.f));
+	//m_Text.setCharacterSize((int)(30.f * (float)Application::get()->getWindow()->getSize().x / 1920.f));
+
+	if (m_WrapText)
+		wrap();
+	if (m_CenterX)
+		centerX();
+	if (m_CenterY)
+		centerY();
+}
+
+void TextWidget::centerX()
+{
 	const auto pos = getGlobalWorldPosition();
 	const auto size = getGlobalWorldSize();
 	const auto textRect = m_Text.getLocalBounds();
@@ -73,6 +86,20 @@ void TextWidget::center()
 	m_Text.setPosition
 	(
 		pos.x + (size.x - textRect.width) / 2.f - textRect.left,
+		m_Text.getPosition().y
+	);
+}
+
+void TextWidget::centerY()
+{
+	const auto pos = getGlobalWorldPosition();
+	const auto size = getGlobalWorldSize();
+	const auto textRect = m_Text.getLocalBounds();
+
+	// sf::Text bounds are not exactly placed at its position, so we have to fix this little difference ourselves.
+	m_Text.setPosition
+	(
+		m_Text.getPosition().x,
 		pos.y + (size.y - textRect.height) / 2.f - textRect.top
 	);
 }

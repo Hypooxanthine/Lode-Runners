@@ -33,7 +33,7 @@ namespace Network
 			port,
 			[this](const size_t& GUID, ByteArray& args)
 			{
-				this->call(ReplicationMode::NotReplicated, GUID, args);
+				this->fillCallQueue(GUID, args);
 			}
 		);
 
@@ -66,7 +66,7 @@ namespace Network
 			port,
 			[this](const size_t& GUID, ByteArray& args)
 			{
-				this->call(ReplicationMode::NotReplicated, GUID, args);
+				this->fillCallQueue(GUID, args);
 			}
 		);
 
@@ -94,24 +94,29 @@ namespace Network
 	void Networker::call(const ReplicationMode& mode, const size_t& GUID, ByteArray& args)
 	{
 		#ifdef _DEBUG
-		std::string fromStr;
+		std::string debugStr = "Networker's call function invoked. Mode : ";
 
 		switch (mode)
 		{
 		case ReplicationMode::NotReplicated:
-			fromStr = "NotReplicated";
+			debugStr += "NotReplicated";
 			break;
 		case ReplicationMode::OnServer:
-			fromStr = "OnServer";
+			debugStr += "OnServer";
+			break;
+		case ReplicationMode::OnClients:
+			debugStr += "OnClients";
 			break;
 		case ReplicationMode::Multicast:
-			fromStr = "Multicast";
+			debugStr += "Multicast";
 			break;
 		default:
 			break;
 		}
 
-		LOG_INFO("Networker's call function invoked. From : ", (isServer() ? "Server" : "Client"), ". Mode : ", fromStr, ".");
+		debugStr += ".";
+
+		LOG_INFO(debugStr);
 		#endif
 
 		if (m_InterfaceType == InterfaceType::None) return;
@@ -141,6 +146,23 @@ namespace Network
 			// Function is first called locally by the replicated function to avoid unnecessary packing/unpacking in single-player mode.
 			m_Server.send(GUID, args);
 		}
+		else if (mode == ReplicationMode::OnClients && m_InterfaceType == InterfaceType::Server)
+		{
+			m_Server.send(GUID, args);
+		}
+	}
+
+	void Networker::executeCallQueue()
+	{
+		std::lock_guard<std::mutex> lock(m_CallQueueMutex);
+
+		while (!m_CallQueue.empty())
+		{
+			auto& element = m_CallQueue.front();
+
+			call(ReplicationMode::NotReplicated, element.first, element.second);
+			m_CallQueue.pop();
+		}
 	}
 
 	void Networker::reset()
@@ -152,6 +174,13 @@ namespace Network
 
 		m_InterfaceType = InterfaceType::None;
 		LOG_INFO("Networker reset.");
+	}
+
+	void Networker::fillCallQueue(const size_t& GUID, ByteArray& args)
+	{
+		std::lock_guard<std::mutex> lock(m_CallQueueMutex);
+
+		m_CallQueue.emplace(GUID, args);
 	}
 
 }

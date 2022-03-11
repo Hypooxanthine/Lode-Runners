@@ -20,6 +20,6 @@ public:
 
 protected:
 	inline void kill() { Application::get()->killState(); }
-	inline void pushState(const Ref<State> state) { Application::get()->pushState(state); }
+	inline void pushState(const Ref<State> state) const { Application::get()->pushState(state); }
 };
 

@@ -1,7 +1,10 @@
 #include "Application.h"
+
 #include "../Assets/Assets.h"
 #include "../Assets/AssetLoader.h"
 #include "../States/PreMenuState.h"
+
+#include "../Network/Network.h"
 
 Application* Application::m_Singleton = nullptr;
 
@@ -29,8 +32,11 @@ void Application::run()
 	while (m_Window->isOpen())
 	{
 		updateEvents();
+		Network::Networker::get()->executeCallQueue();
+
 		if (m_Window->hasFocus())
 			update();
+
 
 		render();
 		checkState();
@@ -165,15 +171,13 @@ void Application::checkState()
 		if (m_NextState) // If there is another state to push
 		{
 			m_States.push(m_NextState);
+			LOG_TRACE("New State pushed.");
 			m_NextState->init();
 			m_NextState = nullptr;
-			LOG_TRACE("New State pushed.");
 		}
 
 		if (m_States.empty())
 			close();
-		else
-			m_States.top()->init();	
 	}
 }
 
