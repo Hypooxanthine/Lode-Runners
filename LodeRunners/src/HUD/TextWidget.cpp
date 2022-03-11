@@ -45,13 +45,7 @@ void TextWidget::setItalic(const bool& val)
 
 void TextWidget::renderWidget(Ref<sf::RenderWindow> window)
 {
-	try {
-		window->draw(m_Text);
-	}
-	catch (std::exception e)
-	{
-		LOG_ERROR(e.what());
-	}
+	window->draw(m_Text);
 }
 
 void TextWidget::onPositionUpdated()
@@ -66,7 +60,7 @@ void TextWidget::onSizeUpdated()
 
 void TextWidget::updateText()
 {
-	//m_Text.setCharacterSize((int)(30.f * (float)Application::get()->getWindow()->getSize().x / 1920.f));
+	m_Text.setCharacterSize((int)(30.f * (float)Application::get()->getWindow()->getSize().x / 1920.f));
 
 	if (m_WrapText)
 		wrap();

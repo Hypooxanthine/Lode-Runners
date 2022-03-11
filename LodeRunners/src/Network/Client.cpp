@@ -74,10 +74,18 @@ namespace Network
 				LOG_TRACE("Packet received.");
 
 				size_t GUID;
+				packet >> GUID;
+
+				if (GUID == 0) // 0 GUID is for client initialization.
+				{
+					packet >> m_playerID;
+					LOG_INFO("Initialized with local ID " + std::to_string(m_playerID) + ".");
+					continue;
+				}
+
 				ByteArray args;
 				args.reserve(packet.getDataSize() - sizeof(size_t));
 
-				packet >> GUID;
 				std::byte* argsPtr = (std::byte*)packet.getData() + sizeof(size_t);
 				std::byte* argsEnd = (std::byte*)packet.getData() + packet.getDataSize();
 				for (argsPtr; argsPtr < argsEnd; argsPtr++)

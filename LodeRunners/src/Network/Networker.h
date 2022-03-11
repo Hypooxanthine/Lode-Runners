@@ -30,6 +30,9 @@ namespace Network
 		// WARNING : unreliable value (won't crash) if no server was set up. Please check Network::Networker::isServer() first.
 		inline const bool& isSinglePlayer() const { return m_Server.isSinglePlayer(); }
 
+		// WARNING : unreliable value (won't crash) if neither server nor client was set up.
+		inline const size_t& getPlayerID() const { return m_InterfaceType == InterfaceType::Server ? m_Server.getPlayerID() : m_Client.getPlayerID(); }
+
 		bool createServer(const size_t& maxClients = 1, const uint32_t& port = 80);
 		bool createClient(const std::string& address = "localhost", const uint32_t& port = 80);
 
@@ -44,7 +47,7 @@ namespace Network
 	private: // Private methods
 		void fillCallQueue(const size_t& GUID, ByteArray& args);
 
-	private:
+	private: // Private members
 		static Networker* s_Instance;
 
 		Client m_Client;

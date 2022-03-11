@@ -55,7 +55,7 @@ namespace Network
 		packet.append(args.data(), args.size());
 
 		for (auto& c : m_Clients)
-			c->send(packet);
+			c.second->send(packet);
 	}
 
 	void Server::stop()
@@ -68,7 +68,7 @@ namespace Network
 		m_Selector.clear();
 
 		for (auto& c : m_Clients)
-			c->disconnect();
+			c.second->disconnect();
 
 		m_Clients.clear();
 		m_Listener.close();
@@ -117,9 +117,14 @@ namespace Network
 
 			if(m_Listener.accept(*socket) == sf::Socket::Done)
 			{
-				m_Clients.push_back(std::move(socket));
-				m_Selector.add(*m_Clients.back());
+				size_t playerID = m_Clients.size() > 0 ?
+					m_Clients.back().first + 1
+					: 1;
+
+				m_Clients.emplace_back(playerID, std::move(socket));
+				m_Selector.add(*m_Clients.back().second);
 				m_Listener.setBlocking(false);
+				initClient(m_Clients.back());
 
 				LOG_INFO("Client connected. Connected clients : " + std::to_string(m_Clients.size()) + "/" + std::to_string(m_MaxClients));
 			}
@@ -130,6 +135,17 @@ namespace Network
 		LOG_INFO("Server stopped listening on port " + std::to_string(m_Port) + ".");
 
 		m_ClientsAcceptorRunning = false;
+	}
+
+	void Server::initClient(std::pair<size_t, std::unique_ptr<sf::TcpSocket>>& client)
+	{
+		LOG_INFO("Initializing client " + std::to_string(client.first) + ".");
+		sf::Packet packet;
+
+		packet << size_t(0);
+		packet << client.first;
+
+		client.second->send(packet);
 	}
 
 	void Server::acceptData()
@@ -148,14 +164,14 @@ namespace Network
 				{
 					auto& c = m_Clients[i-1];
 
-					if (m_Selector.isReady(*c))
+					if (m_Selector.isReady(*c.second))
 					{
 						sf::Packet packet;
-						sf::Socket::Status status = c->receive(packet);
+						sf::Socket::Status status = c.second->receive(packet);
 
 						if (status == sf::Socket::Status::Disconnected || status == sf::Socket::Status::Error)
 						{
-							m_Selector.remove(*c);
+							m_Selector.remove(*c.second);
 							m_Clients.erase(m_Clients.begin() + i - 1);
 							LOG_INFO("Client disconnected. Connected clients : " + std::to_string(m_Clients.size()) + "/" + std::to_string(m_MaxClients));
 

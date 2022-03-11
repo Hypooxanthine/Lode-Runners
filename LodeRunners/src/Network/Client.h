@@ -18,10 +18,14 @@ namespace Network
 
 		void stop();
 
+		inline const size_t& getPlayerID() const { return m_playerID; }
+
 	private:
 		void acceptData();
 
 	private:
+		size_t m_playerID = 0; // 0 only for initialization.
+
 		std::unique_ptr<sf::TcpSocket> m_Server;
 		std::mutex m_ServerMutex;
 

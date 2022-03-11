@@ -20,13 +20,18 @@ namespace Network
 
 		inline void bindOnAllClientsDisconnected(const std::function<void(void)>& callback) { m_OnAllClientsDisconnected = callback; }
 
+		inline const size_t& getPlayerID() const { return m_playerID; }
+
 	private: // Private methods
 		bool tryListen();
 		void acceptClients();
+		void initClient(std::pair<size_t, std::unique_ptr<sf::TcpSocket>>& client);
 		void acceptData();
 
 	private: // Private members
-		std::vector<std::unique_ptr<sf::TcpSocket>> m_Clients;
+		size_t m_playerID = 0; // Always 0 for server.
+
+		std::vector<std::pair<size_t, std::unique_ptr<sf::TcpSocket>>> m_Clients;
 		std::mutex m_ClientsLock;
 
 		uint32_t m_Port = 0;
