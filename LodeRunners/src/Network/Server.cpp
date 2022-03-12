@@ -99,21 +99,17 @@ namespace Network
 
 	void Server::acceptClients()
 	{
-		{
-			std::lock_guard<std::mutex> lock(m_ClientsLock);
-			m_ClientsAcceptorRunning = true;
-		}
-
 		// If the listner is blocking, it won't release this thread even if m_IsAcceptingClients is set to false, but we need this thread to check if it should acept clients or not !
 		m_Listener.setBlocking(false);
 
 		while(m_IsAcceptingClients && !m_RequestedStop && m_Clients.size() < m_MaxClients)
 		{
-			std::this_thread::sleep_for(std::chrono::duration<float>(FIXED_NETWORK_DELTA_TIME_SECONDS));
+			sf::sleep(sf::seconds(FIXED_NETWORK_DELTA_TIME_SECONDS));
 
 			std::lock_guard<std::mutex> lock(m_ClientsLock);
 
 			auto socket = std::make_unique<sf::TcpSocket>();
+			socket->setBlocking(false);
 
 			if(m_Listener.accept(*socket) == sf::Socket::Done)
 			{
@@ -152,11 +148,11 @@ namespace Network
 	{
 		while ((m_Clients.size() > 0 || m_IsAcceptingClients) && !m_RequestedStop)
 		{
-			std::this_thread::sleep_for(std::chrono::duration<float>(FIXED_NETWORK_DELTA_TIME_SECONDS));
+			sf::sleep(sf::seconds(FIXED_NETWORK_DELTA_TIME_SECONDS));
 			
 			std::lock_guard<std::mutex> lock(m_ClientsLock);
 
-			if(m_Selector.wait(sf::microseconds(50)))
+			if(m_Selector.wait(sf::milliseconds(1)))
 			{
 				LOG_TRACE("Server received data.");
 
@@ -169,20 +165,25 @@ namespace Network
 						sf::Packet packet;
 						sf::Socket::Status status = c.second->receive(packet);
 
-						if (status == sf::Socket::Status::Disconnected || status == sf::Socket::Status::Error)
+						if (status != sf::Socket::Status::Done)
 						{
+							size_t logoutPlayerID = c.first;
 							m_Selector.remove(*c.second);
+							c.second->disconnect();
 							m_Clients.erase(m_Clients.begin() + i - 1);
-							LOG_INFO("Client disconnected. Connected clients : " + std::to_string(m_Clients.size()) + "/" + std::to_string(m_MaxClients));
+							m_OnClientLogout(logoutPlayerID);
 
-							if (!m_ClientsAcceptorRunning)
+							LOG_INFO("Client with ID " + std::to_string(logoutPlayerID) + " disconnected. Connected clients : " + std::to_string(m_Clients.size()) + " / " + std::to_string(m_MaxClients));
+
+							if (m_IsAcceptingClients && !m_ClientsAcceptorRunning )
 							{
 								ASSERT(tryListen(), "Server couldn't listen back to its asked port.");
+								m_ClientsAcceptorRunning = true;
 								m_ClientsAcceptor = std::jthread([this]() {this->acceptClients(); });
 							}
 
 						}
-						else if(status == sf::Socket::Status::Done)
+						else
 						{
 							if (packet.getDataSize() < sizeof(size_t)) // Invalid data
 								continue;
@@ -210,7 +211,7 @@ namespace Network
 		if (!m_RequestedStop)
 		{
 			LOG_INFO("All clients disconnected.");
-			m_OnAllClientsDisconnected();
+			m_OnAllClientsLogout();
 		}
 	}
 

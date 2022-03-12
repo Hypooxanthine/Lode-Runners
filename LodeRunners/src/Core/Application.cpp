@@ -37,7 +37,6 @@ void Application::run()
 		if (m_Window->hasFocus())
 			update();
 
-
 		render();
 		checkState();
 		updateDt();

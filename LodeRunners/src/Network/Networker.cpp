@@ -44,7 +44,15 @@ namespace Network
 		}
 
 		m_InterfaceType = InterfaceType::Server;
-		m_Server.bindOnAllClientsDisconnected([this]() {this->reset(); });
+		m_Server.bindOnClientLogout
+		(
+			[this](const size_t& id) 
+			{
+				for (auto& cb : m_OnPlayerLogoutCallbacks)
+					cb(id);
+			}
+		);
+		m_Server.bindOnAllClientsLogout([this]() {this->reset(); });
 
 		LOG_INFO("Networker set up.");
 
@@ -86,9 +94,9 @@ namespace Network
 
 	void Networker::registerFunc(std::function<void(ByteArray&)> func, const size_t& GUID)
 	{
-		ASSERT(!m_Functions.contains(GUID), "Registered two replicated functions with the same GUID. Function details : " + func.target_type().name() + ".");	
+		ASSERT(!m_ReplicatedFunctions.contains(GUID), "Registered two replicated functions with the same GUID. Function details : " + func.target_type().name() + ".");	
 
-		m_Functions[GUID] = func;
+		m_ReplicatedFunctions[GUID] = func;
 	}
 
 	void Networker::call(const ReplicationMode& mode, const size_t& GUID, ByteArray& args)
@@ -123,14 +131,14 @@ namespace Network
 
 		if (mode == ReplicationMode::NotReplicated)
 		{
-			m_Functions.at(GUID)(args);
+			m_ReplicatedFunctions.at(GUID)(args);
 		}
 		else if (mode == ReplicationMode::OnServer)
 		{
 			if (m_InterfaceType == InterfaceType::Server)
 			{
-				ASSERT(m_Functions.contains(GUID), "Trying to call an unregistered function. GUID : " + std::to_string(GUID) + ".");	
-				m_Functions.at(GUID)(args);
+				ASSERT(m_ReplicatedFunctions.contains(GUID), "Trying to call an unregistered function. GUID : " + std::to_string(GUID) + ".");	
+				m_ReplicatedFunctions.at(GUID)(args);
 			}
 			else
 			{

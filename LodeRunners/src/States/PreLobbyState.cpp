@@ -132,7 +132,7 @@ void PreLobbyState::createServer() const
 
 	if (Network::Networker::get()->createServer(maxClients, port))
 	{
-		pushState(MakeRef<LobbyState>(m_PlayerNameTextBox->getText()));
+		pushState(MakeRef<LobbyState>(Network::Networker::get()->getPlayerID(), m_PlayerNameTextBox->getText()));
 	}
 }
 
@@ -143,6 +143,6 @@ void PreLobbyState::joinServer() const
 
 	if (Network::Networker::get()->createClient(m_JoinServerAddressTextBox->getText(), port))
 	{
-		pushState(MakeRef<LobbyState>(m_PlayerNameTextBox->getText()));
+		pushState(MakeRef<LobbyState>(Network::Networker::get()->getPlayerID(), m_PlayerNameTextBox->getText()));
 	}
 }

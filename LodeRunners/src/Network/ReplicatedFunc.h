@@ -9,10 +9,8 @@
 // func parameter is for local function name.
 // id parameter (string) is to identify the function, if multiple instances could use it.
 // Variadic parameter pack is for parameter types.
-#define CREATE_REPLICATED_FUNCTION(funcName, func, id, ...) \
-Network::ReplicatedFunc<__VA_ARGS__> funcName##Replicated = Network::ReplicatedFunc<__VA_ARGS__>(func, std::hash<std::string>()((std::string)#funcName + id))
-
-#define GET_REPLICATED_FUNCTION(funcName) funcName##Replicated
+#define CREATE_REPLICATED_FUNCTION(funcName, func, id, mode, ...) \
+Network::ReplicatedFunc<__VA_ARGS__> funcName = Network::ReplicatedFunc<__VA_ARGS__>(func, std::hash<std::string>()((std::string)#funcName + id), mode)
 
 namespace Network
 {
@@ -21,7 +19,8 @@ namespace Network
 	class ReplicatedFunc
 	{
 	public:
-		ReplicatedFunc(std::function<void(Args...)> f, const size_t& GUID) : m_Function(f), m_GUID(GUID)
+		ReplicatedFunc(std::function<void(Args...)> f, const size_t& GUID, const ReplicationMode& mode) 
+			: m_Function(f), m_GUID(GUID), m_Mode(mode)
 		{
 			Networker::get()->registerFunc([this](ByteArray& buffer) -> void
 				{
@@ -90,6 +89,8 @@ namespace Network
 			#undef call_local
 		}
 
+		void call(Args&&... args) { this->call(m_Mode, args...); }
+
 		ByteArray& convertToBuffer(Args&&... args)
 		{
 			m_Buffer.clear();
@@ -101,7 +102,7 @@ namespace Network
 		const size_t& getGUID() const { return m_GUID; }
 
 		void operator() (Args&&... args) { call(std::forward<Args>(args)...); }
-		void operator() (char* pack) { call(pack); }
+		void operator() (const ReplicationMode& mode, Args&&... args) { call(mode, std::forward<Args>(args)...); }
 
 	private:
 		void call(ByteArray& buffer)
@@ -116,7 +117,7 @@ namespace Network
 		{
 			using Raw = std::remove_const<std::remove_reference<T>::type>::type;
 
-			if (std::is_same<Raw, std::string>::value)
+			/*if (std::is_same<Raw, std::string>::value)
 			{
 				size_t size = *reinterpret_cast<size_t*>(&buffer[cursor]);
 				cursor += sizeof(size_t);
@@ -130,7 +131,29 @@ namespace Network
 
 			Raw* object = reinterpret_cast<Raw*>(buffer.data() + cursor);
 			cursor += sizeof(Raw);
-			return *object;
+			return *object;*/
+
+			Raw object = Raw();
+			deserializeArg(object, buffer, cursor);
+			return object;
+		}
+
+		template<typename T>
+		void deserializeArg(T& receiver, ByteArray& buffer, size_t& cursor)
+		{
+			receiver = *reinterpret_cast<T*>(buffer.data() + cursor);
+			cursor += sizeof(T);
+		}
+
+		template<>
+		void deserializeArg(std::string& receiver, ByteArray& buffer, size_t& cursor)
+		{
+			size_t size = *reinterpret_cast<size_t*>(buffer.data() + cursor);
+			cursor += sizeof(size_t);
+
+			receiver = reinterpret_cast<const char*>(buffer.data() + cursor);
+
+			cursor += size;
 		}
 
 		template<typename T>
@@ -172,6 +195,8 @@ namespace Network
 		ByteArray m_Buffer;
 
 		size_t m_GUID = "";
+
+		ReplicationMode m_Mode = ReplicationMode::NotReplicated;
 	};
 
 }

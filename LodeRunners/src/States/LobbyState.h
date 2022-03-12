@@ -8,49 +8,96 @@
 class LobbyState : public State
 {
 public:
-	LobbyState(const std::string& name);
+	LobbyState(const size_t& id, const std::string& name);
 
 	virtual void init() override;
 	virtual void update(const float& dt) override;
 	virtual void render(Ref<sf::RenderWindow> window) override;
 	virtual void onResize() override;
 
-	void onPlayerLogin(const std::string& playerName);
-	void onPlayerLogout();
-
 private: // Private methods
+	void getLoggedPlayers();
+	void onPlayerLogin(const size_t& id, const std::string& playerName);
+	void onPlayerLogout(const size_t& id);
+
+	void createPlayerTextWidget(const size_t& id, const std::string& name);
 
 private: // Private members
 	Ref<Widget> m_HUD;
-	std::string m_LocalName;
+	std::vector<Ref<TextWidget>> m_TextWidgets;
 
-	std::vector<std::string> m_PlayerNames;
+	size_t m_PlayerID;
+	std::string m_PlayerName;
+
+	std::vector<std::pair<size_t, std::string>> m_Players;
 	sf::Vector2f m_NextTextWidgetPos = { .1f, .1f };
 
 private: // Replicated functions
+
 	CREATE_REPLICATED_FUNCTION
 	(
-		onPlayerLoginClients,
-		[this](const std::string& name)
+		sendLoggedPlayersFromAsker_Multicast,
+		[this](const size_t& asker, const size_t& playerID, const std::string& playerName)
 		{
-			this->onPlayerLogin(name);
+			if (asker == m_PlayerID)
+			{
+				m_Players.emplace_back(playerID, playerName);
+				createPlayerTextWidget(playerID, playerName);
+			}
 		},
-		"", const std::string&
+		"LobbyState", Network::ReplicationMode::Multicast, const size_t&, const size_t&, const std::string&
 	);
 
 	CREATE_REPLICATED_FUNCTION
 	(
-		onPlayerLoginServer, 
-		[this](const std::string& name) 
+		getLoggedPlayersFromAsker_OnServer,
+		[this](const size_t& asker)
 		{
-			onPlayerLogin(name);
-
-			for(auto& pn: m_PlayerNames)
-				GET_REPLICATED_FUNCTION(onPlayerLoginClients).call(Network::ReplicationMode::OnClients, pn);
+			for(auto& p : m_Players)
+				sendLoggedPlayersFromAsker_Multicast(asker, p.first, p.second);
 		},
-		"", const std::string&
+		"LobbyState", Network::ReplicationMode::OnServer, const size_t&
 	);
 
+	CREATE_REPLICATED_FUNCTION
+	(
+		registerPlayerForAll_Multicast,
+		[this](const size_t& id, const std::string& name)
+		{
+			onPlayerLogin(id, name);
+		},
+		"LobbyState", Network::ReplicationMode::Multicast, const size_t&, const std::string&
+	);
+
+	CREATE_REPLICATED_FUNCTION
+	(
+		registerPlayerForAll_OnServer, 
+		[this](const size_t& id, const std::string& name) 
+		{
+			registerPlayerForAll_Multicast(id, name);
+		},
+		"LobbyState", Network::ReplicationMode::OnServer, const size_t&, const std::string&
+	);
+
+	CREATE_REPLICATED_FUNCTION
+	(
+		removePlayerForAll_Multicast,
+		[this](const size_t& id)
+		{
+			onPlayerLogout(id);
+		},
+		"LobbyState", Network::ReplicationMode::Multicast, const size_t&
+	);
+
+	CREATE_REPLICATED_FUNCTION
+	(
+		removePlayerForAll_OnServer,
+		[this](const size_t& id)
+		{
+			removePlayerForAll_Multicast(id);
+		},
+		"LobbyState", Network::ReplicationMode::OnServer, const size_t&
+	);
 
 };
 

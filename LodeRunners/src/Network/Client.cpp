@@ -23,8 +23,34 @@ namespace Network
 		
 		m_RequestedStop = false;
 		m_Callback = callback;
-		m_Server->setBlocking(false);
 
+		// Waiting for initialization by the server.
+		sf::Packet packet;
+		
+		if(m_Server->receive(packet) == sf::Socket::Status::Done) // Blocking at first, client NEEDS to get its player ID.
+		{
+			size_t GUID;
+			packet >> GUID;
+
+			if (GUID == 0) // 0 GUID is for client initialization.
+			{
+				packet >> m_playerID;
+				LOG_INFO("Initialized with player ID " + std::to_string(m_playerID) + ".");
+			}
+			else
+			{
+				LOG_WARN("Couldn't initialize : first packet received doesn't fit the player ID packet formatting requirements.");
+				return false;
+			}
+		}
+		else
+		{
+			LOG_WARN("Couldn't initialize : no player ID sent.");
+			return false;
+		}
+
+		// Now we set socket to not blocking, otherwise the lock won't be freed until client receives anything.
+		m_Server->setBlocking(false);
 		m_DataAcceptor = std::jthread([this]() {this->acceptData(); });
 
 		LOG_INFO("Client created.");
@@ -33,6 +59,7 @@ namespace Network
 
 	bool Client::send(const size_t& GUID, ByteArray& args)
 	{
+		std::lock_guard<std::mutex> lock(m_ServerMutex);
 		sf::Packet packet;
 
 		packet << GUID;
@@ -47,6 +74,7 @@ namespace Network
 	{
 		m_RequestedStop = true;
 
+		// We don't want to disconnect our client while it's still receiving/sending data.
 		std::lock_guard<std::mutex> lock(m_ServerMutex);
 		m_Server->disconnect();
 
@@ -61,6 +89,8 @@ namespace Network
 			&& status != sf::Socket::Status::Error
 			&& !m_RequestedStop)
 		{
+			sf::sleep(sf::seconds(FIXED_NETWORK_DELTA_TIME_SECONDS));
+
 			std::lock_guard<std::mutex> lock(m_ServerMutex);
 			
 			sf::Packet packet;
@@ -75,13 +105,6 @@ namespace Network
 
 				size_t GUID;
 				packet >> GUID;
-
-				if (GUID == 0) // 0 GUID is for client initialization.
-				{
-					packet >> m_playerID;
-					LOG_INFO("Initialized with local ID " + std::to_string(m_playerID) + ".");
-					continue;
-				}
 
 				ByteArray args;
 				args.reserve(packet.getDataSize() - sizeof(size_t));

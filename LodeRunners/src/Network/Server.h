@@ -18,7 +18,8 @@ namespace Network
 		void stop();
 		void stopAcceptingClients();
 
-		inline void bindOnAllClientsDisconnected(const std::function<void(void)>& callback) { m_OnAllClientsDisconnected = callback; }
+		inline void bindOnClientLogout(const std::function<void(const size_t&)>& callback) { m_OnClientLogout = callback; }
+		inline void bindOnAllClientsLogout(const std::function<void(void)>& callback) { m_OnAllClientsLogout = callback; }
 
 		inline const size_t& getPlayerID() const { return m_playerID; }
 
@@ -46,9 +47,11 @@ namespace Network
 
 		bool m_RequestedStop = false;
 
+		// Replicated function call(ByteArray&) reference
 		std::function<void(const size_t&, ByteArray&)> m_Callback;
 
-		std::function<void(void)> m_OnAllClientsDisconnected;
+		std::function<void(const size_t&)> m_OnClientLogout;
+		std::function<void(void)> m_OnAllClientsLogout;
 
 		std::jthread m_DataAcceptor;
 		std::jthread m_ClientsAcceptor;

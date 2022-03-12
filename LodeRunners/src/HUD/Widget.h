@@ -48,6 +48,8 @@ public:
 	/* HIERARCHY */
 
 	static void addChild(Ref<Widget> child, Ref<Widget> parent);
+	bool removeChild(Ref<Widget> child);
+	void removeChildren();
 	Ref<Widget> getParent() { return m_Parent; }
 
 	/* POSITIONS */

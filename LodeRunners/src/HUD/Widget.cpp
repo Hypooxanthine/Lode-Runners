@@ -43,6 +43,27 @@ void Widget::addChild(Ref<Widget> child, Ref<Widget> parent)
 	child->updateSizes();
 }
 
+bool Widget::removeChild(Ref<Widget> child)
+{
+	for (size_t i = 0; i < m_Children.size(); i++)
+	{
+		if (m_Children[i] == child)
+		{
+			m_Children[i]->m_Parent = nullptr;
+			m_Children.erase(m_Children.begin() + i);
+			return true;
+		}
+	}
+		return false;
+}
+
+void Widget::removeChildren()
+{
+	for (auto& c : m_Children)
+		c->m_Parent = nullptr;
+	m_Children.clear();
+}
+
 sf::Vector2f Widget::getGlobalPosition() const
 {
 	if (m_Parent == nullptr) return { m_RelativeRect.left, m_RelativeRect.top };
