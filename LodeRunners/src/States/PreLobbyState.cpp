@@ -96,7 +96,6 @@ PreLobbyState::PreLobbyState()
 
 PreLobbyState::~PreLobbyState()
 {
-	Network::Networker::get()->reset();
 }
 
 void PreLobbyState::init()

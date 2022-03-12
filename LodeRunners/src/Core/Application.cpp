@@ -26,7 +26,6 @@ void Application::run()
 	m_Window->create(sf::VideoMode::getDesktopMode(), "Lode Runners");
 	m_Window->setFramerateLimit(FIXED_FPS);
 
-	// For testing purpose
 	m_States.push(MakeRef<PreMenuState>());
 
 	while (m_Window->isOpen())

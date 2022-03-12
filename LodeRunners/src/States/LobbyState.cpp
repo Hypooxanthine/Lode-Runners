@@ -7,18 +7,45 @@ LobbyState::LobbyState(const size_t& id, const std::string& name)
 	m_HUD->setViewport({ 0.f, 0.f, 1.f, 1.f });
 	m_HUD->fillParent();
 
+	m_PlayersTexts = MakeRef<Widget>();
+	Widget::addChild(m_PlayersTexts, m_HUD);
+	m_PlayersTexts->setRelativePosition({ 0.f, .1f });
+	m_PlayersTexts->setRelativeSize({ 1.f, .9f });
+
+	auto titleText = MakeRef<TextWidget>();
+	Widget::addChild(titleText, m_HUD);
+	titleText->setRelativePosition({ .3f, 0.f });
+	titleText->setRelativeSize({ .4f, .1f });
+	titleText->setBold();
+	titleText->setText("Lobby");
+
 	if (IS_SERVER)
-		Network::Networker::get()->bindOnPlayerLogout([this](const size_t& id) { removePlayerForAll_OnServer(id); });
+		Network::Networker::get()->bindOnPlayerLogout([this](const size_t& id) { triggerOnPlayerLogoutForAll_OnServer(id); });
+	else
+		Network::Networker::get()->bindOnServerConnexionLost([this]() { kill(); });
+}
+
+LobbyState::~LobbyState()
+{
+	if (IS_SERVER)
+		Network::Networker::get()->popOnPlayerLogout();
+	else
+		Network::Networker::get()->popOnServerConnexionLost();
+
+	Network::Networker::get()->reset();
 }
 
 void LobbyState::init()
 {
-	getLoggedPlayers();
-	registerPlayerForAll_OnServer(m_PlayerID, m_PlayerName);
+	getLoggedPlayersFromAsker_OnServer(m_PlayerID);
+	trigerOnPlayerLoginForAll_OnServer(m_PlayerID, m_PlayerName);
 }
 
 void LobbyState::update(const float& dt)
 {
+	if (Application::get()->getEvent(EventType::Escape))
+		kill();
+
 	m_HUD->update(dt);
 }
 
@@ -30,11 +57,6 @@ void LobbyState::render(Ref<sf::RenderWindow> window)
 void LobbyState::onResize()
 {
 	m_HUD->onResize();
-}
-
-void LobbyState::getLoggedPlayers()
-{
-	getLoggedPlayersFromAsker_OnServer(m_PlayerID);
 }
 
 void LobbyState::onPlayerLogin(const size_t& id, const std::string& playerName)
@@ -62,25 +84,32 @@ void LobbyState::onPlayerLogout(const size_t& id)
 	if (!found) return;
 
 	// Removing TextWidgets.
-	m_HUD->removeChildren();
-	//m_TextWidgets.clear();
-	m_NextTextWidgetPos.x = .1f;
-	m_NextTextWidgetPos.y = .1f;
+	m_PlayersTexts->removeChildren();
+	m_NextTextWidgetPos.x = 0.f;
+	m_NextTextWidgetPos.y = 0.f;
 
 	// Recreating TextWidgets.
 	for (auto& p : m_Players)
 		createPlayerTextWidget(p.first, p.second);
 }
 
+void LobbyState::onServerConnexionLost()
+{
+}
+
 void LobbyState::createPlayerTextWidget(const size_t& id, const std::string& name)
 {
 	auto textWidget = MakeRef<TextWidget>();
-	Widget::addChild(textWidget, m_HUD);
-	textWidget->setGlobalPosition(m_NextTextWidgetPos);
-	textWidget->setGlobalSize({ .1f, .05f });
+	Widget::addChild(textWidget, m_PlayersTexts);
+	textWidget->setRelativePosition(m_NextTextWidgetPos);
+	textWidget->setRelativeSize({ .1f, .05f });
 	textWidget->setCenterX(false);
 	textWidget->setText(name + " (" + std::to_string(id) + ")");
-	//m_TextWidgets.push_back(textWidget);
+	if (id == m_PlayerID)
+	{
+		textWidget->setColor(sf::Color::Red);
+		textWidget->setBold();
+	}
 
 	m_NextTextWidgetPos += {0.f, .05f};
 }

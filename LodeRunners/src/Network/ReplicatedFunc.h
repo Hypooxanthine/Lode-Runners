@@ -28,6 +28,11 @@ namespace Network
 				}, m_GUID);
 		}
 
+		virtual ~ReplicatedFunc()
+		{
+			Networker::get()->unregisterFunc(m_GUID);
+		}
+
 		void call(const ReplicationMode& mode, Args&&... args)
 		{
 			#ifdef _DEBUG

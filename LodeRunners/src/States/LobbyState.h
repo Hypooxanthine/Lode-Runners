@@ -9,6 +9,7 @@ class LobbyState : public State
 {
 public:
 	LobbyState(const size_t& id, const std::string& name);
+	virtual ~LobbyState();
 
 	virtual void init() override;
 	virtual void update(const float& dt) override;
@@ -16,21 +17,23 @@ public:
 	virtual void onResize() override;
 
 private: // Private methods
-	void getLoggedPlayers();
 	void onPlayerLogin(const size_t& id, const std::string& playerName);
 	void onPlayerLogout(const size_t& id);
+	void onServerConnexionLost();
 
 	void createPlayerTextWidget(const size_t& id, const std::string& name);
 
 private: // Private members
 	Ref<Widget> m_HUD;
-	//std::vector<Ref<TextWidget>> m_TextWidgets;
+
+	// Just an anchor that holds player texts
+	Ref<Widget> m_PlayersTexts;
 
 	size_t m_PlayerID;
 	std::string m_PlayerName;
 
 	std::vector<std::pair<size_t, std::string>> m_Players;
-	sf::Vector2f m_NextTextWidgetPos = { .1f, .1f };
+	sf::Vector2f m_NextTextWidgetPos = { 0.f, 0.f };
 
 private: // Replicated functions
 
@@ -61,7 +64,7 @@ private: // Replicated functions
 
 	CREATE_REPLICATED_FUNCTION
 	(
-		registerPlayerForAll_Multicast,
+		trigerOnPlayerLoginForAll_Multicast,
 		[this](const size_t& id, const std::string& name)
 		{
 			onPlayerLogin(id, name);
@@ -71,17 +74,17 @@ private: // Replicated functions
 
 	CREATE_REPLICATED_FUNCTION
 	(
-		registerPlayerForAll_OnServer, 
+		trigerOnPlayerLoginForAll_OnServer, 
 		[this](const size_t& id, const std::string& name) 
 		{
-			registerPlayerForAll_Multicast(id, name);
+			trigerOnPlayerLoginForAll_Multicast(id, name);
 		},
 		"LobbyState", Network::ReplicationMode::OnServer, const size_t&, const std::string&
 	);
 
 	CREATE_REPLICATED_FUNCTION
 	(
-		removePlayerForAll_Multicast,
+		triggerOnPlayerLogoutForAll_Multicast,
 		[this](const size_t& id)
 		{
 			onPlayerLogout(id);
@@ -91,10 +94,10 @@ private: // Replicated functions
 
 	CREATE_REPLICATED_FUNCTION
 	(
-		removePlayerForAll_OnServer,
+		triggerOnPlayerLogoutForAll_OnServer,
 		[this](const size_t& id)
 		{
-			removePlayerForAll_Multicast(id);
+			triggerOnPlayerLogoutForAll_Multicast(id);
 		},
 		"LobbyState", Network::ReplicationMode::OnServer, const size_t&
 	);

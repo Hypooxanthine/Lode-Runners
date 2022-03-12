@@ -48,8 +48,14 @@ namespace Network
 		(
 			[this](const size_t& id) 
 			{
-				for (auto& cb : m_OnPlayerLogoutCallbacks)
-					cb(id);
+				std::for_each
+				(
+					m_OnPlayerLogoutCallbacks.rbegin(), m_OnPlayerLogoutCallbacks.rend(), 
+					[&](const std::function<void(const size_t&)>& cb) 
+					{ 
+						cb(id); 
+					}
+				);
 			}
 		);
 		m_Server.bindOnAllClientsLogout([this]() {this->reset(); });
@@ -85,7 +91,21 @@ namespace Network
 		}
 
 		m_InterfaceType = InterfaceType::Client;
-		m_Client.bindOnServerDisconnected([this]() { this->reset(); });
+		m_Client.bindOnServerDisconnected
+		(
+			[this]()
+			{
+				std::for_each
+				(
+					m_OnServerConnexionLostCallbacks.rbegin(), m_OnServerConnexionLostCallbacks.rend(),
+					[](const std::function<void(void)>& cb)
+					{
+						cb();
+					}
+				);
+				this->reset();
+			}
+		);
 
 		LOG_INFO("Networker set up.");
 
@@ -97,6 +117,12 @@ namespace Network
 		ASSERT(!m_ReplicatedFunctions.contains(GUID), "Registered two replicated functions with the same GUID. Function details : " + func.target_type().name() + ".");	
 
 		m_ReplicatedFunctions[GUID] = func;
+	}
+
+	void Networker::unregisterFunc(const size_t& GUID)
+	{
+		ASSERT(m_ReplicatedFunctions.contains(GUID), "Couldn't find ReplicatedFunc with GUID " + std::to_string(GUID) + " to unregister.");
+		m_ReplicatedFunctions.erase(GUID);
 	}
 
 	void Networker::call(const ReplicationMode& mode, const size_t& GUID, ByteArray& args)

@@ -37,13 +37,19 @@ namespace Network
 		// WARNING : unreliable value (won't crash) if neither server nor client was set up.
 		inline const size_t& getPlayerID() const { return (m_InterfaceType == InterfaceType::Server ? m_Server.getPlayerID() : m_Client.getPlayerID()); }
 
-		// To be considered : ound callbacks will only be triggered on server.
+		// To be considered : bound callbacks will only be triggered on server.
 		inline void bindOnPlayerLogout(const std::function<void(const size_t&)>& callback) { m_OnPlayerLogoutCallbacks.push_back(callback); }
+		inline void popOnPlayerLogout() { m_OnPlayerLogoutCallbacks.pop_back(); }
+
+		// To be considered : bound callbacks will only be triggered on client.
+		inline void bindOnServerConnexionLost(const std::function<void(void)>& callback) { m_OnServerConnexionLostCallbacks.push_back(callback); }
+		inline void popOnServerConnexionLost() { m_OnServerConnexionLostCallbacks.pop_back(); }
 
 		bool createServer(const size_t& maxClients = 1, const uint32_t& port = 80);
 		bool createClient(const std::string& address = "localhost", const uint32_t& port = 80);
 
 		void registerFunc(std::function<void(ByteArray&)> func, const size_t& GUID);
+		void unregisterFunc(const size_t& GUID);
 
 		void fillCallQueue(const ReplicationMode& mode, const size_t& GUID, ByteArray& args);
 		void executeCallQueue();
@@ -63,6 +69,7 @@ namespace Network
 		std::queue<std::tuple<ReplicationMode, size_t, ByteArray>> m_CallQueue; // FIFO array for call stack.
 
 		std::vector<std::function<void(const size_t&)>> m_OnPlayerLogoutCallbacks;
+		std::vector<std::function<void(void)>> m_OnServerConnexionLostCallbacks;
 
 		InterfaceType m_InterfaceType = InterfaceType::None;
 	};
