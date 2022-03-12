@@ -24,7 +24,7 @@ private: // Private methods
 
 private: // Private members
 	Ref<Widget> m_HUD;
-	std::vector<Ref<TextWidget>> m_TextWidgets;
+	//std::vector<Ref<TextWidget>> m_TextWidgets;
 
 	size_t m_PlayerID;
 	std::string m_PlayerName;

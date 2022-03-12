@@ -9,6 +9,7 @@
 #include "Client.h"
 
 #define IS_SERVER Network::Networker::get()->isServer()
+#define IS_SINGLE_PLAYER Network::Networker::get()->isSinglePlayer()
 
 namespace Network
 {

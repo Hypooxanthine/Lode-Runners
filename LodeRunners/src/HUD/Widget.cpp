@@ -49,18 +49,18 @@ bool Widget::removeChild(Ref<Widget> child)
 	{
 		if (m_Children[i] == child)
 		{
-			m_Children[i]->m_Parent = nullptr;
+			m_Children[i]->m_Parent.reset();
 			m_Children.erase(m_Children.begin() + i);
 			return true;
 		}
 	}
-		return false;
+	return false;
 }
 
 void Widget::removeChildren()
 {
 	for (auto& c : m_Children)
-		c->m_Parent = nullptr;
+		c->m_Parent.reset();
 	m_Children.clear();
 }
 

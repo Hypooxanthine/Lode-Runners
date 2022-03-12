@@ -49,14 +49,13 @@ void LobbyState::onPlayerLogout(const size_t& id)
 	bool found = false;
 
 	// Removing player with playerID 'id' in m_Players.
-	for (size_t i = 0; i < m_Players.size() && !found; i++)
+	for (size_t i = m_Players.size(); i > 0 && !found; i--)
 	{
-		const auto& p = m_Players[i];
+		const auto& p = m_Players[i - 1];
 		if (p.first == id)
 		{
-			m_Players.erase(m_Players.begin() + i);
+			m_Players.erase(m_Players.begin() + i - 1);
 			found = true;
-			break;
 		}
 	}
 
@@ -64,7 +63,7 @@ void LobbyState::onPlayerLogout(const size_t& id)
 
 	// Removing TextWidgets.
 	m_HUD->removeChildren();
-	m_TextWidgets.clear();
+	//m_TextWidgets.clear();
 	m_NextTextWidgetPos.x = .1f;
 	m_NextTextWidgetPos.y = .1f;
 
@@ -81,7 +80,7 @@ void LobbyState::createPlayerTextWidget(const size_t& id, const std::string& nam
 	textWidget->setGlobalSize({ .1f, .05f });
 	textWidget->setCenterX(false);
 	textWidget->setText(name + " (" + std::to_string(id) + ")");
-	m_TextWidgets.push_back(textWidget);
+	//m_TextWidgets.push_back(textWidget);
 
 	m_NextTextWidgetPos += {0.f, .05f};
 }
