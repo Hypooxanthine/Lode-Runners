@@ -33,7 +33,7 @@ namespace Network
 			port,
 			[this](const size_t& GUID, ByteArray& args)
 			{
-				this->fillCallQueue(GUID, args);
+				this->fillCallQueue(ReplicationMode::NotReplicated, GUID, args);
 			}
 		);
 
@@ -74,7 +74,7 @@ namespace Network
 			port,
 			[this](const size_t& GUID, ByteArray& args)
 			{
-				this->fillCallQueue(GUID, args);
+				this->fillCallQueue(ReplicationMode::NotReplicated, GUID, args);
 			}
 		);
 
@@ -151,7 +151,7 @@ namespace Network
 		}
 		else if (mode == ReplicationMode::Multicast && m_InterfaceType == InterfaceType::Server)
 		{
-			// Function is first called locally by the replicated function to avoid unnecessary packing/unpacking in single-player mode.
+			m_ReplicatedFunctions.at(GUID)(args);
 			m_Server.send(GUID, args);
 		}
 		else if (mode == ReplicationMode::OnClients && m_InterfaceType == InterfaceType::Server)
@@ -162,13 +162,11 @@ namespace Network
 
 	void Networker::executeCallQueue()
 	{
-		std::lock_guard<std::mutex> lock(m_CallQueueMutex);
-
 		while (!m_CallQueue.empty())
 		{
-			auto& element = m_CallQueue.front();
+			auto& [mode, GUID, args] = m_CallQueue.front();
 
-			call(ReplicationMode::NotReplicated, element.first, element.second);
+			call(mode, GUID, args);
 			m_CallQueue.pop();
 		}
 	}
@@ -184,11 +182,9 @@ namespace Network
 		LOG_INFO("Networker reset.");
 	}
 
-	void Networker::fillCallQueue(const size_t& GUID, ByteArray& args)
+	void Networker::fillCallQueue(const ReplicationMode& mode, const size_t& GUID, ByteArray& args)
 	{
-		std::lock_guard<std::mutex> lock(m_CallQueueMutex);
-
-		m_CallQueue.emplace(GUID, args);
+		m_CallQueue.emplace(mode, GUID, args);
 	}
 
 }

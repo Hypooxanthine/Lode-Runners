@@ -55,8 +55,11 @@ namespace Network
 			LOG_INFO(logStr);
 			#endif
 
-			#define call_networker Networker::get()->call(mode, m_GUID, convertToBuffer(std::forward<Args>(args)...))
+			#define call_networker Networker::get()->fillCallQueue(mode, m_GUID, convertToBuffer(std::forward<Args>(args)...))
 			#define call_local m_Function(std::forward<Args>(args)...)
+
+			call_networker;
+			return;
 
 			switch (mode)
 			{

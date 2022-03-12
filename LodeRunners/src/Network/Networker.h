@@ -45,14 +45,13 @@ namespace Network
 
 		void registerFunc(std::function<void(ByteArray&)> func, const size_t& GUID);
 
-		void call(const ReplicationMode& mode, const size_t& GUID, ByteArray& args);
-
+		void fillCallQueue(const ReplicationMode& mode, const size_t& GUID, ByteArray& args);
 		void executeCallQueue();
 
 		void reset();
 
 	private: // Private methods
-		void fillCallQueue(const size_t& GUID, ByteArray& args);
+		void call(const ReplicationMode& mode, const size_t& GUID, ByteArray& args);
 
 	private: // Private members
 		static Networker* s_Instance;
@@ -61,8 +60,7 @@ namespace Network
 		Server m_Server;
 
 		std::unordered_map<size_t, std::function<void(ByteArray&)>> m_ReplicatedFunctions;
-		std::queue<std::pair<size_t, ByteArray>> m_CallQueue; // FIFO array for call stack.
-		std::mutex m_CallQueueMutex;
+		std::queue<std::tuple<ReplicationMode, size_t, ByteArray>> m_CallQueue; // FIFO array for call stack.
 
 		std::vector<std::function<void(const size_t&)>> m_OnPlayerLogoutCallbacks;
 
