@@ -55,41 +55,7 @@ namespace Network
 			LOG_INFO(logStr);
 			#endif
 
-			#define call_networker Networker::get()->fillCallQueue(mode, m_GUID, convertToBuffer(std::forward<Args>(args)...))
-			#define call_local m_Function(std::forward<Args>(args)...)
-
-			call_networker;
-			return;
-
-			switch (mode)
-			{
-			case ReplicationMode::NotReplicated:
-				call_local;
-				break;
-			case ReplicationMode::OnServer:
-				if(Networker::get()->isServer())
-					call_local;
-				else
-					call_networker;
-				break;
-			case ReplicationMode::OnClients:
-				if (Networker::get()->isServer() && !Networker::get()->isSinglePlayer()) // No unnecessary packing for single-player mode.
-					call_networker;
-				break;
-			case ReplicationMode::Multicast:
-				if (Networker::get()->isServer())
-				{
-					call_local;
-					if(!Networker::get()->isSinglePlayer()) // No unnecessary packing for single-player mode.
-						call_networker;
-				}
-				break;
-			default:
-				break;
-			}
-
-			#undef call_networker
-			#undef call_local
+			Networker::get()->fillCallQueue(mode, m_GUID, convertToBuffer(std::forward<Args>(args)...));
 		}
 
 		void call(Args&&... args) { this->call(m_Mode, args...); }
