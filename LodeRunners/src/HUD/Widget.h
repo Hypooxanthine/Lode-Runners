@@ -49,8 +49,11 @@ public:
 	/* HIERARCHY */
 
 	static void bindWidgets(Widget* child, Widget* parent);
+
 	void setParent(Widget* parent);
 	void addChild(Widget* child);
+
+	void removeFromParent();
 	bool removeChild(Widget* child);
 	void removeChildren();
 	Widget* getParent() { return m_Parent; }
@@ -103,6 +106,9 @@ protected: // Protected methods
 	virtual void onPositionUpdated() {}
 	virtual void onSizeUpdated() {}
 
+	sf::IntRect getViewport() const;
+	const sf::FloatRect& getRelativeViewport() const { return m_View->getViewport(); }
+
 private: // Private methods
 	void handleRays(CursorRay& ray);
 	// This function first updates children then updates "this". More explainations in implementation.
@@ -121,8 +127,6 @@ private: // Private methods
 	void renderChildren(Ref<sf::RenderWindow> window);
 	void updateChildrenPosition();
 	void updateChildrenSize();
-
-	sf::IntRect getViewport() const;
 
 private:
 	Widget* m_Parent = nullptr;

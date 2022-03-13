@@ -5,8 +5,10 @@
 
 class TextWidget : public Widget
 {
+	friend class TextBoxWidget;
 public:
 	TextWidget();
+	TextWidget(Widget* parent);
 
 	inline std::string getText() const { return m_FullText; }
 

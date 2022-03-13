@@ -2,12 +2,21 @@
 #include "../Assets/Assets.h"
 
 TextBoxWidget::TextBoxWidget()
-	: Widget()
+	: TextBoxWidget(nullptr)
+{}
+
+TextBoxWidget::TextBoxWidget(Widget* parent)
+	: Widget(parent)
 {
-	m_Font = MakeRef<FontAsset>(*Assets::getFontAsset());
-	m_Text.setFont(*m_Font);
-	this->setTextColor(sf::Color::Black);
-	m_Blinker.setFillColor(sf::Color::Black);
+	m_Button = MakeRef<ButtonWidget>(this, sf::Color(255, 255, 255), sf::Color(200, 200, 200), sf::Color(220, 220, 220));
+	m_Text = MakeRef<TextWidget>(m_Button.get());
+
+	m_Button->fillParent();
+	m_Text->fillParent();
+
+	m_Button->bindCallback([this]() {m_HasFocus = true; });
+
+	setTextColor(sf::Color::Black);
 }
 
 void TextBoxWidget::handleWidgetRay(CursorRay& ray)
@@ -15,13 +24,10 @@ void TextBoxWidget::handleWidgetRay(CursorRay& ray)
 	const sf::FloatRect buttonSurface = sf::FloatRect(getGlobalWorldPosition(), getGlobalWorldSize());
 
 	// If we just press anywhere but in the button rect, TextBox releases focus.
-	if (!m_WasPressed && ray.isPressed())
-	{
-		if (buttonSurface.contains(ray))
-			m_HasFocus = true;
-		else
+	if (!m_WasPressed 
+		&& ray.isPressed() 
+		&& !buttonSurface.contains(ray))
 			m_HasFocus = false;
-	}
 
 	m_WasPressed = ray.isPressed();
 }
@@ -33,71 +39,17 @@ void TextBoxWidget::updateWidget(const float& dt)
 		const Event& textEnteredEvent = Application::get()->getEvent(EventType::TextEntered);
 
 		if (textEnteredEvent)
-		{
-			m_Text.setString(m_Text.getString() + textEnteredEvent.text);
-			centerText();
-		}
+			setText(getText() + textEnteredEvent.text);
 
 		const Event& textErasedEvent = Application::get()->getEvent(EventType::TextErased);
 
 		if (textErasedEvent)
 		{
-			std::string t = m_Text.getString();
+			std::string t = getText();
 			if (t.size() > 0)
 				t.erase(t.size() - 1);
 
-			m_Text.setString(t);
-			centerText();
+			setText(t);
 		}
 	}
-}
-
-void TextBoxWidget::renderWidget(Ref<sf::RenderWindow> window)
-{
-	static sf::Clock clock;
-
-	window->draw(m_Shape);
-	window->draw(m_Text);
-
-	if (m_HasFocus)
-	{
-		if (clock.getElapsedTime().asSeconds() > .5f)
-		{
-			window->draw(m_Blinker);
-			if (clock.getElapsedTime().asSeconds() > 1.f)
-				clock.restart();
-		}
-	}
-}
-
-void TextBoxWidget::onPositionUpdated()
-{
-	m_Shape.setPosition(getGlobalWorldPosition());
-	centerText();
-}
-
-void TextBoxWidget::onSizeUpdated()
-{
-	m_Shape.setSize(getGlobalWorldSize());
-	centerText();
-}
-
-void TextBoxWidget::centerText()
-{
-	const auto pos = getGlobalWorldPosition();
-	const auto size = getGlobalWorldSize();
-	const auto textRect = m_Text.getLocalBounds();
-
-	m_Text.setCharacterSize((int)(30.f * (float)Application::get()->getWindow()->getSize().x / 1920.f));
-
-	// sf::Text bounds are not exactly placed at its position, so we have to fix this little difference ourselves.
-	m_Text.setPosition
-	(
-		pos.x + (size.x - textRect.width) / 2.f - textRect.left,
-		pos.y + (size.y - textRect.height) / 2.f - textRect.top
-	);
-
-	const auto globalTextRect = m_Text.getGlobalBounds();
-	m_Blinker.setSize({ (float)m_Text.getCharacterSize() / 8.f, textRect.height });
-	m_Blinker.setPosition({ globalTextRect.left + textRect.width + m_Blinker.getSize().x, globalTextRect.top });
 }

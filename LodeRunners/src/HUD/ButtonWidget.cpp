@@ -1,11 +1,19 @@
 #include "ButtonWidget.h"
 
 ButtonWidget::ButtonWidget()
-	: ButtonWidget({ 50, 50, 50 }, { 30, 30, 30 }, { 80, 80, 80 })
+	: ButtonWidget(nullptr)
 {}
 
 ButtonWidget::ButtonWidget(const sf::Color& normalCol, const sf::Color& hoveredCol, const sf::Color& pressedCol)
-	: Widget()
+	: ButtonWidget(nullptr, normalCol, hoveredCol, pressedCol)
+{}
+
+ButtonWidget::ButtonWidget(Widget* parent)
+	: ButtonWidget(parent, { 50, 50, 50 }, { 30, 30, 30 }, { 80, 80, 80 })
+{}
+
+ButtonWidget::ButtonWidget(Widget* parent, const sf::Color& normalCol, const sf::Color& hoveredCol, const sf::Color& pressedCol)
+	: Widget(parent)
 {
 	m_Colors[ButtonProfile::Normal] = normalCol;
 	m_Colors[ButtonProfile::Hovered] = hoveredCol;

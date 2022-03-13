@@ -1,14 +1,18 @@
 #include "Widget.h"
 
 Widget::Widget()
-{
-	setViewport({ 0.f, 0.f, 1.f, 1.f });
-	fillParent();
-}
+	: Widget(nullptr)
+{}
 
 Widget::Widget(Widget* parent)
 {
-	Widget::bindWidgets(this, parent);
+	if(parent)
+		Widget::bindWidgets(this, parent);
+	else
+	{
+		setViewport({ 0.f, 0.f, 1.f, 1.f });
+		fillParent();
+	}
 }
 
 void Widget::update(const float& dt)
@@ -56,12 +60,23 @@ void Widget::bindWidgets(Widget* child, Widget* parent)
 
 void Widget::setParent(Widget* parent)
 {
-	bindWidgets(this, parent);
+	if (parent)
+		bindWidgets(this, parent);
+	else
+		removeFromParent();
 }
 
 void Widget::addChild(Widget* child)
 {
-	bindWidgets(child, this);
+	if(child)
+		bindWidgets(child, this);
+}
+
+void Widget::removeFromParent()
+{
+	if (m_Parent)
+		m_Parent->removeChild(this);
+	m_Parent = nullptr;
 }
 
 bool Widget::removeChild(Widget* child)

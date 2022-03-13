@@ -1,32 +1,25 @@
 #pragma once
 
-#include "TextWidget.h"
-#include "ButtonWidget.h"
+#include "Widgets.h"
+
 class TextBoxWidget : public Widget
 {
 public:
 	TextBoxWidget();
+	TextBoxWidget(Widget* parent);
 
-	inline void setBackgroundColor(const sf::Color& col) { m_Shape.setFillColor(col); }
-	inline void setTextColor(const sf::Color& col) { m_Text.setFillColor(col); }
+	inline void setTextColor(const sf::Color& col) { m_Text->setColor(col); }
 
-	inline std::string getText() const { return m_Text.getString(); }
-	inline void setText(const std::string& str) { m_Text.setString(str); }
+	inline std::string getText() const { return m_Text->getText(); }
+	inline void setText(const std::string& str) { m_Text->setText(str); }
 
 protected: // Protected methods
 	virtual void handleWidgetRay(CursorRay& ray) override;
 	virtual void updateWidget(const float& dt) override;
-	virtual void renderWidget(Ref<sf::RenderWindow> window) override;
-	virtual void onPositionUpdated() override;
-	virtual void onSizeUpdated() override;
-
-	void centerText();
 
 private:
-	sf::RectangleShape m_Shape;
-	Ref<FontAsset> m_Font;
-	sf::Text m_Text;
-	sf::RectangleShape m_Blinker;
+	Ref<ButtonWidget> m_Button;
+	Ref<TextWidget> m_Text;
 
 	bool m_HasFocus = false;
 	bool m_WasPressed = false;

@@ -7,6 +7,8 @@ class ButtonWidget : public Widget
 public: // Public methods
 	ButtonWidget();
 	ButtonWidget(const sf::Color& normalCol, const sf::Color& hoveredCol, const sf::Color& pressedCol);
+	ButtonWidget(Widget* parent);
+	ButtonWidget(Widget* parent, const sf::Color& normalCol, const sf::Color& hoveredCol, const sf::Color& pressedCol);
 
 	inline void setNormalColor(const sf::Color& col)  { m_Colors[ButtonProfile::Normal]  = col; }
 	inline void setHoveredColor(const sf::Color& col) { m_Colors[ButtonProfile::Hovered] = col; }
