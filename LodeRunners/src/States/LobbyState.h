@@ -27,6 +27,9 @@ private: // Private methods
 	void launch(const Ref<LevelAsset>& level);
 
 private: // Private members
+
+	/* User interface */
+
 	Ref<Widget> m_HUD;
 	// Just an anchor that holds player texts
 	Ref<Widget> m_PlayersTextsAnchor;
@@ -34,12 +37,15 @@ private: // Private members
 	std::vector<Ref<TextWidget>> m_PlayersText;
 
 	Ref<LevelSelector> m_LevelSelector;
-	Ref<ButtonWidget> m_LaunchButton;
-	Ref<TextWidget> m_LaunchText;
+	Ref<TextButtonWidget> m_LaunchButton;
 
+	/* Players registering */
+
+	// Local player
 	size_t m_PlayerID;
 	std::string m_PlayerName;
 
+	// All logged players
 	std::vector<std::pair<size_t, std::string>> m_Players;
 	sf::Vector2f m_NextTextWidgetPos = { 0.f, 0.f };
 

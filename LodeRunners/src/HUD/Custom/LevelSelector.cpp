@@ -9,23 +9,15 @@ LevelSelector::LevelSelector()
 LevelSelector::LevelSelector(Widget* parent)
 	: Widget(parent)
 {
-	m_PreviousLevelButton = MakeRef<ButtonWidget>(this);
+	m_PreviousLevelButton = MakeRef<TextButtonWidget>(this, "<");
 	m_PreviousLevelButton->setRelativePosition({ 0.f, 0.f });
 	m_PreviousLevelButton->setRelativeSize({ .125f, 1.f });
 	m_PreviousLevelButton->bindCallback(BIND_FN(previousLevel));
 
-	m_NextLevelButton = MakeRef<ButtonWidget>(this);
+	m_NextLevelButton = MakeRef<TextButtonWidget>(this, ">");
 	m_NextLevelButton->setRelativePosition({ .875f, 0.f });
 	m_NextLevelButton->setRelativeSize({ .125f, 1.f });
 	m_NextLevelButton->bindCallback(BIND_FN(nextLevel));
-
-	m_PreviousLevelText = MakeRef<TextWidget>(m_PreviousLevelButton.get());
-	m_PreviousLevelText->fillParent();
-	m_PreviousLevelText->setText("<");
-
-	m_NextLevelText = MakeRef<TextWidget>(m_NextLevelButton.get());
-	m_NextLevelText->fillParent();
-	m_NextLevelText->setText(">");
 
 	m_LevelNameText = MakeRef<TextWidget>(this);
 	if (!AssetLoader::getAvailableLevels().empty())

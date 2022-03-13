@@ -8,7 +8,7 @@ public:
 	State() = default;
 
 	// To be overriden by children
-	virtual void init() {}
+	virtual void init() { onResize(); }
 	virtual void update(const float& dt) {}
 	virtual void render(Ref<sf::RenderWindow> window) {}
 	virtual void onResize() {}

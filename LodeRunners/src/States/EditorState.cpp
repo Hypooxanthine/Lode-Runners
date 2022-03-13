@@ -165,11 +165,6 @@ EditorState::EditorState()
 	onResize();
 }
 
-void EditorState::init()
-{
-	
-}
-
 void EditorState::update(const float& dt)
 {
 	if (Application::get()->getEvent(EventType::Escape))
@@ -274,38 +269,23 @@ EditorUI::EditorUI(Ref<LevelAsset>& levelRef)
 	m_HUD->setViewport(UI_VIEWPORT);
 	m_HUD->fillParent();
 
-	m_QuitButton = MakeRef<ButtonWidget>();
+	m_QuitButton = MakeRef<TextButtonWidget>("Quit");
 	m_QuitButton->setRelativePosition({ .04f, .1f });
 	m_QuitButton->setRelativeSize({ .1f, .8f });
 	m_QuitButton->bindCallback([]() { Application::get()->killState(); });
 	Widget::bindWidgets(m_QuitButton.get(), m_HUD.get());
-
-	m_QuitText = MakeRef<TextWidget>();
-	m_QuitText->fillParent();
-	m_QuitText->setText("Quit");
-	Widget::bindWidgets(m_QuitText.get(), m_QuitButton.get());
 	
-	m_PreviousLevelButton = MakeRef<ButtonWidget>();
+	m_PreviousLevelButton = MakeRef<TextButtonWidget>("<");
 	m_PreviousLevelButton->setRelativePosition({ .15f, .1f });
 	m_PreviousLevelButton->setRelativeSize({ .05f, .8f });
 	m_PreviousLevelButton->bindCallback(BIND_FN(previousLevel));
 	Widget::bindWidgets(m_PreviousLevelButton.get(), m_HUD.get());
 
-	m_NextLevelButton = MakeRef<ButtonWidget>();
+	m_NextLevelButton = MakeRef<TextButtonWidget>(">");
 	m_NextLevelButton->setRelativePosition({ .5f, .1f });
 	m_NextLevelButton->setRelativeSize({ .05f, .8f });
 	m_NextLevelButton->bindCallback(BIND_FN(nextLevel));
 	Widget::bindWidgets(m_NextLevelButton.get(), m_HUD.get());
-
-	m_PreviousLevelText = MakeRef<TextWidget>();
-	m_PreviousLevelText->fillParent();
-	m_PreviousLevelText->setText("<");
-	Widget::bindWidgets(m_PreviousLevelText.get(), m_PreviousLevelButton.get());
-
-	m_NextLevelText = MakeRef<TextWidget>();
-	m_NextLevelText->fillParent();
-	m_NextLevelText->setText(">");
-	Widget::bindWidgets(m_NextLevelText.get(), m_NextLevelButton.get());
 
 	m_LevelSelector = MakeRef<TextWidget>();
 	if (!AssetLoader::getAvailableLevels().empty())
@@ -317,38 +297,23 @@ EditorUI::EditorUI(Ref<LevelAsset>& levelRef)
 	m_LevelSelector->setRelativeSize({ .28f, .8f });
 	Widget::bindWidgets(m_LevelSelector.get(), m_HUD.get());
 
-	m_LoadButton = MakeRef<ButtonWidget>();
+	m_LoadButton = MakeRef<TextButtonWidget>("Load");
 	m_LoadButton->setRelativePosition({ .56f, .1f });
 	m_LoadButton->setRelativeSize({ .1f, .38f });
 	m_LoadButton->bindCallback(BIND_FN(loadLevel));
 	Widget::bindWidgets(m_LoadButton.get(), m_HUD.get());
 
-	m_LoadText = MakeRef<TextWidget>();
-	m_LoadText->fillParent();
-	m_LoadText->setText("Load");
-	Widget::bindWidgets(m_LoadText.get(), m_LoadButton.get());
-
-	m_SaveButton = MakeRef<ButtonWidget>();
+	m_SaveButton = MakeRef<TextButtonWidget>("Save");
 	m_SaveButton->setRelativePosition({ .56f, .52f });
 	m_SaveButton->setRelativeSize({ .1f, .38f });
 	m_SaveButton->bindCallback(BIND_FN(saveLevel));
 	Widget::bindWidgets(m_SaveButton.get(), m_HUD.get());
 
-	m_SaveText = MakeRef<TextWidget>();
-	m_SaveText->fillParent();
-	m_SaveText->setText("Save");
-	Widget::bindWidgets(m_SaveText.get(), m_SaveButton.get());
-
-	m_ClearButton = MakeRef<ButtonWidget>();
+	m_ClearButton = MakeRef<TextButtonWidget>("Clear");
 	m_ClearButton->setRelativePosition({ .67f, .1f });
 	m_ClearButton->setRelativeSize({ .1f, .8f });
 	m_ClearButton->bindCallback(BIND_FN(clearLevel));
 	Widget::bindWidgets(m_ClearButton.get(), m_HUD.get());
-
-	m_ClearText = MakeRef<TextWidget>();
-	m_ClearText->fillParent();
-	m_ClearText->setText("Clear");
-	Widget::bindWidgets(m_ClearText.get(), m_ClearButton.get());
 
 	m_CreateLevelBox = MakeRef<TextBoxWidget>();
 	m_CreateLevelBox->setText("Level name");
@@ -356,16 +321,11 @@ EditorUI::EditorUI(Ref<LevelAsset>& levelRef)
 	m_CreateLevelBox->setRelativeSize({ .2f, .38f });
 	Widget::bindWidgets(m_CreateLevelBox.get(), m_HUD.get());
 
-	m_CreateButton = MakeRef<ButtonWidget>();
+	m_CreateButton = MakeRef<TextButtonWidget>("Create");
 	m_CreateButton->setRelativePosition({ .78f, .5f });
 	m_CreateButton->setRelativeSize({ .2f, .38f });
 	m_CreateButton->bindCallback(BIND_FN(createLevel));
 	Widget::bindWidgets(m_CreateButton.get(), m_HUD.get());
-
-	m_CreateText = MakeRef<TextWidget>();
-	m_CreateText->setText("Create Level");
-	m_CreateText->fillParent();
-	Widget::bindWidgets(m_CreateText.get(), m_CreateButton.get());
 }
 
 void EditorUI::update(const float& dt)

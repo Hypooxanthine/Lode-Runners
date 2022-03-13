@@ -16,16 +16,11 @@ PreLobbyState::PreLobbyState()
 	m_TitleText->setBold();
 	m_TitleText->setText("Game creation");
 
-	m_CreateServerButton = MakeRef<ButtonWidget>();
+	m_CreateServerButton = MakeRef<TextButtonWidget>("Create server");
 	Widget::bindWidgets(m_CreateServerButton.get(), m_HUD.get());
 	m_CreateServerButton->setGlobalPosition({ .1f, .3f });
 	m_CreateServerButton->setGlobalSize({ .3f, .1f });
 	m_CreateServerButton->bindCallback(BIND_FN(createServer));
-
-	m_CreateServerText = MakeRef<TextWidget>();
-	Widget::bindWidgets(m_CreateServerText.get(), m_CreateServerButton.get());
-	m_CreateServerText->fillParent();
-	m_CreateServerText->setText("Create Server");
 
 	m_CreateServerPortText = MakeRef<TextWidget>();
 	Widget::bindWidgets(m_CreateServerPortText.get(), m_HUD.get());
@@ -51,16 +46,11 @@ PreLobbyState::PreLobbyState()
 	m_CreateServerMaxClientsTextBox->setGlobalSize({ .05f, .04f });
 	m_CreateServerMaxClientsTextBox->setText("1");
 
-	m_JoinServerButton = MakeRef<ButtonWidget>();
+	m_JoinServerButton = MakeRef<TextButtonWidget>("Join server");
 	Widget::bindWidgets(m_JoinServerButton.get(), m_HUD.get());
 	m_JoinServerButton->setGlobalPosition({ .1f, .45f });
 	m_JoinServerButton->setGlobalSize({ .3f, .1f });
 	m_JoinServerButton->bindCallback(BIND_FN(joinServer));
-
-	m_JoinServerText = MakeRef<TextWidget>();
-	Widget::bindWidgets(m_JoinServerText.get(), m_JoinServerButton.get());
-	m_JoinServerText->fillParent();
-	m_JoinServerText->setText("Join Server");
 
 	m_JoinServerAddressText = MakeRef<TextWidget>();
 	Widget::bindWidgets(m_JoinServerAddressText.get(), m_HUD.get());
@@ -96,11 +86,6 @@ PreLobbyState::PreLobbyState()
 
 PreLobbyState::~PreLobbyState()
 {
-}
-
-void PreLobbyState::init()
-{
-	onResize();
 }
 
 void PreLobbyState::update(const float& dt)

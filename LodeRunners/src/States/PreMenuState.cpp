@@ -32,7 +32,7 @@ PreMenuState::PreMenuState()
 	m_BodyText->setGlobalPosition({ .05f, .2f });
 	m_BodyText->setGlobalSize({ .9f, .5f });
 
-	m_LaunchButton = MakeRef<ButtonWidget>();
+	m_LaunchButton = MakeRef<TextButtonWidget>("Lancer le jeu.");
 	Widget::bindWidgets(m_LaunchButton.get(), m_HUD.get());
 	m_LaunchButton->setGlobalPosition({ .4f, .7f });
 	m_LaunchButton->setGlobalSize({ .2f, .1f });
@@ -42,21 +42,10 @@ PreMenuState::PreMenuState()
 			Application::get()->pushState(MakeRef<MainMenuState>());
 		});
 
-	m_LaunchText = MakeRef<TextWidget>();
-	Widget::bindWidgets(m_LaunchText.get(), m_LaunchButton.get());
-	m_LaunchText->fillParent();
-	m_LaunchText->setText("Lancer le jeu.");
-	m_LaunchText->setBold();
-
 	m_AnimShape.setFillColor(sf::Color::Black);
 	m_AnimShape.setPosition(0.f, 0.f);
 	m_AnimShape.setSize({1.f, 1.f});
 	m_View.reset({ 0.f, 0.f, 1.f, 1.f });
-}
-
-void PreMenuState::init()
-{
-
 }
 
 void PreMenuState::update(const float& dt)

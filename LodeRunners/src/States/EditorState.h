@@ -1,9 +1,7 @@
 #pragma once
 #include "States.h"
 #include "../Assets/Assets.h"
-#include "../HUD/Widget.h"
-#include "../HUD/TextWidget.h"
-#include "../HUD/TextBoxWidget.h"
+#include "../HUD/Widgets.h"
 
 class LevelAsset;
 
@@ -63,20 +61,14 @@ private: // Private members
 	Ref<Widget> m_HUD;
 	Ref<TextWidget> m_LevelSelector;
 	Ref<TextBoxWidget> m_CreateLevelBox;
-	Ref<ButtonWidget> m_QuitButton;
-	Ref<TextWidget> m_QuitText;
-	Ref<ButtonWidget> m_PreviousLevelButton;
-	Ref<TextWidget> m_PreviousLevelText;
-	Ref<ButtonWidget> m_NextLevelButton;
-	Ref<TextWidget> m_NextLevelText;
-	Ref<ButtonWidget> m_LoadButton;
-	Ref<TextWidget> m_LoadText;
-	Ref<ButtonWidget> m_SaveButton;
-	Ref<TextWidget> m_SaveText;
-	Ref<ButtonWidget> m_ClearButton;
-	Ref<TextWidget> m_ClearText;
-	Ref<ButtonWidget> m_CreateButton;
-	Ref<TextWidget> m_CreateText;
+
+	Ref<TextButtonWidget> m_QuitButton;
+	Ref<TextButtonWidget> m_PreviousLevelButton;
+	Ref<TextButtonWidget> m_NextLevelButton;
+	Ref<TextButtonWidget> m_LoadButton;
+	Ref<TextButtonWidget> m_SaveButton;
+	Ref<TextButtonWidget> m_ClearButton;
+	Ref<TextButtonWidget> m_CreateButton;
 
 	size_t m_SelectedLevel;
 	size_t m_LoadedLevel;
@@ -92,7 +84,6 @@ class EditorState : public State
 public:
 	EditorState();
 
-	virtual void init() override;
 	virtual void update(const float& dt) override;
 	virtual void render(Ref<sf::RenderWindow> window) override;
 

@@ -7,25 +7,24 @@ LobbyState::LobbyState(const size_t& id, const std::string& name)
 	m_HUD->setViewport({ 0.f, 0.f, 1.f, 1.f });
 	m_HUD->fillParent();
 
-	m_PlayersTextsAnchor = MakeRef<Widget>();
-	Widget::bindWidgets(m_PlayersTextsAnchor.get(), m_HUD.get());
+	m_PlayersTextsAnchor = MakeRef<Widget>(m_HUD.get());
 	m_PlayersTextsAnchor->setRelativePosition({ 0.f, .1f });
 	m_PlayersTextsAnchor->setRelativeSize({ 1.f, .8f });
 
-	m_TitleText = MakeRef<TextWidget>();
-	Widget::bindWidgets(m_TitleText.get(), m_HUD.get());
+	m_TitleText = MakeRef<TextWidget>(m_HUD.get());
 	m_TitleText->setRelativePosition({ .3f, 0.f });
 	m_TitleText->setRelativeSize({ .4f, .1f });
 	m_TitleText->setBold();
 	m_TitleText->setText("Lobby");
 
+	// UI for selecting the level to be played
 	if (IS_SERVER)
 	{
 		m_LevelSelector = MakeRef<LevelSelector>(m_HUD.get());
 		m_LevelSelector->setRelativePosition({ .1f, .85f });
 		m_LevelSelector->setRelativeSize({ .6f, .1f });
 
-		m_LaunchButton = MakeRef<ButtonWidget>(m_HUD.get());
+		m_LaunchButton = MakeRef<TextButtonWidget>(m_HUD.get(), "Launch");
 		m_LaunchButton->setRelativePosition({ .75f, .85f });
 		m_LaunchButton->setRelativeSize({ .2f, .1f });
 		m_LaunchButton->bindCallback
@@ -35,12 +34,9 @@ LobbyState::LobbyState(const size_t& id, const std::string& name)
 				sendLevelToAll_Multicast(*Assets::getLevelAsset(m_LevelSelector->getSelectedLevelName()));
 			}
 		);
-
-		m_LaunchText = MakeRef<TextWidget>(m_LaunchButton.get());
-		m_LaunchText->fillParent();
-		m_LaunchText->setText("Launch");
 	}
 
+	// When the server (client side) / a client (server side) logs out
 	if (IS_SERVER)
 		Network::Networker::get()->bindOnPlayerLogout([this](const size_t& id) { triggerOnPlayerLogoutForAll_OnServer(id); });
 	else
@@ -60,7 +56,7 @@ LobbyState::~LobbyState()
 
 void LobbyState::init()
 {
-	m_HUD->onResize();
+	State::init();
 
 	getLoggedPlayersFromAsker_OnServer(m_PlayerID);
 	trigerOnPlayerLoginForAll_OnServer(m_PlayerID, m_PlayerName);

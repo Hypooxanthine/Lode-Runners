@@ -23,9 +23,7 @@ private: // Private methods
 private: // Private members
 	Ref<TextWidget> m_LevelNameText;
 	Ref<ButtonWidget> m_PreviousLevelButton;
-	Ref<TextWidget> m_PreviousLevelText;
 	Ref<ButtonWidget> m_NextLevelButton;
-	Ref<TextWidget> m_NextLevelText;
 
 	size_t m_SelectedLevel = 0;
 	Style m_Style = Style::Normal;

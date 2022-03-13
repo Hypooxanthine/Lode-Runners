@@ -194,6 +194,7 @@
     <ClCompile Include="src\States\State.cpp" />
     <ClCompile Include="src\HUD\Widget.cpp" />
     <ClCompile Include="src\HUD\TextWidget.cpp" />
+    <ClCompile Include="src\HUD\TextButtonWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\HUD\Custom\LevelSelector.h" />
@@ -228,6 +229,7 @@
     <ClInclude Include="src\States\State.h" />
     <ClInclude Include="src\HUD\Widget.h" />
     <ClInclude Include="src\HUD\TextWidget.h" />
+    <ClInclude Include="src\HUD\TextButtonWidget.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config.xml" />
