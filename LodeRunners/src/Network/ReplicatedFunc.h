@@ -117,6 +117,8 @@ namespace Network
 		template<>
 		void deserializeArg(LevelAsset& receiver, ByteArray& buffer, size_t& cursor)
 		{
+			receiver.fill(TileType::Blank);
+
 			receiver.setName(deserializeArg<std::string>(buffer, cursor));
 
 			for (size_t i = 0; i < TILES_HEIGHT * TILES_WIDTH; i++)

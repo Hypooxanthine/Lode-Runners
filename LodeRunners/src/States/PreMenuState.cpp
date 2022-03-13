@@ -22,7 +22,7 @@ PreMenuState::PreMenuState()
 	m_BodyText->setText
 	(
 		"Ce programme est un build d'un projet universitaire, UE \"Systèmes d'Exploitation\", UFR Sciences & Techniques, Dijon.\n"
-		"Il s'agit d'un remake du jeu \"Lone Runner\", en réseau, avec un ou plusieurs joueurs alliés, et un nombre fixe d'ennemis,\n"
+		"Il s'agit d'un remake du jeu \"Lode Runner\", en réseau, avec un ou plusieurs joueurs alliés, et un nombre fixe d'ennemis,\n"
 		"dont tous peuvent être contrôlés, ou non, par des joueurs.\n\n"
 		"Professeurs encadrants : Annabelle Gillet, Eric Leclercq\n"
 		"Programmation : Alexandre Beaujon\n"

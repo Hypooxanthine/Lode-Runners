@@ -1,5 +1,7 @@
 #include "LobbyState.h"
 
+#include "GameState.h"
+
 LobbyState::LobbyState(const size_t& id, const std::string& name)
 	: State(), m_PlayerID(id), m_PlayerName(name)
 {
@@ -136,8 +138,9 @@ void LobbyState::createPlayerTextWidget(const size_t& id, const std::string& nam
 	m_NextTextWidgetPos += {0.f, .05f};
 }
 
-void LobbyState::launch(const Ref<LevelAsset>& level)
+void LobbyState::launch(Ref<LevelAsset> level)
 {
+	#ifdef _DEBUG
 	LOG_INFO("Level received. Name : " + level->getName());
 
 	for (size_t i = 0; i < level->getSize(); i++)
@@ -145,6 +148,9 @@ void LobbyState::launch(const Ref<LevelAsset>& level)
 		if (i % TILES_WIDTH == 0 && i != 0) std::cout << "\n";
 		std::cout << (short)(level->at(i)->getType()) << " ";
 	}
-
 	std::cout << "\n";
+
+	#endif
+
+	pushState(MakeRef<GameState>(level));
 }

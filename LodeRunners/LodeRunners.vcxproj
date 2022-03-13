@@ -167,6 +167,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\States\GameState.cpp" />
     <ClCompile Include="src\HUD\Custom\EditorManager.cpp" />
     <ClCompile Include="src\HUD\Custom\LevelSelector.cpp" />
     <ClCompile Include="src\States\LobbyState.cpp" />
@@ -198,6 +199,7 @@
     <ClCompile Include="src\HUD\TextButtonWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\States\GameState.h" />
     <ClInclude Include="src\HUD\Custom\EditorManager.h" />
     <ClInclude Include="src\HUD\Custom\LevelSelector.h" />
     <ClInclude Include="src\States\LobbyState.h" />

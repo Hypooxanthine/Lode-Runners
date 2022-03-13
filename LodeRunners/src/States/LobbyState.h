@@ -24,7 +24,7 @@ private: // Private methods
 
 	void createPlayerTextWidget(const size_t& id, const std::string& name);
 
-	void launch(const Ref<LevelAsset>& level);
+	void launch(Ref<LevelAsset> level);
 
 private: // Private members
 

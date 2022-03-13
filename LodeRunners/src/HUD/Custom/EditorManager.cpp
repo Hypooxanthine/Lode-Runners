@@ -70,8 +70,8 @@ void EditorManager::clearLevel()
 void EditorManager::createLevel()
 {
 	m_LevelRef = MakeRef<LevelAsset>();
-	m_LevelRef->setName(m_CreateLevelBox->getText());
 	m_LevelRef->fill(TileType::Blank);
+	m_LevelRef->setName(m_CreateLevelBox->getText());
 	saveLevel();
 
 	const auto& levels = AssetLoader::getAvailableLevels();
