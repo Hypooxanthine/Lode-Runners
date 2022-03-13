@@ -1,7 +1,7 @@
 #pragma once
 #include "States.h"
 #include "../Assets/Assets.h"
-#include "../HUD/Widgets.h"
+#include "../HUD/Custom/EditorManager.h"
 
 class LevelAsset;
 
@@ -36,49 +36,6 @@ private: // Private members
 	sf::RectangleShape m_SelectedHighlight;
 };
 
-class EditorUI
-{
-public:
-	EditorUI(Ref<LevelAsset>& levelRef);
-
-	void update(const float& dt);
-	void render(Ref<sf::RenderWindow> window);
-	void onResize();
-	void onEdited();
-
-private: // Private methods
-	// Callbacks
-	void previousLevel();
-	void nextLevel();
-	void updateSelectorStyle();
-
-	void loadLevel();
-	void saveLevel();
-	void clearLevel();
-	void createLevel();
-
-private: // Private members
-	Ref<Widget> m_HUD;
-	Ref<TextWidget> m_LevelSelector;
-	Ref<TextBoxWidget> m_CreateLevelBox;
-
-	Ref<TextButtonWidget> m_QuitButton;
-	Ref<TextButtonWidget> m_PreviousLevelButton;
-	Ref<TextButtonWidget> m_NextLevelButton;
-	Ref<TextButtonWidget> m_LoadButton;
-	Ref<TextButtonWidget> m_SaveButton;
-	Ref<TextButtonWidget> m_ClearButton;
-	Ref<TextButtonWidget> m_CreateButton;
-
-	size_t m_SelectedLevel;
-	size_t m_LoadedLevel;
-	// When a loaded level is edited, we need to know it to change its color, letting the user know its work has not been saved yet.
-	bool m_Edited = false;
-
-	Ref<LevelAsset>& m_LevelRef;
-
-};
-
 class EditorState : public State
 {
 public:
@@ -91,7 +48,7 @@ public:
 
 private:
 	EditorToolkit m_Toolkit;
-	EditorUI m_UI;
+	Ref<EditorManager> m_Manager;
 
 	Ref<LevelAsset> m_LevelAsset;
 

@@ -8,7 +8,9 @@
 class EditorManager : public Widget
 {
 public:
-	EditorManager(LevelAsset* levelRef);
+	EditorManager(Ref<LevelAsset>& levelRef);
+
+	void onEdited() { m_LevelSelector->setEdited(true); }
 
 private: // Private methods
 	// Callbacks
@@ -29,6 +31,6 @@ private: // Private members
 	Ref<TextBoxWidget> m_CreateLevelBox;
 	Ref<TextButtonWidget> m_CreateButton;
 
-	LevelAsset*& m_LevelRef;
+	Ref<LevelAsset>& m_LevelRef;
 };
 

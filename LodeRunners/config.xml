@@ -88,29 +88,30 @@
             <Skin name="skin1" layout="default" fileName="skintest.png" font="default"/>
         </Skins>
     </Spritesheets>
+	
     <Fonts>
         <Font name="default" fileName="font_default.ttf"/>
     </Fonts>
+	
     <Levels>
         <Level name="Level 1" fileName="Level_1.txt"/>
         <Level name="Level 2" fileName="Level_2.txt"/>
         <Level name="Level 3" fileName="Level_3.txt"/>
     </Levels>
+	
     <Paths>
         <!-- Please type slash terminated addresses. -->
         <Skins path="Resources/Skins/"/>
         <Fonts path="Resources/Fonts/"/>
         <Levels path="Resources/Levels/"/>
     </Paths>
+	
     <Settings>
         <Skin selected="default"/>
         <Audio volume="0.5"/>
         <Animation time="0.5"/>
     </Settings>
+	
     <Network>
-        <!-- GlobalServer is matchmaking and ladder server. You can type your own server adress. -->
-        <GlobalServer ip="127.0.0.1" port="60000"/>
-        <!-- Port used when creating a lobby. -->
-        <ServerSetup port="60000"/>
     </Network>
 </App>

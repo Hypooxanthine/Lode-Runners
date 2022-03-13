@@ -30,8 +30,8 @@ private: // Private members
 	Ref<ButtonWidget> m_PreviousLevelButton;
 	Ref<ButtonWidget> m_NextLevelButton;
 
-	size_t m_SelectedLevel;
-	std::optional<size_t> m_LoadedLevel = 0;
+	size_t m_SelectedLevel = 0;
+	std::optional<size_t> m_LoadedLevel;
 	bool m_Edited = false;
 };
 

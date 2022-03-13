@@ -47,9 +47,10 @@ void LevelSelector::nextLevel()
 
 void LevelSelector::updateStyle()
 {
+	m_LevelNameText->setText(AssetLoader::getAvailableLevels()[m_SelectedLevel].first);
+
 	if (m_LoadedLevel.has_value() && m_SelectedLevel == m_LoadedLevel)
 	{
-		m_LevelNameText->setText(AssetLoader::getAvailableLevels()[m_SelectedLevel].first);
 		m_LevelNameText->setColor(m_Edited ? sf::Color::Color(255, 127, 0) : sf::Color::Green);
 		m_LevelNameText->setBold();
 	}
