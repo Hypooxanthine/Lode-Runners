@@ -11,6 +11,8 @@ public:
 	LevelAsset();
 	LevelAsset(const LevelAsset& other); // Copy constructor has to be redefined
 
+	LevelAsset& operator=(const LevelAsset & other);
+
 	void fill(const TileType& type);
 
 	inline const std::string& getName() const { return m_Name; }

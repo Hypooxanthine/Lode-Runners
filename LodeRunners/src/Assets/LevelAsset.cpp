@@ -12,9 +12,16 @@ LevelAsset::LevelAsset()
 
 LevelAsset::LevelAsset(const LevelAsset& other)
 {
+	*this = other;
+}
+
+LevelAsset& LevelAsset::operator=(const LevelAsset& other)
+{
 	for (size_t i = 0; i < other.getSize(); i++)
 		m_Data[i] = MakeRef<SpriteAsset>(*other.m_Data[i]);
 	m_Name = other.getName();
+
+	return *this;
 }
 
 void LevelAsset::fill(const TileType& type)

@@ -4,20 +4,25 @@
 class LevelSelector : public Widget
 {
 public:
-	enum class Style { Normal, Loaded, Edited };
-public:
 	LevelSelector();
 	LevelSelector(Widget* parent);
 
-	//const size_t& getSelectedLevel() const { return m_SelectedLevel; }
+	size_t getSelectedLevelIndex() const { return m_SelectedLevel; }
 	std::string getSelectedLevelName() const { return m_LevelNameText->getText(); }
+	void setSelectedLevelIndex(const size_t& val) { m_SelectedLevel = val; updateStyle(); }
 
-	void setStyle(const Style& style) { m_Style = style; updateStyle(); }
+	const bool& isEdited() const { return m_Edited; }
+	void setEdited(const bool& val) { m_Edited = val; updateStyle(); }
+
+	const std::optional<size_t>& getLoadedLevel() const { return m_LoadedLevel; }
+	void setLoadedLevel(const size_t& val) { m_LoadedLevel = val; updateStyle(); }
+	void setLoadedLevel() { setLoadedLevel(m_SelectedLevel); }
 
 private: // Private methods
 	// Callbacks
 	void previousLevel();
 	void nextLevel();
+
 	void updateStyle();
 
 private: // Private members
@@ -25,7 +30,8 @@ private: // Private members
 	Ref<ButtonWidget> m_PreviousLevelButton;
 	Ref<ButtonWidget> m_NextLevelButton;
 
-	size_t m_SelectedLevel = 0;
-	Style m_Style = Style::Normal;
+	size_t m_SelectedLevel;
+	std::optional<size_t> m_LoadedLevel = 0;
+	bool m_Edited = false;
 };
 
