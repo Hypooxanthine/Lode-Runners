@@ -2,7 +2,7 @@
 
 #include "State.h"
 
-#include "../HUD/Widget.h"
+#include "../HUD/Widgets.h"
 
 class MainMenuState : public State
 {
@@ -16,6 +16,11 @@ public:
 
 private:
 	Ref<Widget> m_HUD;
-
+	Ref<ButtonWidget> m_PlayButton;
+	Ref<TextWidget> m_PlayText;
+	Ref<ButtonWidget> m_EditorButton;
+	Ref<TextWidget> m_EditorText;
+	Ref<ButtonWidget> m_SettingsButton;
+	Ref<TextWidget> m_SettingsText;
 };
 

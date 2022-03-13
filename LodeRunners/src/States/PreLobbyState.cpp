@@ -9,85 +9,85 @@ PreLobbyState::PreLobbyState()
 	m_HUD->setViewport({ 0.f, 0.f, 1.f, 1.f });
 	m_HUD->fillParent();
 
-	auto titleText = MakeRef<TextWidget>();
-	Widget::addChild(titleText, m_HUD);
-	titleText->setGlobalPosition({ .3f, .05f });
-	titleText->setGlobalSize({ .4f, .1f });
-	titleText->setBold();
-	titleText->setText("Game creation");
+	m_TitleText = MakeRef<TextWidget>();
+	Widget::bindWidgets(m_TitleText.get(), m_HUD.get());
+	m_TitleText->setGlobalPosition({ .3f, .05f });
+	m_TitleText->setGlobalSize({ .4f, .1f });
+	m_TitleText->setBold();
+	m_TitleText->setText("Game creation");
 
-	auto createServerButton = MakeRef<ButtonWidget>();
-	Widget::addChild(createServerButton, m_HUD);
-	createServerButton->setGlobalPosition({ .1f, .3f });
-	createServerButton->setGlobalSize({ .3f, .1f });
-	createServerButton->bindCallback(BIND_FN(createServer));
+	m_CreateServerButton = MakeRef<ButtonWidget>();
+	Widget::bindWidgets(m_CreateServerButton.get(), m_HUD.get());
+	m_CreateServerButton->setGlobalPosition({ .1f, .3f });
+	m_CreateServerButton->setGlobalSize({ .3f, .1f });
+	m_CreateServerButton->bindCallback(BIND_FN(createServer));
 
-	auto createServerText = MakeRef<TextWidget>();
-	Widget::addChild(createServerText, createServerButton);
-	createServerText->fillParent();
-	createServerText->setText("Create Server");
+	m_CreateServerText = MakeRef<TextWidget>();
+	Widget::bindWidgets(m_CreateServerText.get(), m_CreateServerButton.get());
+	m_CreateServerText->fillParent();
+	m_CreateServerText->setText("Create Server");
 
-	auto createServerPortText = MakeRef<TextWidget>();
-	Widget::addChild(createServerPortText, m_HUD);
-	createServerPortText->setGlobalPosition({ .45f, .3f });
-	createServerPortText->setGlobalSize({ .05f, .04f });
-	createServerPortText->setText("Port");
+	m_CreateServerPortText = MakeRef<TextWidget>();
+	Widget::bindWidgets(m_CreateServerPortText.get(), m_HUD.get());
+	m_CreateServerPortText->setGlobalPosition({ .45f, .3f });
+	m_CreateServerPortText->setGlobalSize({ .05f, .04f });
+	m_CreateServerPortText->setText("Port");
 
 	m_CreateServerPortTextBox = MakeRef<TextBoxWidget>();
-	Widget::addChild(m_CreateServerPortTextBox, m_HUD);
+	Widget::bindWidgets(m_CreateServerPortTextBox.get(), m_HUD.get());
 	m_CreateServerPortTextBox->setGlobalPosition({ .45f, .36f });
 	m_CreateServerPortTextBox->setGlobalSize({ .05f, .04f });
 	m_CreateServerPortTextBox->setText("80");
 
-	auto createServerMaxClientsText = MakeRef<TextWidget>();
-	Widget::addChild(createServerMaxClientsText, m_HUD);
-	createServerMaxClientsText->setGlobalPosition({ .55f, .3f });
-	createServerMaxClientsText->setGlobalSize({ .05f, .04f });
-	createServerMaxClientsText->setText("Max clients");
+	m_CreateServerMaxClientsText = MakeRef<TextWidget>();
+	Widget::bindWidgets(m_CreateServerMaxClientsText.get(), m_HUD.get());
+	m_CreateServerMaxClientsText->setGlobalPosition({ .55f, .3f });
+	m_CreateServerMaxClientsText->setGlobalSize({ .05f, .04f });
+	m_CreateServerMaxClientsText->setText("Max clients");
 
 	m_CreateServerMaxClientsTextBox = MakeRef<TextBoxWidget>();
-	Widget::addChild(m_CreateServerMaxClientsTextBox, m_HUD);
+	Widget::bindWidgets(m_CreateServerMaxClientsTextBox.get(), m_HUD.get());
 	m_CreateServerMaxClientsTextBox->setGlobalPosition({ .55f, .36f });
 	m_CreateServerMaxClientsTextBox->setGlobalSize({ .05f, .04f });
 	m_CreateServerMaxClientsTextBox->setText("1");
 
-	auto joinServerButton = MakeRef<ButtonWidget>();
-	Widget::addChild(joinServerButton, m_HUD);
-	joinServerButton->setGlobalPosition({ .1f, .45f });
-	joinServerButton->setGlobalSize({ .3f, .1f });
-	joinServerButton->bindCallback(BIND_FN(joinServer));
+	m_JoinServerButton = MakeRef<ButtonWidget>();
+	Widget::bindWidgets(m_JoinServerButton.get(), m_HUD.get());
+	m_JoinServerButton->setGlobalPosition({ .1f, .45f });
+	m_JoinServerButton->setGlobalSize({ .3f, .1f });
+	m_JoinServerButton->bindCallback(BIND_FN(joinServer));
 
-	auto joinServerText = MakeRef<TextWidget>();
-	Widget::addChild(joinServerText, joinServerButton);
-	joinServerText->fillParent();
-	joinServerText->setText("Join Server");
+	m_JoinServerText = MakeRef<TextWidget>();
+	Widget::bindWidgets(m_JoinServerText.get(), m_JoinServerButton.get());
+	m_JoinServerText->fillParent();
+	m_JoinServerText->setText("Join Server");
 
-	auto joinServerAddressText = MakeRef<TextWidget>();
-	Widget::addChild(joinServerAddressText, m_HUD);
-	joinServerAddressText->setGlobalPosition({ .45f, .45f });
-	joinServerAddressText->setGlobalSize({ .1f, .04f });
-	joinServerAddressText->setText("Address");
+	m_JoinServerAddressText = MakeRef<TextWidget>();
+	Widget::bindWidgets(m_JoinServerAddressText.get(), m_HUD.get());
+	m_JoinServerAddressText->setGlobalPosition({ .45f, .45f });
+	m_JoinServerAddressText->setGlobalSize({ .1f, .04f });
+	m_JoinServerAddressText->setText("Address");
 
 	m_JoinServerAddressTextBox = MakeRef<TextBoxWidget>();
-	Widget::addChild(m_JoinServerAddressTextBox, m_HUD);
+	Widget::bindWidgets(m_JoinServerAddressTextBox.get(), m_HUD.get());
 	m_JoinServerAddressTextBox->setGlobalPosition({ .45f, .51f });
 	m_JoinServerAddressTextBox->setGlobalSize({ .1f, .04f });
 	m_JoinServerAddressTextBox->setText("localhost");
 
-	auto joinServerPortText = MakeRef<TextWidget>();
-	Widget::addChild(joinServerPortText, m_HUD);
-	joinServerPortText->setGlobalPosition({ .6f, .45f });
-	joinServerPortText->setGlobalSize({ .05f, .04f });
-	joinServerPortText->setText("Port");
+	m_JoinServerPortText = MakeRef<TextWidget>();
+	Widget::bindWidgets(m_JoinServerPortText.get(), m_HUD.get());
+	m_JoinServerPortText->setGlobalPosition({ .6f, .45f });
+	m_JoinServerPortText->setGlobalSize({ .05f, .04f });
+	m_JoinServerPortText->setText("Port");
 
 	m_JoinServerPortTextBox = MakeRef<TextBoxWidget>();
-	Widget::addChild(m_JoinServerPortTextBox, m_HUD);
+	Widget::bindWidgets(m_JoinServerPortTextBox.get(), m_HUD.get());
 	m_JoinServerPortTextBox->setGlobalPosition({ .6f, .51f });
 	m_JoinServerPortTextBox->setGlobalSize({ .05f, .04f });
 	m_JoinServerPortTextBox->setText("80");
 
 	m_PlayerNameTextBox = MakeRef<TextBoxWidget>();
-	Widget::addChild(m_PlayerNameTextBox, m_HUD);
+	Widget::bindWidgets(m_PlayerNameTextBox.get(), m_HUD.get());
 	m_PlayerNameTextBox->setGlobalPosition({ .3f, .7f });
 	m_PlayerNameTextBox->setGlobalSize({ .4f, .1f });
 	m_PlayerNameTextBox->setText("Player Name");

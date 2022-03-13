@@ -25,7 +25,7 @@ private: // Private methods
 
 	Ref<SpriteAsset> getHoveredTile();
 
-private: // Private attributes
+private: // Private members
 	sf::View m_ToolkitView;
 
 	std::vector<Ref<SpriteAsset>> m_Tiles;
@@ -63,6 +63,20 @@ private: // Private members
 	Ref<Widget> m_HUD;
 	Ref<TextWidget> m_LevelSelector;
 	Ref<TextBoxWidget> m_CreateLevelBox;
+	Ref<ButtonWidget> m_QuitButton;
+	Ref<TextWidget> m_QuitText;
+	Ref<ButtonWidget> m_PreviousLevelButton;
+	Ref<TextWidget> m_PreviousLevelText;
+	Ref<ButtonWidget> m_NextLevelButton;
+	Ref<TextWidget> m_NextLevelText;
+	Ref<ButtonWidget> m_LoadButton;
+	Ref<TextWidget> m_LoadText;
+	Ref<ButtonWidget> m_SaveButton;
+	Ref<TextWidget> m_SaveText;
+	Ref<ButtonWidget> m_ClearButton;
+	Ref<TextWidget> m_ClearText;
+	Ref<ButtonWidget> m_CreateButton;
+	Ref<TextWidget> m_CreateText;
 
 	size_t m_SelectedLevel;
 	size_t m_LoadedLevel;

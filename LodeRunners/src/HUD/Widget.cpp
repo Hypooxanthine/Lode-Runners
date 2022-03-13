@@ -1,5 +1,16 @@
 #include "Widget.h"
 
+Widget::Widget()
+{
+	setViewport({ 0.f, 0.f, 1.f, 1.f });
+	fillParent();
+}
+
+Widget::Widget(Widget* parent)
+{
+	Widget::bindWidgets(this, parent);
+}
+
 void Widget::update(const float& dt)
 {
 	static CursorRay ray; // Instanciated once.
@@ -33,7 +44,7 @@ void Widget::onResize()
 
 /* HIERARCHY */
 
-void Widget::addChild(Ref<Widget> child, Ref<Widget> parent)
+void Widget::bindWidgets(Widget* child, Widget* parent)
 {
 	parent->m_Children.push_back(child);
 	child->m_Parent = parent;
@@ -43,13 +54,23 @@ void Widget::addChild(Ref<Widget> child, Ref<Widget> parent)
 	child->updateSizes();
 }
 
-bool Widget::removeChild(Ref<Widget> child)
+void Widget::setParent(Widget* parent)
+{
+	bindWidgets(this, parent);
+}
+
+void Widget::addChild(Widget* child)
+{
+	bindWidgets(child, this);
+}
+
+bool Widget::removeChild(Widget* child)
 {
 	for (size_t i = 0; i < m_Children.size(); i++)
 	{
 		if (m_Children[i] == child)
 		{
-			m_Children[i]->m_Parent.reset();
+			m_Children[i]->m_Parent = nullptr;
 			m_Children.erase(m_Children.begin() + i);
 			return true;
 		}
@@ -60,7 +81,7 @@ bool Widget::removeChild(Ref<Widget> child)
 void Widget::removeChildren()
 {
 	for (auto& c : m_Children)
-		c->m_Parent.reset();
+		c->m_Parent = nullptr;
 	m_Children.clear();
 }
 

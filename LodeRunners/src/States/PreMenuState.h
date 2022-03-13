@@ -1,7 +1,7 @@
 #pragma once
 
 #include "State.h"
-#include "../HUD/Widget.h"
+#include "../HUD/Widgets.h"
 
 class PreMenuState : public State
 {
@@ -17,6 +17,10 @@ private: // Private methods
 
 private: // Private members
 	Ref<Widget> m_HUD;
+	Ref<TextWidget> m_TitleText;
+	Ref<TextWidget> m_BodyText;
+	Ref<ButtonWidget> m_LaunchButton;
+	Ref<TextWidget> m_LaunchText;
 
 	sf::RectangleShape m_AnimShape;
 	float m_AnimEllapsedTime = 0.f;

@@ -37,7 +37,8 @@ private:
 class Widget
 {
 public:
-	Widget() = default;
+	Widget();
+	Widget(Widget* parent);
 
 	// This function first calculates a CursorRay then calls update(const float&, CursorRay&).
 	void update(const float& dt);
@@ -47,10 +48,12 @@ public:
 
 	/* HIERARCHY */
 
-	static void addChild(Ref<Widget> child, Ref<Widget> parent);
-	bool removeChild(Ref<Widget> child);
+	static void bindWidgets(Widget* child, Widget* parent);
+	void setParent(Widget* parent);
+	void addChild(Widget* child);
+	bool removeChild(Widget* child);
 	void removeChildren();
-	Ref<Widget> getParent() { return m_Parent; }
+	Widget* getParent() { return m_Parent; }
 
 	/* POSITIONS */
 
@@ -122,8 +125,8 @@ private: // Private methods
 	sf::IntRect getViewport() const;
 
 private:
-	Ref<Widget> m_Parent = nullptr;
-	std::vector<Ref<Widget>> m_Children;
+	Widget* m_Parent = nullptr;
+	std::vector<Widget*> m_Children;
 
 	Ref<sf::View> m_View = MakeRef<sf::View>();
 

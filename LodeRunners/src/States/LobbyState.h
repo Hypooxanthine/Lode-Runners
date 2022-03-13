@@ -25,9 +25,10 @@ private: // Private methods
 
 private: // Private members
 	Ref<Widget> m_HUD;
-
 	// Just an anchor that holds player texts
-	Ref<Widget> m_PlayersTexts;
+	Ref<Widget> m_PlayersTextsAnchor;
+	Ref<TextWidget> m_TitleText;
+	std::vector<Ref<TextWidget>> m_PlayersText;
 
 	size_t m_PlayerID;
 	std::string m_PlayerName;

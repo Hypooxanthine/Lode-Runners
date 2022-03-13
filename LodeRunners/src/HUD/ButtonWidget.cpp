@@ -5,6 +5,7 @@ ButtonWidget::ButtonWidget()
 {}
 
 ButtonWidget::ButtonWidget(const sf::Color& normalCol, const sf::Color& hoveredCol, const sf::Color& pressedCol)
+	: Widget()
 {
 	m_Colors[ButtonProfile::Normal] = normalCol;
 	m_Colors[ButtonProfile::Hovered] = hoveredCol;

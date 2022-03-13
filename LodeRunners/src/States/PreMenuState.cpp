@@ -2,27 +2,24 @@
 
 #include "MainMenuState.h"
 
-#include "../HUD/TextWidget.h"
-#include "../HUD/ButtonWidget.h"
-
 PreMenuState::PreMenuState()
 {
 	m_HUD = MakeRef<Widget>();
 	m_HUD->setViewport({ 0.f, 0.f, 1.f, 1.f });
 	m_HUD->fillParent();
 
-	auto titleText = MakeRef<TextWidget>();
-	Widget::addChild(titleText, m_HUD);
-	titleText->setGlobalPosition({ .3f, .05f });
-	titleText->setGlobalSize({ .4f, .05f });
-	titleText->setText("Lode Runners");
-	titleText->setColor(sf::Color::White);
-	titleText->setBold();
+	m_TitleText = MakeRef<TextWidget>();
+	Widget::bindWidgets(m_TitleText.get(), m_HUD.get());
+	m_TitleText->setGlobalPosition({ .3f, .05f });
+	m_TitleText->setGlobalSize({ .4f, .05f });
+	m_TitleText->setText("Lode Runners");
+	m_TitleText->setColor(sf::Color::White);
+	m_TitleText->setBold();
 
-	auto bodyText = MakeRef<TextWidget>();
-	Widget::addChild(bodyText, m_HUD);
-	bodyText->setColor(sf::Color::White);
-	bodyText->setText
+	m_BodyText = MakeRef<TextWidget>();
+	Widget::bindWidgets(m_BodyText.get(), m_HUD.get());
+	m_BodyText->setColor(sf::Color::White);
+	m_BodyText->setText
 	(
 		"Ce programme est un build d'un projet universitaire, UE \"Systèmes d'Exploitation\", UFR Sciences & Techniques, Dijon.\n"
 		"Il s'agit d'un remake du jeu \"Lone Runner\", en réseau, avec un ou plusieurs joueurs alliés, et un nombre fixe d'ennemis,\n"
@@ -32,24 +29,24 @@ PreMenuState::PreMenuState()
 		"Textures du skin \"default\" : Guillaume Côte\n"
 		"Police par défaut : fontsquirrel.com"
 	);
-	bodyText->setGlobalPosition({ .05f, .2f });
-	bodyText->setGlobalSize({ .9f, .5f });
+	m_BodyText->setGlobalPosition({ .05f, .2f });
+	m_BodyText->setGlobalSize({ .9f, .5f });
 
-	auto launchButton = MakeRef<ButtonWidget>();
-	Widget::addChild(launchButton, m_HUD);
-	launchButton->setGlobalPosition({ .4f, .7f });
-	launchButton->setGlobalSize({ .2f, .1f });
-	launchButton->bindCallback([this]()
+	m_LaunchButton = MakeRef<ButtonWidget>();
+	Widget::bindWidgets(m_LaunchButton.get(), m_HUD.get());
+	m_LaunchButton->setGlobalPosition({ .4f, .7f });
+	m_LaunchButton->setGlobalSize({ .2f, .1f });
+	m_LaunchButton->bindCallback([this]()
 		{
 			Application::get()->killState();
 			Application::get()->pushState(MakeRef<MainMenuState>());
 		});
 
-	auto launchText = MakeRef<TextWidget>();
-	Widget::addChild(launchText, launchButton);
-	launchText->fillParent();
-	launchText->setText("Lancer le jeu.");
-	launchText->setBold();
+	m_LaunchText = MakeRef<TextWidget>();
+	Widget::bindWidgets(m_LaunchText.get(), m_LaunchButton.get());
+	m_LaunchText->fillParent();
+	m_LaunchText->setText("Lancer le jeu.");
+	m_LaunchText->setBold();
 
 	m_AnimShape.setFillColor(sf::Color::Black);
 	m_AnimShape.setPosition(0.f, 0.f);

@@ -2,11 +2,13 @@
 #include "../Assets/Assets.h"
 
 TextWidget::TextWidget()
+	: Widget()
 {
 	// xmemory exception when static FontAsset (from Assets class) is given to sf::Text::setFont(const sf::Font&). I don't really know why. Have to check SFML source to see if there is any problem with static references to sf::Font.
 	// This solution implies a loss of performance. Need to figure it out.
 	m_Font = MakeRef<FontAsset>(*Assets::getFontAsset());
 	m_Text.setFont(*m_Font);
+	updateText();
 }
 
 void TextWidget::setText(const std::string& text)

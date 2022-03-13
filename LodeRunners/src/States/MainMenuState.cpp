@@ -3,55 +3,52 @@
 #include "EditorState.h"
 #include "PreLobbyState.h"
 
-#include "../HUD/ButtonWidget.h"
-#include "../HUD/TextWidget.h"
-
 MainMenuState::MainMenuState()
 {
 	m_HUD = MakeRef<Widget>();
 	m_HUD->setViewport({ 0.f, 0.f, 1.f, 1.f });
 	m_HUD->fillParent();
 	
-	auto playButton = MakeRef<ButtonWidget>();
-	Widget::addChild(playButton, m_HUD);
-	playButton->setGlobalPosition({ .35f, .3f });
-	playButton->setGlobalSize({ .3f, .1f });
-	playButton->bindCallback([this]()
+	m_PlayButton = MakeRef<ButtonWidget>();
+	Widget::bindWidgets(m_PlayButton.get(), m_HUD.get());
+	m_PlayButton->setGlobalPosition({ .35f, .3f });
+	m_PlayButton->setGlobalSize({ .3f, .1f });
+	m_PlayButton->bindCallback([this]()
 		{
 			this->pushState(MakeRef<PreLobbyState>());
 		});
 	
-	auto playText = MakeRef<TextWidget>();
-	Widget::addChild(playText, playButton);
-	playText->fillParent();
-	playText->setBold();
-	playText->setText("Play");
+	m_PlayText = MakeRef<TextWidget>();
+	Widget::bindWidgets(m_PlayText.get(), m_PlayButton.get());
+	m_PlayText->fillParent();
+	m_PlayText->setBold();
+	m_PlayText->setText("Play");
 
-	auto editorButton = MakeRef<ButtonWidget>();
-	Widget::addChild(editorButton, m_HUD);
-	editorButton->setGlobalPosition({ .35f, .45f });
-	editorButton->setGlobalSize({ .3f, .1f });
-	editorButton->bindCallback([this]()
+	m_EditorButton = MakeRef<ButtonWidget>();
+	Widget::bindWidgets(m_EditorButton.get(), m_HUD.get());
+	m_EditorButton->setGlobalPosition({ .35f, .45f });
+	m_EditorButton->setGlobalSize({ .3f, .1f });
+	m_EditorButton->bindCallback([this]()
 		{
 			this->pushState(MakeRef<EditorState>());
 		});
 
-	auto editorText = MakeRef<TextWidget>();
-	Widget::addChild(editorText, editorButton);
-	editorText->fillParent();
-	editorText->setBold();
-	editorText->setText("Level Editor");
+	m_EditorText = MakeRef<TextWidget>();
+	Widget::bindWidgets(m_EditorText.get(), m_EditorButton.get());
+	m_EditorText->fillParent();
+	m_EditorText->setBold();
+	m_EditorText->setText("Level Editor");
 
-	auto settingsButton = MakeRef<ButtonWidget>();
-	Widget::addChild(settingsButton, m_HUD);
-	settingsButton->setGlobalPosition({ .35f, .6f });
-	settingsButton->setGlobalSize({ .3f, .1f });
+	m_SettingsButton = MakeRef<ButtonWidget>();
+	Widget::bindWidgets(m_SettingsButton.get(), m_HUD.get());
+	m_SettingsButton->setGlobalPosition({ .35f, .6f });
+	m_SettingsButton->setGlobalSize({ .3f, .1f });
 
-	auto settingsText = MakeRef<TextWidget>();
-	Widget::addChild(settingsText, settingsButton);
-	settingsText->fillParent();
-	settingsText->setBold();
-	settingsText->setText("General Settings");
+	m_SettingsText = MakeRef<TextWidget>();
+	Widget::bindWidgets(m_SettingsText.get(), m_SettingsButton.get());
+	m_SettingsText->fillParent();
+	m_SettingsText->setBold();
+	m_SettingsText->setText("General Settings");
 }
 
 void MainMenuState::init()

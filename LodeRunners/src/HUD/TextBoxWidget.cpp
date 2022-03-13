@@ -2,6 +2,7 @@
 #include "../Assets/Assets.h"
 
 TextBoxWidget::TextBoxWidget()
+	: Widget()
 {
 	m_Font = MakeRef<FontAsset>(*Assets::getFontAsset());
 	m_Text.setFont(*m_Font);

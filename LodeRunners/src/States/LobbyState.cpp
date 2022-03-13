@@ -7,17 +7,17 @@ LobbyState::LobbyState(const size_t& id, const std::string& name)
 	m_HUD->setViewport({ 0.f, 0.f, 1.f, 1.f });
 	m_HUD->fillParent();
 
-	m_PlayersTexts = MakeRef<Widget>();
-	Widget::addChild(m_PlayersTexts, m_HUD);
-	m_PlayersTexts->setRelativePosition({ 0.f, .1f });
-	m_PlayersTexts->setRelativeSize({ 1.f, .9f });
+	m_PlayersTextsAnchor = MakeRef<Widget>();
+	Widget::bindWidgets(m_PlayersTextsAnchor.get(), m_HUD.get());
+	m_PlayersTextsAnchor->setRelativePosition({ 0.f, .1f });
+	m_PlayersTextsAnchor->setRelativeSize({ 1.f, .9f });
 
-	auto titleText = MakeRef<TextWidget>();
-	Widget::addChild(titleText, m_HUD);
-	titleText->setRelativePosition({ .3f, 0.f });
-	titleText->setRelativeSize({ .4f, .1f });
-	titleText->setBold();
-	titleText->setText("Lobby");
+	m_TitleText = MakeRef<TextWidget>();
+	Widget::bindWidgets(m_TitleText.get(), m_HUD.get());
+	m_TitleText->setRelativePosition({ .3f, 0.f });
+	m_TitleText->setRelativeSize({ .4f, .1f });
+	m_TitleText->setBold();
+	m_TitleText->setText("Lobby");
 
 	if (IS_SERVER)
 		Network::Networker::get()->bindOnPlayerLogout([this](const size_t& id) { triggerOnPlayerLogoutForAll_OnServer(id); });
@@ -84,7 +84,7 @@ void LobbyState::onPlayerLogout(const size_t& id)
 	if (!found) return;
 
 	// Removing TextWidgets.
-	m_PlayersTexts->removeChildren();
+	m_PlayersTextsAnchor->removeChildren();
 	m_NextTextWidgetPos.x = 0.f;
 	m_NextTextWidgetPos.y = 0.f;
 
@@ -99,17 +99,18 @@ void LobbyState::onServerConnexionLost()
 
 void LobbyState::createPlayerTextWidget(const size_t& id, const std::string& name)
 {
-	auto textWidget = MakeRef<TextWidget>();
-	Widget::addChild(textWidget, m_PlayersTexts);
-	textWidget->setRelativePosition(m_NextTextWidgetPos);
-	textWidget->setRelativeSize({ .1f, .05f });
-	textWidget->setCenterX(false);
-	textWidget->setText(name + " (" + std::to_string(id) + ")");
+	m_PlayersText.emplace_back(MakeRef<TextWidget>());
+	Widget::bindWidgets(m_PlayersText.back().get(), m_PlayersTextsAnchor.get());
+	m_PlayersText.back()->setRelativePosition(m_NextTextWidgetPos);
+	m_PlayersText.back()->setRelativeSize({ .1f, .05f });
+	m_PlayersText.back()->setCenterX(false);
+	m_PlayersText.back()->setText(name + " (" + std::to_string(id) + ")");
 	if (id == m_PlayerID)
 	{
-		textWidget->setColor(sf::Color::Red);
-		textWidget->setBold();
+		m_PlayersText.back()->setColor(sf::Color::Red);
+		m_PlayersText.back()->setBold();
 	}
+
 
 	m_NextTextWidgetPos += {0.f, .05f};
 }

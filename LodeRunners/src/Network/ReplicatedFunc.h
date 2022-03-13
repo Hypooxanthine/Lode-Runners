@@ -2,9 +2,9 @@
 
 #include "NetworkBase.h"
 
-#include <iostream>
-
 #include "Networker.h"
+
+#include "../Assets/Assets.h"
 
 // func parameter is for local function name.
 // id parameter (string) is to identify the function, if multiple instances could use it.
@@ -83,29 +83,13 @@ namespace Network
 		{
 			size_t cursor = 0;
 
-			m_Function(deserializeArgs<Args>(buffer, cursor)...);
+			m_Function(deserializeArg<Args>(buffer, cursor)...);
 		}
 
 		template<typename T>
-		std::remove_reference<T>::type deserializeArgs(ByteArray& buffer, size_t& cursor)
+		std::remove_reference<T>::type deserializeArg(ByteArray& buffer, size_t& cursor)
 		{
 			using Raw = std::remove_const<std::remove_reference<T>::type>::type;
-
-			/*if (std::is_same<Raw, std::string>::value)
-			{
-				size_t size = *reinterpret_cast<size_t*>(&buffer[cursor]);
-				cursor += sizeof(size_t);
-
-				std::string str = reinterpret_cast<const char*>(buffer.data() + cursor);
-
-				cursor += size;
-			
-				return str;
-			}
-
-			Raw* object = reinterpret_cast<Raw*>(buffer.data() + cursor);
-			cursor += sizeof(Raw);
-			return *object;*/
 
 			Raw object = Raw();
 			deserializeArg(object, buffer, cursor);
@@ -128,6 +112,18 @@ namespace Network
 			receiver = reinterpret_cast<const char*>(buffer.data() + cursor);
 
 			cursor += size;
+		}
+
+		template<>
+		void deserializeArg(LevelAsset& receiver, ByteArray& buffer, size_t& cursor)
+		{
+			receiver.setName(deserializeArg<std::string>(buffer, cursor));
+
+			for (size_t i = 0; i < TILES_HEIGHT * TILES_WIDTH; i++)
+			{
+				receiver.changeSprite(i, Assets::getTile(*reinterpret_cast<TileType*>(buffer.data() + cursor)));
+				cursor++;
+			}
 		}
 
 		template<typename T>
@@ -161,6 +157,15 @@ namespace Network
 				serialized.push_back(dataAsBytePtr[i]);
 		
 			m_Buffer.insert(m_Buffer.begin(), serialized.begin(), serialized.end());
+		}
+
+		template<>
+		void serializeArg(const LevelAsset& arg)
+		{
+			for (size_t i = 0; i < TILES_HEIGHT * TILES_WIDTH; i++)
+				m_Buffer.push_back(static_cast<std::byte>(arg.at(i)->getType()));
+
+			serializeArg(arg.getName());
 		}
 
 	private:
