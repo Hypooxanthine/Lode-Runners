@@ -121,8 +121,17 @@ namespace Network
 
 			for (size_t i = 0; i < TILES_HEIGHT * TILES_WIDTH; i++)
 			{
-				receiver.changeSprite(i, Assets::getTile(*reinterpret_cast<TileType*>(buffer.data() + cursor)));
-				cursor++;
+				receiver.changeSprite(i, Assets::getTile(
+					static_cast<TileType> // The casting it to the enum target type
+					(
+						*reinterpret_cast<uint32_t*> // We want to handle enums as 4 bytes values everywhere
+						(
+							buffer.data() + cursor
+						)
+					)
+				));
+
+				cursor += sizeof(uint32_t);
 			}
 		}
 
@@ -162,8 +171,10 @@ namespace Network
 		template<>
 		void serializeArg(const LevelAsset& arg)
 		{
-			for (size_t i = 0; i < TILES_HEIGHT * TILES_WIDTH; i++)
-				m_Buffer.push_back(static_cast<std::byte>(arg.at(i)->getType()));
+			for (size_t i = TILES_HEIGHT * TILES_WIDTH; i > 0; i--)
+			{
+				serializeArg(static_cast<const uint32_t>(arg.at(i - 1)->getType()));
+			}
 
 			serializeArg(arg.getName());
 		}

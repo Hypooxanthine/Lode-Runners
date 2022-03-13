@@ -4,6 +4,7 @@
 
 #include "../Network/Network.h"
 #include "../HUD/Widgets.h"
+#include "../HUD/Custom/LevelSelector.h"
 
 class LobbyState : public State
 {
@@ -23,12 +24,18 @@ private: // Private methods
 
 	void createPlayerTextWidget(const size_t& id, const std::string& name);
 
+	void launch(const Ref<LevelAsset>& level);
+
 private: // Private members
 	Ref<Widget> m_HUD;
 	// Just an anchor that holds player texts
 	Ref<Widget> m_PlayersTextsAnchor;
 	Ref<TextWidget> m_TitleText;
 	std::vector<Ref<TextWidget>> m_PlayersText;
+
+	Ref<LevelSelector> m_LevelSelector;
+	Ref<ButtonWidget> m_LaunchButton;
+	Ref<TextWidget> m_LaunchText;
 
 	size_t m_PlayerID;
 	std::string m_PlayerName;
@@ -37,6 +44,8 @@ private: // Private members
 	sf::Vector2f m_NextTextWidgetPos = { 0.f, 0.f };
 
 private: // Replicated functions
+
+	/* Logging in and out */
 
 	CREATE_REPLICATED_FUNCTION
 	(
@@ -101,6 +110,18 @@ private: // Replicated functions
 			triggerOnPlayerLogoutForAll_Multicast(id);
 		},
 		"LobbyState", Network::ReplicationMode::OnServer, const size_t&
+	);
+
+	/* Level selecting */
+
+	CREATE_REPLICATED_FUNCTION
+	(
+		sendLevelToAll_Multicast,
+		[this](const LevelAsset& level)
+		{
+			this->launch(MakeRef<LevelAsset>(level));
+		},
+		"LobbyState", Network::ReplicationMode::Multicast, const LevelAsset&
 	);
 
 };

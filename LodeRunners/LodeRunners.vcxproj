@@ -167,6 +167,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\HUD\Custom\LevelSelector.cpp" />
     <ClCompile Include="src\States\LobbyState.cpp" />
     <ClCompile Include="src\Network\Client.cpp" />
     <ClCompile Include="src\Network\Networker.cpp" />
@@ -195,6 +196,7 @@
     <ClCompile Include="src\HUD\TextWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\HUD\Custom\LevelSelector.h" />
     <ClInclude Include="src\States\LobbyState.h" />
     <ClInclude Include="src\Network\NetworkBase.h" />
     <ClInclude Include="src\Network\Client.h" />

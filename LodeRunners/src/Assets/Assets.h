@@ -9,11 +9,11 @@ public: // Public methods
 	Assets() = delete; // Static only class
 
 	static void load(const std::string& name = "default");
-	static inline const unsigned int& getElementSize() { return m_ElementSize; }
-	static inline Ref<const SpriteAsset> getTile(const TileType& tile) { return (*m_Tiles)[tile]; }
-	static inline Ref<const FlipbookAsset> getFlipbook(const FlipbookType& fb) { return (*m_Flipbooks)[fb]; }
-	static const Ref<const LevelAsset> getLevelAsset(const std::string& name, const bool& forceReload = false);
-	static inline Ref<const FontAsset> getFontAsset() { return m_Font; }
+	static const unsigned int& getElementSize() { return m_ElementSize; }
+	static Ref<const SpriteAsset> getTile(const TileType& tile) { return (*m_Tiles)[tile]; }
+	static Ref<const FlipbookAsset> getFlipbook(const FlipbookType& fb) { return (*m_Flipbooks)[fb]; }
+	static Ref<const LevelAsset> getLevelAsset(const std::string& name, const bool& forceReload = false);
+	static Ref<const FontAsset> getFontAsset() { return m_Font; }
 
 
 private: // Private attributes

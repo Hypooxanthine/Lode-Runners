@@ -10,7 +10,7 @@ LobbyState::LobbyState(const size_t& id, const std::string& name)
 	m_PlayersTextsAnchor = MakeRef<Widget>();
 	Widget::bindWidgets(m_PlayersTextsAnchor.get(), m_HUD.get());
 	m_PlayersTextsAnchor->setRelativePosition({ 0.f, .1f });
-	m_PlayersTextsAnchor->setRelativeSize({ 1.f, .9f });
+	m_PlayersTextsAnchor->setRelativeSize({ 1.f, .8f });
 
 	m_TitleText = MakeRef<TextWidget>();
 	Widget::bindWidgets(m_TitleText.get(), m_HUD.get());
@@ -20,9 +20,32 @@ LobbyState::LobbyState(const size_t& id, const std::string& name)
 	m_TitleText->setText("Lobby");
 
 	if (IS_SERVER)
+	{
+		m_LevelSelector = MakeRef<LevelSelector>(m_HUD.get());
+		m_LevelSelector->setRelativePosition({ .1f, .85f });
+		m_LevelSelector->setRelativeSize({ .6f, .1f });
+
+		m_LaunchButton = MakeRef<ButtonWidget>(m_HUD.get());
+		m_LaunchButton->setRelativePosition({ .75f, .85f });
+		m_LaunchButton->setRelativeSize({ .2f, .1f });
+		m_LaunchButton->bindCallback
+		(
+			[this]()
+			{
+				sendLevelToAll_Multicast(*Assets::getLevelAsset(m_LevelSelector->getSelectedLevelName()));
+			}
+		);
+
+		m_LaunchText = MakeRef<TextWidget>(m_LaunchButton.get());
+		m_LaunchText->fillParent();
+		m_LaunchText->setText("Launch");
+	}
+
+	if (IS_SERVER)
 		Network::Networker::get()->bindOnPlayerLogout([this](const size_t& id) { triggerOnPlayerLogoutForAll_OnServer(id); });
 	else
 		Network::Networker::get()->bindOnServerConnexionLost([this]() { kill(); });
+
 }
 
 LobbyState::~LobbyState()
@@ -37,6 +60,8 @@ LobbyState::~LobbyState()
 
 void LobbyState::init()
 {
+	m_HUD->onResize();
+
 	getLoggedPlayersFromAsker_OnServer(m_PlayerID);
 	trigerOnPlayerLoginForAll_OnServer(m_PlayerID, m_PlayerName);
 }
@@ -113,4 +138,17 @@ void LobbyState::createPlayerTextWidget(const size_t& id, const std::string& nam
 
 
 	m_NextTextWidgetPos += {0.f, .05f};
+}
+
+void LobbyState::launch(const Ref<LevelAsset>& level)
+{
+	LOG_INFO("Level received. Name : " + level->getName());
+
+	for (size_t i = 0; i < level->getSize(); i++)
+	{
+		if (i % TILES_WIDTH == 0 && i != 0) std::cout << "\n";
+		std::cout << (short)(level->at(i)->getType()) << " ";
+	}
+
+	std::cout << "\n";
 }
