@@ -83,6 +83,15 @@ void Application::updateEvents()
 		{
 			switch (m_SFMLEvent.key.code)
 			{
+			case sf::Keyboard::F11:
+			{
+				m_Fullscreen = !m_Fullscreen;
+				int style = (m_Fullscreen  ? sf::Style::Fullscreen : sf::Style::Default);
+				m_Window->close();
+				m_Window->create(sf::VideoMode::getDesktopMode(), "Lode Runners", style);
+				m_Window->setFramerateLimit(FIXED_FPS);
+			}
+				break;
 			case sf::Keyboard::Z:
 				m_Events[EventType::MoveUp].activated = true;
 				break;

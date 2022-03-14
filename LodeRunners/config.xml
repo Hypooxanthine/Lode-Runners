@@ -14,6 +14,7 @@
                     <Tile name="Gold" x="0" y="6"/>
                     <Tile name="PlayerStart" x="0" y="7"/>
                     <Tile name="EnnemyStart" x="0" y="8"/>
+					<Tile name="LevelEnd" x="0" y="9"/>
                 </Tiles>
                 <Flipbooks>
                     <Flipbook name="PlayerLeft">

@@ -23,6 +23,7 @@ EditorToolkit::EditorToolkit()
 	ADD_TOOLKIT_TILE(TileType::Gold);
 	ADD_TOOLKIT_TILE(TileType::PlayerStart);
 	ADD_TOOLKIT_TILE(TileType::EnnemyStart);
+	ADD_TOOLKIT_TILE(TileType::LevelEnd);
 
 	m_SelectedHighlight.setSize({ (float)Assets::getElementSize(), (float)Assets::getElementSize() });
 	m_SelectedHighlight.setFillColor(sf::Color::Transparent);

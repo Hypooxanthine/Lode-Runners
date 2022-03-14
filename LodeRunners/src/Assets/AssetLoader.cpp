@@ -29,6 +29,7 @@ void AssetLoader::init()
 	FILL_XML_TILE_NAMES(Ladder);
 	FILL_XML_TILE_NAMES(PlayerStart);
 	FILL_XML_TILE_NAMES(EnnemyStart);
+	FILL_XML_TILE_NAMES(LevelEnd);
 
 	FILL_XML_FLIPBOOKS_NAMES(PlayerLeft);
 	FILL_XML_FLIPBOOKS_NAMES(PlayerRight);
@@ -200,7 +201,7 @@ void AssetLoader::loadLevel(const std::string& name, Ref<LevelAsset> level)
 		int tile;
 		file >> tile;
 
-		ASSERT(tile >= (int)TileType::Blank && tile <= (int)TileType::EnnemyStart, "Found invalid tile value in " + levelPath + ". Tile number : " + std::to_string(i + 1) + ", invalid value : " + std::to_string(tile) + ".");
+		ASSERT(tile >= (int)TileType::Blank && tile < (int)TileType::TILES_NUMBER, "Found invalid tile value in " + levelPath + ". Tile number : " + std::to_string(i + 1) + ", invalid value : " + std::to_string(tile) + ".");
 
 		auto sprite = MakeRef<SpriteAsset>(*Assets::getTile((TileType)tile));
 		sprite->setPosition((i % TILES_WIDTH) * (float)m_ElementSize, (unsigned int)(i / TILES_WIDTH) * (float)m_ElementSize);

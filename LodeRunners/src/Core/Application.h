@@ -89,6 +89,7 @@ private: // Private attributes
 
 	// Windowing and event handling
 	Ref<sf::RenderWindow> m_Window;
+	bool m_Fullscreen = false;
 	sf::Event m_SFMLEvent;
 	std::map<EventType, Event> m_Events;
 

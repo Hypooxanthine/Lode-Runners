@@ -18,6 +18,9 @@ enum class TileType
 
 	PlayerStart,
 	EnnemyStart,
+	LevelEnd,
+
+	TILES_NUMBER
 };
 
 enum class FlipbookType

@@ -167,6 +167,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Components\ColliderComponent.cpp" />
+    <ClCompile Include="src\Game\Entities\Tiles\BridgeTile.cpp" />
+    <ClCompile Include="src\Game\Entities\Tiles\LadderTile.cpp" />
+    <ClCompile Include="src\Game\Components\SpriteComponent.cpp" />
+    <ClCompile Include="src\Game\Entities\Tiles\BrickTile.cpp" />
+    <ClCompile Include="src\Game\Entities\Tiles\BlankTile.cpp" />
+    <ClCompile Include="src\Game\Level.cpp" />
     <ClCompile Include="src\States\GameState.cpp" />
     <ClCompile Include="src\HUD\Custom\EditorManager.cpp" />
     <ClCompile Include="src\HUD\Custom\LevelSelector.cpp" />
@@ -179,13 +186,13 @@
     <ClCompile Include="src\States\PreMenuState.cpp" />
     <ClCompile Include="src\Assets\FontAsset.cpp" />
     <ClCompile Include="src\HUD\ButtonWidget.cpp" />
-    <ClCompile Include="src\Components\Component.cpp" />
-    <ClCompile Include="src\Entities\Entity.cpp" />
+    <ClCompile Include="src\Game\Components\Component.cpp" />
+    <ClCompile Include="src\Game\Entities\Entity.cpp" />
     <ClCompile Include="src\Assets\LevelAsset.cpp" />
     <ClCompile Include="src\Assets\AssetLoader.cpp" />
     <ClCompile Include="src\HUD\TextBoxWidget.cpp" />
     <ClCompile Include="src\States\EditorState.cpp" />
-    <ClCompile Include="src\Components\FlipbookComponent.cpp" />
+    <ClCompile Include="src\Game\Components\FlipbookComponent.cpp" />
     <ClCompile Include="src\Assets\FlipbookAsset.cpp" />
     <ClCompile Include="src\Assets\SpriteAsset.cpp" />
     <ClCompile Include="src\Assets\Assets.cpp" />
@@ -197,8 +204,17 @@
     <ClCompile Include="src\HUD\Widget.cpp" />
     <ClCompile Include="src\HUD\TextWidget.cpp" />
     <ClCompile Include="src\HUD\TextButtonWidget.cpp" />
+    <ClCompile Include="src\Game\Entities\Tiles\StoneTile.cpp" />
+    <ClCompile Include="src\Game\Entities\Tiles\Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Components\ColliderComponent.h" />
+    <ClInclude Include="src\Game\Entities\Tiles\BridgeTile.h" />
+    <ClInclude Include="src\Game\Entities\Tiles\LadderTile.h" />
+    <ClInclude Include="src\Game\Components\SpriteComponent.h" />
+    <ClInclude Include="src\Game\Entities\Tiles\BlankTile.h" />
+    <ClInclude Include="src\Game\Entities\Tiles\BrickTile.h" />
+    <ClInclude Include="src\Game\Level.h" />
     <ClInclude Include="src\States\GameState.h" />
     <ClInclude Include="src\HUD\Custom\EditorManager.h" />
     <ClInclude Include="src\HUD\Custom\LevelSelector.h" />
@@ -214,14 +230,14 @@
     <ClInclude Include="src\States\PreMenuState.h" />
     <ClInclude Include="src\Assets\FontAsset.h" />
     <ClInclude Include="src\HUD\ButtonWidget.h" />
-    <ClInclude Include="src\Components\Component.h" />
-    <ClInclude Include="src\Entities\Entity.h" />
+    <ClInclude Include="src\Game\Components\Component.h" />
+    <ClInclude Include="src\Game\Entities\Entity.h" />
     <ClInclude Include="src\Assets\LevelAsset.h" />
     <ClInclude Include="src\Assets\AssetLoader.h" />
     <ClInclude Include="src\HUD\TextBoxWidget.h" />
     <ClInclude Include="src\HUD\Widgets.h" />
     <ClInclude Include="src\States\EditorState.h" />
-    <ClInclude Include="src\Components\FlipbookComponent.h" />
+    <ClInclude Include="src\Game\Components\FlipbookComponent.h" />
     <ClInclude Include="src\Assets\FlipbookAsset.h" />
     <ClInclude Include="src\Assets\SpriteAsset.h" />
     <ClInclude Include="src\Assets\Assets.h" />
@@ -234,6 +250,8 @@
     <ClInclude Include="src\HUD\Widget.h" />
     <ClInclude Include="src\HUD\TextWidget.h" />
     <ClInclude Include="src\HUD\TextButtonWidget.h" />
+    <ClInclude Include="src\Game\Entities\Tiles\StoneTile.h" />
+    <ClInclude Include="src\Game\Entities\Tiles\Tile.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config.xml" />
