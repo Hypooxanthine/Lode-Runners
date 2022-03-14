@@ -183,7 +183,7 @@ void Widget::fillParent()
 void Widget::updateChildren(const float& dt)
 {
 	for (auto& child : m_Children)
-		child->updateWidget(dt);
+		child->updateWidgets(dt);
 }
 
 void Widget::handleRayChildren(CursorRay& ray)
