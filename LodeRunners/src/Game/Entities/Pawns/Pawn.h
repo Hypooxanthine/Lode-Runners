@@ -7,6 +7,7 @@ class PlayerController;
 class AIController;
 
 class FlipbookComponent;
+class ColliderComponent;
 
 class Pawn : public Entity
 {
@@ -20,6 +21,6 @@ public:
 private:
 	Controller* m_Controler;
 
-	FlipbookComponent* m_Flipbook;
+	ColliderComponent* m_Collider;
 };
 

@@ -25,6 +25,8 @@ enum class TileType
 
 enum class FlipbookType
 {
+	None = -1,
+
 	PlayerLeft = 0,
 	PlayerRight,
 	PlayerDigLeft,
@@ -37,6 +39,8 @@ enum class FlipbookType
 	EnnemyClimbLadder,
 	EnnemyClimbBridge,
 	EnnemyFall,
+
+	FLIPBOOKS_NUMBER
 };
 
 class AssetLoader
@@ -47,7 +51,7 @@ public:
 	static void init();
 
 	static inline const std::vector<std::string> getAvailableSkins() { return m_AvailableSkins; }
-	static void loadSkin(const std::string& skinName, Ref<std::unordered_map<TileType,Ref<SpriteAsset>>> tiles, unsigned int& elementSize, Ref<FontAsset> font, Ref<std::unordered_map<FlipbookType,Ref<FlipbookAsset>>> flipbooks);
+	static void loadSkin(const std::string& skinName, std::unordered_map<TileType,Ref<SpriteAsset>>& tiles, unsigned int& elementSize, Ref<FontAsset> font, std::unordered_map<FlipbookType,Ref<FlipbookAsset>>& flipbooks);
 
 	static inline const std::vector<std::pair<std::string, std::string>>& getAvailableLevels() { return m_AvailableLevels; }
 	static void loadLevel(const std::string& name, Ref<LevelAsset> level);
@@ -56,11 +60,11 @@ public:
 private:
 	struct ElementPosition { unsigned int x = 0, y = 0; };
 
-private: // Private methods : interactions with config.xml
+private: // Private member functions : interactions with config.xml
 	// Highest level loadings
 	static void LoadSpritesheet(tinyxml2::XMLHandle& handle, const std::string& name);
 	static void loadTiles(std::unordered_map<TileType,Ref<SpriteAsset>>& tiles, unsigned int& elementSize, tinyxml2::XMLHandle& handle, const std::string& name);
-	static void loadFlipbooks(tinyxml2::XMLHandle& handle, const std::string& name);
+	static void loadFlipbooks(std::unordered_map<FlipbookType, Ref<FlipbookAsset>>& flipbooks, tinyxml2::XMLHandle& handle, const std::string& name);
 	static void loadFont(Ref<FontAsset> font, tinyxml2::XMLHandle& handle, const std::string& name);
 
 	// Filling available assets lists
@@ -69,10 +73,11 @@ private: // Private methods : interactions with config.xml
 
 	// Skins
 	static tinyxml2::XMLElement* getSkins(tinyxml2::XMLHandle& handle);
-	static tinyxml2::XMLElement* getSkin(tinyxml2::XMLHandle& handle, const std::string& name);
-	static std::string getSpriteSheetPath(tinyxml2::XMLHandle& handle, const std::string& name);
+	static tinyxml2::XMLElement* getSkin(tinyxml2::XMLHandle& handle, const std::string& skinName);
+	static std::string getSpriteSheetPath(tinyxml2::XMLHandle& handle, const std::string& skinName);
 	static tinyxml2::XMLElement* getLayouts(tinyxml2::XMLHandle& handle);
-	static tinyxml2::XMLElement* getLayout(tinyxml2::XMLHandle& handle, const std::string& name);
+	static tinyxml2::XMLElement* getLayout(tinyxml2::XMLHandle& handle, const std::string& layoutName);
+	static tinyxml2::XMLElement* getLayoutFromSkinName(tinyxml2::XMLHandle& handle, const std::string& skinName);
 
 	// Tiles
 	static tinyxml2::XMLElement* getTiles(tinyxml2::XMLHandle& handle);
@@ -83,6 +88,9 @@ private: // Private methods : interactions with config.xml
 	static std::string getFontFileName(tinyxml2::XMLHandle& handle, const std::string& name);
 
 	// TODO : Flipbooks
+	static ElementPosition getFramePosition(const tinyxml2::XMLElement* frameElement);
+	static tinyxml2::XMLElement* getFlipbook(tinyxml2::XMLHandle& handle, const std::string& name, const std::string& skinName);
+	static tinyxml2::XMLElement* getFlipbooks(tinyxml2::XMLHandle& handle, const std::string& skinName);
 
 	// Levels
 	static tinyxml2::XMLElement* getLevels(tinyxml2::XMLHandle& handle);

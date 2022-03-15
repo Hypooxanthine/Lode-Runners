@@ -12,9 +12,14 @@ SpriteAsset::SpriteAsset(const sf::Texture& spriteSheet, const unsigned int& siz
 	load(spriteSheet, size, x, y, type);
 }
 
-void SpriteAsset::load(const sf::Texture& spriteSheet, const unsigned int& size, const unsigned int& x, const unsigned int y, const TileType& type)
+void SpriteAsset::load(const sf::Texture& spriteSheet, const unsigned int& size, const unsigned int& x, const unsigned int& y, const TileType& type)
+{
+	load(spriteSheet, size, x, y);
+	m_Type = type;
+}
+
+void SpriteAsset::load(const sf::Texture& spriteSheet, const unsigned int& size, const unsigned int& x, const unsigned int& y)
 {
 	setTexture(spriteSheet);
 	setTextureRect(sf::IntRect(x * size, y * size, size, size));
-	m_Type = type;
 }

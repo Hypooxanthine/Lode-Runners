@@ -3,8 +3,8 @@
 // Static variables declarations
 Ref<SpriteAsset> Assets::m_SkinIcon = MakeRef<SpriteAsset>();
 unsigned int Assets::m_ElementSize = 0;
-Ref<std::unordered_map<TileType, Ref<SpriteAsset>>> Assets::m_Tiles = MakeRef<std::unordered_map<TileType, Ref<SpriteAsset>>>();
-Ref<std::unordered_map<FlipbookType, Ref<FlipbookAsset>>> Assets::m_Flipbooks = MakeRef<std::unordered_map<FlipbookType, Ref<FlipbookAsset>>>();
+std::unordered_map<TileType, Ref<SpriteAsset>> Assets::m_Tiles = std::unordered_map<TileType, Ref<SpriteAsset>>();
+std::unordered_map<FlipbookType, Ref<FlipbookAsset>> Assets::m_Flipbooks = std::unordered_map<FlipbookType, Ref<FlipbookAsset>>();
 Ref<LevelAsset> Assets::m_CachedLevel = MakeRef<LevelAsset>();
 Ref<FontAsset> Assets::m_Font = MakeRef<FontAsset>();
 

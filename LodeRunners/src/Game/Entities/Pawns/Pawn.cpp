@@ -4,11 +4,14 @@
 #include "../../Controlers/AIController.h"
 
 #include "../../Components/FlipbookComponent.h"
+#include "../../Components/ColliderComponent.h"
+
+#include "../../../Assets/Assets.h"
 
 Pawn::Pawn(Controller* controler)
 	: m_Controler(controler)
 {
-	m_Flipbook = makeComponent<FlipbookComponent>("Flipbook");
+	m_Collider = makeComponent<ColliderComponent>("Collider");
 }
 
 std::optional<PlayerController*> Pawn::getPlayerController()

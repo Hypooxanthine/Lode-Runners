@@ -36,7 +36,7 @@ protected: // Protected methods (for children)
 		c->setParent(this);
 		m_Components.push_back(c);
 
-		return c.get();
+		return dynamic_cast<C*>(m_Components.back().get());
 	}
 
 	bool removeComponent(const std::string& name);

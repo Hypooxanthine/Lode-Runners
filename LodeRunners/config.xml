@@ -18,64 +18,64 @@
                 </Tiles>
                 <Flipbooks>
                     <Flipbook name="PlayerLeft">
-                        <Frame id="0" x="1" y="0"/>
-                        <Frame id="1" x="1" y="1"/>
-                        <Frame id="2" x="1" y="2"/>
-                        <Frame id="3" x="1" y="3"/>
+                        <Frame x="1" y="0"/>
+                        <Frame x="1" y="1"/>
+                        <Frame x="1" y="2"/>
+                        <Frame x="1" y="3"/>
                     </Flipbook>
                     <Flipbook name="PlayerRight">
-                        <Frame id="0" x="2" y="0"/>
-                        <Frame id="1" x="2" y="1"/>
-                        <Frame id="2" x="2" y="2"/>
-                        <Frame id="3" x="2" y="3"/>
+                        <Frame x="2" y="0"/>
+                        <Frame x="2" y="1"/>
+                        <Frame x="2" y="2"/>
+                        <Frame x="2" y="3"/>
                     </Flipbook>
                     <Flipbook name="PlayerDigLeft">
-                        <Frame id="0" x="3" y="0"/>
-                        <Frame id="1" x="3" y="1"/>
-                        <Frame id="2" x="3" y="2"/>
-                        <Frame id="3" x="3" y="3"/>
+                        <Frame x="3" y="0"/>
+                        <Frame x="3" y="1"/>
+                        <Frame x="3" y="2"/>
+                        <Frame x="3" y="3"/>
                     </Flipbook>
                     <Flipbook name="PlayerDigRight">
-                        <Frame id="0" x="4" y="0"/>
-                        <Frame id="1" x="4" y="1"/>
-                        <Frame id="2" x="4" y="2"/>
-                        <Frame id="3" x="4" y="3"/>
+                        <Frame x="4" y="0"/>
+                        <Frame x="4" y="1"/>
+                        <Frame x="4" y="2"/>
+                        <Frame x="4" y="3"/>
                     </Flipbook>
                     <Flipbook name="PlayerClimbLadder">
-                        <Frame id="0" x="5" y="0"/>
-                        <Frame id="1" x="5" y="1"/>
+                        <Frame x="5" y="0"/>
+                        <Frame x="5" y="1"/>
                     </Flipbook>
                     <Flipbook name="PlayerClimbBridge">
-                        <Frame id="0" x="6" y="0"/>
-                        <Frame id="1" x="6" y="1"/>
+                        <Frame x="6" y="0"/>
+                        <Frame x="6" y="1"/>
                     </Flipbook>
                     <Flipbook name="PlayerFall">
-                        <Frame id="0" x="7" y="0"/>
-                        <Frame id="1" x="7" y="1"/>
+                        <Frame x="7" y="0"/>
+                        <Frame x="7" y="1"/>
                     </Flipbook>
                     <Flipbook name="EnnemyLeft">
-                        <Frame id="0" x="8" y="0"/>
-                        <Frame id="1" x="8" y="1"/>
-                        <Frame id="2" x="8" y="2"/>
-                        <Frame id="3" x="8" y="3"/>
+                        <Frame x="8" y="0"/>
+                        <Frame x="8" y="1"/>
+                        <Frame x="8" y="2"/>
+                        <Frame x="8" y="3"/>
                     </Flipbook>
                     <Flipbook name="EnnemyRight">
-                        <Frame id="0" x="9" y="0"/>
-                        <Frame id="1" x="9" y="1"/>
-                        <Frame id="2" x="9" y="2"/>
-                        <Frame id="3" x="9" y="3"/>
+                        <Frame x="9" y="0"/>
+                        <Frame x="9" y="1"/>
+                        <Frame x="9" y="2"/>
+                        <Frame x="9" y="3"/>
                     </Flipbook>
                     <Flipbook name="EnnemyClimbLadder">
-                        <Frame id="0" x="10" y="0"/>
-                        <Frame id="1" x="10" y="1"/>
+                        <Frame x="10" y="0"/>
+                        <Frame x="10" y="1"/>
                     </Flipbook>
                     <Flipbook name="EnnemyClimbBridge">
-                        <Frame id="0" x="11" y="0"/>
-                        <Frame id="1" x="11" y="1"/>
+                        <Frame x="11" y="0"/>
+                        <Frame x="11" y="1"/>
                     </Flipbook>
                     <Flipbook name="EnnemyFall">
-                        <Frame id="0" x="12" y="0"/>
-                        <Frame id="1" x="12" y="1"/>
+                        <Frame x="12" y="0"/>
+                        <Frame x="12" y="1"/>
                     </Flipbook>
                 </Flipbooks>
             </Layout>
