@@ -214,6 +214,7 @@
     <ClInclude Include="src\Game\Components\SpriteComponent.h" />
     <ClInclude Include="src\Game\Entities\Tiles\BlankTile.h" />
     <ClInclude Include="src\Game\Entities\Tiles\BrickTile.h" />
+    <ClInclude Include="src\Game\Entities\Tiles\Tiles.h" />
     <ClInclude Include="src\Game\Level.h" />
     <ClInclude Include="src\States\GameState.h" />
     <ClInclude Include="src\HUD\Custom\EditorManager.h" />

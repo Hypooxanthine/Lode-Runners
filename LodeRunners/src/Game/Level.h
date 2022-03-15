@@ -9,7 +9,10 @@ class Level
 public:
 	Level(Ref<LevelAsset> levelAsset);
 
-private:
+private: // Private methods
+	void init(const LevelAsset* levelAsset);
+
+private: // Private members
 	std::array<Ref<Tile>, TILES_HEIGHT* TILES_WIDTH> m_Tiles;
 };
 
