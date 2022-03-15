@@ -22,5 +22,6 @@ private:
 	Controller* m_Controler;
 
 	ColliderComponent* m_Collider;
+	FlipbookComponent* m_Flipbook;
 };
 

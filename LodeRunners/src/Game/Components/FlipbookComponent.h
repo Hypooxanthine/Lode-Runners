@@ -15,7 +15,18 @@ public:
 
 	void setType(const FlipbookType& type);
 
+	const size_t& getCurrentFrame() const { return m_CurrentFrame; }
+	void setCurrentFrame(const size_t& f) { m_CurrentFrame = f; }
+
+	void setFrameDuration(const float& duration) { m_FrameDuration = duration; }
+	void setTotalDuration(const float& duration);
+	const float& getFrameDuration() const { return m_FrameDuration; }
+	float getTotalDuration() const;
+
 private:
 	Ref<FlipbookAsset> m_FbAsset = nullptr;
+
+	size_t m_CurrentFrame = 0;
+	float m_FrameDuration = 1.f;
 };
 

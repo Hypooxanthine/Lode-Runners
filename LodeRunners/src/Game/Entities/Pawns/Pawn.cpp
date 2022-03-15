@@ -12,6 +12,7 @@ Pawn::Pawn(Controller* controler)
 	: m_Controler(controler)
 {
 	m_Collider = makeComponent<ColliderComponent>("Collider");
+	m_Flipbook = makeComponent<FlipbookComponent>("Flipbook");
 }
 
 std::optional<PlayerController*> Pawn::getPlayerController()
