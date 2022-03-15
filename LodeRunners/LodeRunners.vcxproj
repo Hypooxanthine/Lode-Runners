@@ -167,6 +167,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Entities\Pawns\EnnemyPawn.cpp" />
+    <ClCompile Include="src\Game\Entities\Pawns\RunnerPawn.cpp" />
+    <ClCompile Include="src\Game\Entities\Pawns\Pawn.cpp" />
+    <ClCompile Include="src\Game\Controlers\AIController.cpp" />
+    <ClCompile Include="src\Game\Controlers\PlayerController.cpp" />
+    <ClCompile Include="src\Game\Controlers\Controller.cpp" />
+    <ClCompile Include="src\Game\Entities\Tiles\EnnemySpawnTile.cpp" />
+    <ClCompile Include="src\Game\Entities\Tiles\ExitTile.cpp" />
+    <ClCompile Include="src\Game\Entities\Tiles\PlayerSpawnTile.cpp" />
     <ClCompile Include="src\Game\Components\ColliderComponent.cpp" />
     <ClCompile Include="src\Game\Entities\Tiles\BridgeTile.cpp" />
     <ClCompile Include="src\Game\Entities\Tiles\LadderTile.cpp" />
@@ -208,6 +217,15 @@
     <ClCompile Include="src\Game\Entities\Tiles\Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Entities\Pawns\EnnemyPawn.h" />
+    <ClInclude Include="src\Game\Entities\Pawns\RunnerPawn.h" />
+    <ClInclude Include="src\Game\Entities\Pawns\Pawn.h" />
+    <ClInclude Include="src\Game\Controlers\AIController.h" />
+    <ClInclude Include="src\Game\Controlers\PlayerController.h" />
+    <ClInclude Include="src\Game\Controlers\Controller.h" />
+    <ClInclude Include="src\Game\Entities\Tiles\EnnemySpawnTile.h" />
+    <ClInclude Include="src\Game\Entities\Tiles\ExitTile.h" />
+    <ClInclude Include="src\Game\Entities\Tiles\PlayerSpawnTile.h" />
     <ClInclude Include="src\Game\Components\ColliderComponent.h" />
     <ClInclude Include="src\Game\Entities\Tiles\BridgeTile.h" />
     <ClInclude Include="src\Game\Entities\Tiles\LadderTile.h" />

@@ -21,5 +21,14 @@ Ref<Tile> Tile::MakeTile(const TileType& type)
     case TileType::Ladder:
         return MakeRef<LadderTile>();
         break;
+    case TileType::PlayerStart:
+        return MakeRef<PlayerSpawnTile>();
+        break;
+    case TileType::EnnemyStart:
+        return MakeRef<EnnemySpawnTile>();
+        break;
+    case TileType::LevelEnd:
+        return MakeRef<ExitTile>();
+        break;
     }
 }

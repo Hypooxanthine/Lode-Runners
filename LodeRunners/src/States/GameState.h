@@ -2,6 +2,8 @@
 
 #include "State.h"
 
+class Level;
+
 class LevelAsset;
 
 class GameState : public State
@@ -15,7 +17,6 @@ public:
 	virtual void onResize() override;
 
 private:
-	Ref<LevelAsset> m_Level;
-	sf::View m_LevelView;
+	Ref<Level> m_Level;
 };
 

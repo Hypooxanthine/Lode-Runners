@@ -16,6 +16,7 @@ public:
 
 	const sf::Vector2f& getPosition() const { return m_WorldPosition; }
 	void setPosition(const sf::Vector2f& position) { m_WorldPosition = position; }
+	void move(const sf::Vector2f& delta) { m_WorldPosition += delta; }
 
 	std::optional<Component*> getComponent(const std::string& name);
 

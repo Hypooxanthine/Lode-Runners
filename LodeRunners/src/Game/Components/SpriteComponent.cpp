@@ -9,6 +9,7 @@ SpriteComponent::SpriteComponent(const SpriteAsset* asset)
 
 void SpriteComponent::render(Ref<sf::RenderWindow> window)
 {
+	m_SpriteAsset->setPosition(getParent()->getPosition());
 	window->draw(*m_SpriteAsset);
 }
 
