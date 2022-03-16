@@ -6,6 +6,8 @@
 
 #include "../Network/Network.h"
 
+#define FILL_EVENT(x) m_Events[x];
+
 Application* Application::m_Singleton = nullptr;
 
 Application::Application()
@@ -24,6 +26,11 @@ void Application::run()
 {
 	m_Window->create(sf::VideoMode::getDesktopMode(), "Lode Runners");
 	m_Window->setFramerateLimit(FIXED_FPS);
+
+	FILL_EVENT(EventType::MoveLeft);
+	FILL_EVENT(EventType::MoveRight);
+	FILL_EVENT(EventType::MoveUp);
+	FILL_EVENT(EventType::MoveDown);
 
 	m_States.push(MakeRef<PreMenuState>());
 
@@ -46,7 +53,7 @@ void Application::run()
 
 const Event& Application::getEvent(const EventType& type) const
 {
-	return m_Events.contains(type) ? m_Events.at(type) : Event();
+	return m_Events.at(type);
 }
 
 void Application::updateEvents()
