@@ -185,6 +185,7 @@ void Application::checkState()
 		{
 			m_States.push(m_NextState);
 			LOG_TRACE("New State pushed.");
+			m_NextState->onResize();
 			m_NextState->init();
 			m_NextState = nullptr;
 		}

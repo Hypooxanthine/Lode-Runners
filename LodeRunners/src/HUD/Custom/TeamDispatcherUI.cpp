@@ -67,6 +67,71 @@ TeamDispatcherUI::TeamDispatcherUI(Widget* parent, const size_t& maxEnnemies, co
 	requestJoinRunners_Server(PLAYER_ID, m_Name);
 }
 
+void TeamDispatcherUI::onPlayerLogout(const size_t& playerID)
+{
+	// TO BE IMPLEMENTED
+
+	auto ennemiesIt = std::find_if(m_Ennemies.begin(), m_Ennemies.end(),
+		[&](const std::tuple<size_t, std::string, Ref<TextWidget>>& element)
+		{
+			return std::get<0>(element) == playerID;
+		}
+	);
+
+	if (ennemiesIt != m_Ennemies.end()) // Disconnected player was in ennemies team.
+	{
+		std::for_each
+		(
+			ennemiesIt + 1, m_Ennemies.end(),
+			[this](const std::tuple<size_t, std::string, Ref<TextWidget>>& element)
+			{
+				auto& widget = std::get<2>(element);
+				widget->setRelativePosition({ widget->getRelativePosition().x, widget->getRelativePosition().y - PLAYER_ENTRY_RELATIVE_HEIGHT });
+			}
+		);
+
+		m_Ennemies.erase(ennemiesIt);
+
+		updateNumbersTexts();
+		return;
+	}
+
+	auto runnersIt = std::find_if
+	(
+		m_Runners.begin(), m_Runners.end(),
+		[&](const std::tuple<size_t, std::string, Ref<TextWidget>>& element) -> bool
+		{
+			return std::get<0>(element) == playerID;
+		}
+	);
+
+	if (runnersIt != m_Runners.end()) // Disconnected player was in runners team.
+	{
+		std::for_each
+		(
+			runnersIt + 1, m_Runners.end(),
+			[this](const std::tuple<size_t, std::string, Ref<TextWidget>>& element)
+			{
+				auto& widget = std::get<2>(element);
+				widget->setRelativePosition({ widget->getRelativePosition().x, widget->getRelativePosition().y - PLAYER_ENTRY_RELATIVE_HEIGHT });
+			}
+		);
+
+		m_Runners.erase(runnersIt);
+
+		if (m_Runners.size() == 0) // Disconnected player was the only one in runners team.
+		{
+			// We have to take a player from ennemies to runners.
+
+			setPlayerToRunner(std::get<0>(m_Ennemies.front()), std::string(std::get<1>(m_Ennemies.front())));
+		}
+
+		updateNumbersTexts();
+		return;
+	}
+
+}
+
 void TeamDispatcherUI::setMaxEnnemies(const size_t& val)
 {
 	LOG_TRACE("Triggered");

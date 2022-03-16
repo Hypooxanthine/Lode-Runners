@@ -8,15 +8,11 @@ public:
 	State() = default;
 
 	// To be overriden by children
-	virtual void init() { onResize(); }
+	virtual void init() {}
 	virtual void update(const float& dt) {}
 	virtual void render(Ref<sf::RenderWindow> window) {}
 	virtual void onResize() {}
-	virtual inline const sf::Color& getClearColor() const
-	{
-		static auto c = sf::Color::Color(10, 10, 10);
-		return c;
-	}
+	virtual const sf::Color& getClearColor() const;
 
 protected:
 	inline void kill() { Application::get()->killState(); }

@@ -70,6 +70,7 @@ private: // Replicated functions
 		[this](const size_t& id)
 		{
 			onPlayerLogout(id);
+			m_TeamDispatcher->onPlayerLogout(id);
 		},
 		"LobbyState", Network::ReplicationMode::Multicast, const size_t&
 	);

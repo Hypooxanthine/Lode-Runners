@@ -10,6 +10,8 @@ public:
 	TeamDispatcherUI(const size_t& maxEnnemies, const std::string& playerName);
 	TeamDispatcherUI(Widget* parent, const size_t& maxEnnemies, const std::string& playerName);
 
+	void onPlayerLogout(const size_t& playerID);
+
 	void setMaxEnnemies(const size_t& val);
 
 private: // Private member functions
