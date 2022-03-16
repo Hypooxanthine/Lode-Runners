@@ -12,6 +12,7 @@ LevelAsset::LevelAsset()
 
 LevelAsset::LevelAsset(const LevelAsset& other)
 {
+	// Only using operator= to initilize this.
 	*this = other;
 }
 
@@ -22,6 +23,38 @@ LevelAsset& LevelAsset::operator=(const LevelAsset& other)
 	m_Name = other.getName();
 
 	return *this;
+}
+
+std::vector<sf::Vector2u> LevelAsset::getEnnemiesStart() const
+{
+	std::vector<sf::Vector2u> out;
+
+	for (size_t i = 0; i < m_Data.size(); i++)
+	{
+		auto& t = m_Data[i];
+
+		if (t->getType() == TileType::EnnemyStart)
+			out.push_back({ (int)i % Assets::getElementSize(), (int)i / Assets::getElementSize() });
+	}
+
+	return out;
+}
+
+sf::Vector2u LevelAsset::getPlayerStart() const
+{
+	std::optional<sf::Vector2u> out;
+
+	for (size_t i = 0; i < m_Data.size(); i++)
+	{
+		auto& t = m_Data[i];
+
+		if (t->getType() == TileType::PlayerStart)
+			out = { (int)i % Assets::getElementSize(), (int)i / Assets::getElementSize() };
+	}
+	
+	ASSERT(out.has_value(), "Couldn't find player spawn in level " + m_Name + ".");
+
+	return out.value();
 }
 
 void LevelAsset::fill(const TileType& type)

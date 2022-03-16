@@ -23,7 +23,7 @@ private: // Private methods
 	void initTiles(const LevelAsset* levelAsset);
 
 private: // Private members
-	std::array<Ref<Tile>, TILES_HEIGHT* TILES_WIDTH> m_Tiles;
+	std::array<Ref<Tile>, TILES_HEIGHT * TILES_WIDTH> m_Tiles;
 	sf::View m_View;
 };
 

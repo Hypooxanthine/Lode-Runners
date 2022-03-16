@@ -7,7 +7,11 @@ LevelSelector::LevelSelector()
 {}
 
 LevelSelector::LevelSelector(Widget* parent)
-	: Widget(parent)
+	: LevelSelector(parent, nullptr)
+{}
+
+LevelSelector::LevelSelector(Widget* parent, const std::function<void(const size_t&, const std::string&)>& callback)
+	: Widget(parent), m_OnLevelChangedCallback(callback)
 {
 	m_PreviousLevelButton = MakeRef<TextButtonWidget>(this, "<");
 	m_PreviousLevelButton->setRelativePosition({ 0.f, 0.f });
@@ -24,6 +28,8 @@ LevelSelector::LevelSelector(Widget* parent)
 	{
 		m_LevelNameText->setText(AssetLoader::getAvailableLevels()[0].first);
 		m_SelectedLevel = 0;
+		if (m_OnLevelChangedCallback)
+			m_OnLevelChangedCallback(m_SelectedLevel, AssetLoader::getAvailableLevels()[m_SelectedLevel].first);
 	}
 	m_LevelNameText->setRelativePosition({ .15f, 0.f });
 	m_LevelNameText->setRelativeSize({ .7f, 1.f });
@@ -35,6 +41,8 @@ void LevelSelector::previousLevel()
 {
 	if (AssetLoader::getAvailableLevels().size() == 0) return;
 	m_SelectedLevel = (m_SelectedLevel + AssetLoader::getAvailableLevels().size() - 1) % AssetLoader::getAvailableLevels().size();
+	if (m_OnLevelChangedCallback)
+		m_OnLevelChangedCallback(m_SelectedLevel, AssetLoader::getAvailableLevels()[m_SelectedLevel].first);
 	updateStyle();
 }
 
@@ -42,6 +50,8 @@ void LevelSelector::nextLevel()
 {
 	if (AssetLoader::getAvailableLevels().size() == 0) return;
 	m_SelectedLevel = (m_SelectedLevel + 1) % AssetLoader::getAvailableLevels().size();
+	if(m_OnLevelChangedCallback)
+		m_OnLevelChangedCallback(m_SelectedLevel, AssetLoader::getAvailableLevels()[m_SelectedLevel].first);
 	updateStyle();
 }
 

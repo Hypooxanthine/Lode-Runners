@@ -35,7 +35,7 @@ namespace Network
 
 		void call(const ReplicationMode& mode, Args&&... args)
 		{
-			#ifdef _DEBUG
+			/*#ifdef _DEBUG
 
 			std::string logStr = "ReplicatedFunc::call called. Mode : ";
 			switch (mode)
@@ -58,7 +58,7 @@ namespace Network
 			logStr += Networker::get()->isServer() ? "Server." : "Client.";
 
 			LOG_INFO(logStr);
-			#endif
+			#endif*/
 
 			Networker::get()->fillCallQueue(mode, m_GUID, convertToBuffer(std::forward<Args>(args)...));
 		}

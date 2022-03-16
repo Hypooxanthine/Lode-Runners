@@ -11,6 +11,6 @@ public:
 	void setControlledPawn(Pawn* pawn) { m_Pawn = pawn; }
 
 private:
-	Pawn* m_Pawn;
+	Pawn* m_Pawn = nullptr;
 };
 

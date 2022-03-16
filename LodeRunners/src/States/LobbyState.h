@@ -5,11 +5,12 @@
 #include "../Network/Network.h"
 #include "../HUD/Widgets.h"
 #include "../HUD/Custom/LevelSelector.h"
+#include "../HUD/Custom/TeamDispatcherUI.h"
 
 class LobbyState : public State
 {
 public:
-	LobbyState(const size_t& id, const std::string& name);
+	LobbyState(const std::string& name);
 	virtual ~LobbyState();
 
 	virtual void init() override;
@@ -22,8 +23,6 @@ private: // Private methods
 	void onPlayerLogout(const size_t& id);
 	void onServerConnexionLost();
 
-	void createPlayerTextWidget(const size_t& id, const std::string& name);
-
 	void launch(Ref<LevelAsset> level);
 
 private: // Private members
@@ -31,52 +30,19 @@ private: // Private members
 	/* User interface */
 
 	Ref<Widget> m_HUD;
-	// Just an anchor that holds player texts
-	Ref<Widget> m_PlayersTextsAnchor;
 	Ref<TextWidget> m_TitleText;
-	std::vector<Ref<TextWidget>> m_PlayersText;
 
+	Ref<TeamDispatcherUI> m_TeamDispatcher;
 	Ref<LevelSelector> m_LevelSelector;
 	Ref<TextButtonWidget> m_LaunchButton;
 
-	/* Players registering */
+	/* Local player */
 
-	// Local player
-	size_t m_PlayerID;
 	std::string m_PlayerName;
-
-	// All logged players
-	std::vector<std::pair<size_t, std::string>> m_Players;
-	sf::Vector2f m_NextTextWidgetPos = { 0.f, 0.f };
 
 private: // Replicated functions
 
 	/* Logging in and out */
-
-	CREATE_REPLICATED_FUNCTION
-	(
-		sendLoggedPlayersFromAsker_Multicast,
-		[this](const size_t& asker, const size_t& playerID, const std::string& playerName)
-		{
-			if (asker == m_PlayerID)
-			{
-				m_Players.emplace_back(playerID, playerName);
-				createPlayerTextWidget(playerID, playerName);
-			}
-		},
-		"LobbyState", Network::ReplicationMode::Multicast, const size_t&, const size_t&, const std::string&
-	);
-
-	CREATE_REPLICATED_FUNCTION
-	(
-		getLoggedPlayersFromAsker_OnServer,
-		[this](const size_t& asker)
-		{
-			for(auto& p : m_Players)
-				sendLoggedPlayersFromAsker_Multicast(asker, p.first, p.second);
-		},
-		"LobbyState", Network::ReplicationMode::OnServer, const size_t&
-	);
 
 	CREATE_REPLICATED_FUNCTION
 	(
@@ -108,16 +74,6 @@ private: // Replicated functions
 		"LobbyState", Network::ReplicationMode::Multicast, const size_t&
 	);
 
-	CREATE_REPLICATED_FUNCTION
-	(
-		triggerOnPlayerLogoutForAll_OnServer,
-		[this](const size_t& id)
-		{
-			triggerOnPlayerLogoutForAll_Multicast(id);
-		},
-		"LobbyState", Network::ReplicationMode::OnServer, const size_t&
-	);
-
 	/* Level selecting */
 
 	CREATE_REPLICATED_FUNCTION
@@ -128,6 +84,17 @@ private: // Replicated functions
 			this->launch(MakeRef<LevelAsset>(level));
 		},
 		"LobbyState", Network::ReplicationMode::Multicast, const LevelAsset&
+	);
+
+	CREATE_REPLICATED_FUNCTION
+	(
+		setTeamSelectorMaxEnnemiesForAll_Multicast,
+		[this](const size_t& maxEnnemies)
+		{
+			m_TeamDispatcher->setMaxEnnemies(maxEnnemies);
+		},
+		"LobbyState", Network::ReplicationMode::Multicast,
+		const size_t&
 	);
 
 };

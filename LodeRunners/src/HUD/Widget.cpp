@@ -15,6 +15,11 @@ Widget::Widget(Widget* parent)
 	}
 }
 
+Widget::~Widget()
+{
+	removeFromParent();
+}
+
 void Widget::update(const float& dt)
 {
 	static CursorRay ray; // Instanciated once.

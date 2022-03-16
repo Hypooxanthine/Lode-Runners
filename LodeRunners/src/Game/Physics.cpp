@@ -11,7 +11,7 @@ Physics::Physics()
 	m_Instance = this;
 }
 
-void Physics::resolve()
+void Physics::update()
 {
 	
 }

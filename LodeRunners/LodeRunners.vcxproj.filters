@@ -141,13 +141,13 @@
     <ClCompile Include="src\Game\Entities\Tiles\EnnemySpawnTile.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Controlers\Controller.cpp">
+    <ClCompile Include="src\Game\Controllers\Controller.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Controlers\PlayerController.cpp">
+    <ClCompile Include="src\Game\Controllers\PlayerController.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Controlers\AIController.cpp">
+    <ClCompile Include="src\Game\Controllers\AIController.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Entities\Pawns\Pawn.cpp">
@@ -160,6 +160,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Physics.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HUD\Custom\TeamDispatcherUI.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -308,13 +311,13 @@
     <ClInclude Include="src\Game\Entities\Tiles\EnnemySpawnTile.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Controlers\Controller.h">
+    <ClInclude Include="src\Game\Controllers\Controller.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Controlers\PlayerController.h">
+    <ClInclude Include="src\Game\Controllers\PlayerController.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Controlers\AIController.h">
+    <ClInclude Include="src\Game\Controllers\AIController.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Entities\Pawns\Pawn.h">
@@ -329,8 +332,14 @@
     <ClInclude Include="src\Game\Physics.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="src\HUD\Custom\TeamDispatcherUI.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

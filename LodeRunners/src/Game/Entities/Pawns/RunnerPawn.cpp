@@ -3,8 +3,8 @@
 #include "../../Components/FlipbookComponent.h"
 #include "../../../Assets/Assets.h"
 
-RunnerPawn::RunnerPawn(Controller* controller)
-	: Pawn(controller)
+RunnerPawn::RunnerPawn(Controller* controller, const size_t& ID)
+	: Pawn(controller, ID)
 {
 	m_Flipbook->setType(FlipbookType::PlayerLeft);
 	m_Flipbook->setTotalDuration(1.f);

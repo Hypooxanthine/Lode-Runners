@@ -171,9 +171,9 @@
     <ClCompile Include="src\Game\Entities\Pawns\EnnemyPawn.cpp" />
     <ClCompile Include="src\Game\Entities\Pawns\RunnerPawn.cpp" />
     <ClCompile Include="src\Game\Entities\Pawns\Pawn.cpp" />
-    <ClCompile Include="src\Game\Controlers\AIController.cpp" />
-    <ClCompile Include="src\Game\Controlers\PlayerController.cpp" />
-    <ClCompile Include="src\Game\Controlers\Controller.cpp" />
+    <ClCompile Include="src\Game\Controllers\AIController.cpp" />
+    <ClCompile Include="src\Game\Controllers\PlayerController.cpp" />
+    <ClCompile Include="src\Game\Controllers\Controller.cpp" />
     <ClCompile Include="src\Game\Entities\Tiles\EnnemySpawnTile.cpp" />
     <ClCompile Include="src\Game\Entities\Tiles\ExitTile.cpp" />
     <ClCompile Include="src\Game\Entities\Tiles\PlayerSpawnTile.cpp" />
@@ -216,15 +216,16 @@
     <ClCompile Include="src\HUD\TextButtonWidget.cpp" />
     <ClCompile Include="src\Game\Entities\Tiles\StoneTile.cpp" />
     <ClCompile Include="src\Game\Entities\Tiles\Tile.cpp" />
+    <ClCompile Include="src\HUD\Custom\TeamDispatcherUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game\Physics.h" />
     <ClInclude Include="src\Game\Entities\Pawns\EnnemyPawn.h" />
     <ClInclude Include="src\Game\Entities\Pawns\RunnerPawn.h" />
     <ClInclude Include="src\Game\Entities\Pawns\Pawn.h" />
-    <ClInclude Include="src\Game\Controlers\AIController.h" />
-    <ClInclude Include="src\Game\Controlers\PlayerController.h" />
-    <ClInclude Include="src\Game\Controlers\Controller.h" />
+    <ClInclude Include="src\Game\Controllers\AIController.h" />
+    <ClInclude Include="src\Game\Controllers\PlayerController.h" />
+    <ClInclude Include="src\Game\Controllers\Controller.h" />
     <ClInclude Include="src\Game\Entities\Tiles\EnnemySpawnTile.h" />
     <ClInclude Include="src\Game\Entities\Tiles\ExitTile.h" />
     <ClInclude Include="src\Game\Entities\Tiles\PlayerSpawnTile.h" />
@@ -273,9 +274,13 @@
     <ClInclude Include="src\HUD\TextButtonWidget.h" />
     <ClInclude Include="src\Game\Entities\Tiles\StoneTile.h" />
     <ClInclude Include="src\Game\Entities\Tiles\Tile.h" />
+    <ClInclude Include="src\HUD\Custom\TeamDispatcherUI.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

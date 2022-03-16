@@ -101,8 +101,6 @@ namespace Network
 				if (packet.getDataSize() < sizeof(size_t)) // Invalid data
 					continue;
 
-				LOG_TRACE("Packet received.");
-
 				size_t GUID;
 				packet >> GUID;
 

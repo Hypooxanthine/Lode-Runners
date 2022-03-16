@@ -48,7 +48,6 @@ namespace Network
 
 	void Server::send(const size_t& GUID, ByteArray& args)
 	{
-		LOG_INFO("Sending from server to all clients.");
 		sf::Packet packet;
 
 		packet << GUID;
@@ -154,8 +153,6 @@ namespace Network
 
 			if(m_Selector.wait(sf::milliseconds(1)))
 			{
-				LOG_TRACE("Server received data.");
-
 				for (size_t i = m_Clients.size(); i > 0 ; i--)
 				{
 					auto& c = m_Clients[i-1];

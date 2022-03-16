@@ -127,7 +127,7 @@ namespace Network
 
 	void Networker::call(const ReplicationMode& mode, const size_t& GUID, ByteArray& args)
 	{
-		#ifdef _DEBUG
+		/*#ifdef _DEBUG
 		std::string debugStr = "Networker's call function invoked. Mode : ";
 
 		switch (mode)
@@ -151,7 +151,7 @@ namespace Network
 		debugStr += ".";
 
 		LOG_INFO(debugStr);
-		#endif
+		#endif*/
 
 		if (m_InterfaceType == InterfaceType::None) return;
 
@@ -168,11 +168,13 @@ namespace Network
 			}
 			else
 			{
-				LOG_TRACE("Trying to send data : from Client to Server. ReplicationMode : OnServer.");
+				/*LOG_TRACE("Trying to send data : from Client to Server. ReplicationMode : OnServer.");
 				if (!m_Client.send(GUID, args))
 					LOG_WARN("Couldn't send data.");
 				else
-					LOG_TRACE("Data sent.");
+					LOG_TRACE("Data sent.");*/
+
+				m_Client.send(GUID, args);
 			}
 		}
 		else if (mode == ReplicationMode::Multicast && m_InterfaceType == InterfaceType::Server)

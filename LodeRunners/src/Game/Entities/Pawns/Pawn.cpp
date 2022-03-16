@@ -1,15 +1,15 @@
 #include "Pawn.h"
 
-#include "../../Controlers/PlayerController.h"
-#include "../../Controlers/AIController.h"
+#include "../../Controllers/PlayerController.h"
+#include "../../Controllers/AIController.h"
 
 #include "../../Components/FlipbookComponent.h"
 #include "../../Components/ColliderComponent.h"
 
 #include "../../../Assets/Assets.h"
 
-Pawn::Pawn(Controller* controler)
-	: m_Controler(controler)
+Pawn::Pawn(Controller* controler, const size_t& ID)
+	: m_Controler(controler), m_ID(ID)
 {
 	m_Collider = makeComponent<ColliderComponent>("Collider");
 	m_Flipbook = makeComponent<FlipbookComponent>("Flipbook");

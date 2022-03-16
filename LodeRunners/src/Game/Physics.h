@@ -11,7 +11,7 @@ public:
 
 	static Physics* get() { return m_Instance; }
 
-	void resolve();
+	void update();
 
 	void registerCollider(ColliderComponent* collider);
 	bool unregisterCollider(ColliderComponent* collider);

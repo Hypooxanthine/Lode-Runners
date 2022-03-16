@@ -1,0 +1,4 @@
+// Les fichiers hint permettent à l'IDE Visual Studio d'interpréter les identificateurs Visual C++
+// tels que les noms de fonctions et de macros.
+// Pour plus d'informations, consultez https://go.microsoft.com/fwlink/?linkid=865984
+#define CREATE_REPLICATED_FUNCTION(funcName, func, id, mode, __VA_ARGS__) Network::ReplicatedFunc<__VA_ARGS__> funcName = Network::ReplicatedFunc<__VA_ARGS__>(func, std::hash<std::string>()((std::string)#funcName + id), mode)

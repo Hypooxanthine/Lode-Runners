@@ -39,6 +39,7 @@ class Widget
 public:
 	Widget();
 	Widget(Widget* parent);
+	virtual ~Widget();
 
 	// This function first calculates a CursorRay then calls update(const float&, CursorRay&).
 	void update(const float& dt);
@@ -61,7 +62,7 @@ public:
 	/* POSITIONS */
 
 	// In Widget's coordinate system (0-1).
-	inline const sf::Vector2f& getRelativePosition() const { return { m_RelativeRect.left, m_RelativeRect.top }; }
+	sf::Vector2f getRelativePosition() const { return { m_RelativeRect.left, m_RelativeRect.top }; }
 	// In Widget's coordinate system (0-1).
 	sf::Vector2f getGlobalPosition() const;
 
