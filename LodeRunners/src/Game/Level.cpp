@@ -1,12 +1,18 @@
 #include "Level.h"
 #include "Entities/Tiles/Tile.h"
 
+#include "Controlers/PlayerController.h"
+#include "Entities/Pawns/RunnerPawn.h"
+
 /* CONSTRUCTORS */
 
 Level::Level(Ref<LevelAsset> levelAsset)
 	: m_View({0.f, 0.f, (float)Assets::getElementSize() * TILES_WIDTH, (float)Assets::getElementSize() * TILES_HEIGHT})
 {
 	initTiles(levelAsset.get());
+	m_Controller = MakeRef<PlayerController>();
+	m_Runner = MakeRef<RunnerPawn>(m_Controller.get());
+	m_Controller->setControlledPawn(m_Runner.get());
 }
 
 /* PUBLIC MEMBER FUNCTIONS */
@@ -18,6 +24,11 @@ void Level::update(const float& dt)
 		t->update(dt);
 		t->updateComponents(dt);
 	}
+
+	m_Controller->update(dt);
+
+	m_Runner->update(dt);
+	m_Runner->updateComponents(dt);
 }
 
 void Level::render(Ref<sf::RenderWindow> window)
@@ -28,6 +39,9 @@ void Level::render(Ref<sf::RenderWindow> window)
 		t->render(window);
 		t->renderComponents(window);
 	}
+
+	m_Runner->render(window);
+	m_Runner->renderComponents(window);
 }
 
 void Level::onResize()

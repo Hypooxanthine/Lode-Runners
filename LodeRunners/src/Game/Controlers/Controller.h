@@ -5,11 +5,10 @@ class Pawn;
 class Controller
 {
 public:
-	Controller(Pawn* controld) = delete;
-
 	virtual void update(const float& dt) {}
 
 	Pawn* getPawn() { return m_Pawn; }
+	void setControlledPawn(Pawn* pawn) { m_Pawn = pawn; }
 
 private:
 	Pawn* m_Pawn;

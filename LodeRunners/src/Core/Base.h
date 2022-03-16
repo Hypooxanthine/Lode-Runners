@@ -7,7 +7,7 @@
 #define TILES_WIDTH 26
 #define TILES_HEIGHT 16
 
-#define FIXED_FPS 60
+#define FIXED_FPS 120
 #define FIXED_DELTA_TIME_SECONDS 1.f / float(FIXED_FPS)
 #define DELTA_TIME_LOG_STEP 1.f
 

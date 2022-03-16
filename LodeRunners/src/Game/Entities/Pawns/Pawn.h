@@ -18,10 +18,11 @@ public:
 	std::optional<PlayerController*> getPlayerController();
 	std::optional<AIController*> getAIController();
 
-private:
-	Controller* m_Controler;
-
+protected:
 	ColliderComponent* m_Collider;
 	FlipbookComponent* m_Flipbook;
+
+private:
+	Controller* m_Controler;
 };
 

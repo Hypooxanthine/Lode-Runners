@@ -22,7 +22,6 @@ Application::Application()
 
 void Application::run()
 {
-	const unsigned int& elementSize = Assets::getElementSize();
 	m_Window->create(sf::VideoMode::getDesktopMode(), "Lode Runners");
 	m_Window->setFramerateLimit(FIXED_FPS);
 
@@ -47,7 +46,7 @@ void Application::run()
 
 const Event& Application::getEvent(const EventType& type) const
 {
-	return m_Events.at(type);
+	return m_Events.contains(type) ? m_Events.at(type) : Event();
 }
 
 void Application::updateEvents()

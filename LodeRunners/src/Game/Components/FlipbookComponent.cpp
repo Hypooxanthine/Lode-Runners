@@ -25,11 +25,34 @@ void FlipbookComponent::render(Ref<sf::RenderWindow> window)
 
 void FlipbookComponent::update(const float& dt)
 {
+	m_TimeAccumulator += dt;
+
+	if (m_TimeAccumulator > m_FrameDuration)
+	{
+		nextFrame();
+		m_TimeAccumulator -= m_FrameDuration;
+	}
 }
 
 void FlipbookComponent::setType(const FlipbookType& type)
 {
 	m_FbAsset = MakeRef<FlipbookAsset>(*Assets::getFlipbook(type));
+}
+
+size_t FlipbookComponent::getFramesNumber() const
+{
+	return m_FbAsset->getFramesNumber();
+}
+
+void FlipbookComponent::nextFrame()
+{
+	setCurrentFrame((m_CurrentFrame + 1) % getFramesNumber());
+}
+
+void FlipbookComponent::previousFrame()
+{
+	// *2 because "moduling" negative values leads to unexpected results.
+	setCurrentFrame((m_CurrentFrame * 2 - 1) % getFramesNumber());
 }
 
 void FlipbookComponent::setTotalDuration(const float& duration)

@@ -4,6 +4,9 @@
 #include "../Assets/LevelAsset.h"
 #include "Entities/Tiles/Tile.h"
 
+class RunnerPawn;
+class Controller;
+
 class Level
 {
 public:
@@ -25,5 +28,9 @@ private: // Private methods
 private: // Private members
 	std::array<Ref<Tile>, TILES_HEIGHT* TILES_WIDTH> m_Tiles;
 	sf::View m_View;
+
+	// TESTS
+	Ref<RunnerPawn> m_Runner;
+	Ref<Controller> m_Controller;
 };
 

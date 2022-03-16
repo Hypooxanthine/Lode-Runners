@@ -15,8 +15,11 @@ public:
 
 	void setType(const FlipbookType& type);
 
+	size_t getFramesNumber() const;
 	const size_t& getCurrentFrame() const { return m_CurrentFrame; }
 	void setCurrentFrame(const size_t& f) { m_CurrentFrame = f; }
+	void nextFrame();
+	void previousFrame();
 
 	void setFrameDuration(const float& duration) { m_FrameDuration = duration; }
 	void setTotalDuration(const float& duration);
@@ -28,5 +31,6 @@ private:
 
 	size_t m_CurrentFrame = 0;
 	float m_FrameDuration = 1.f;
+	float m_TimeAccumulator = 0.f;
 };
 
