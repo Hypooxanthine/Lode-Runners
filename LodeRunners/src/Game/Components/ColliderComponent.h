@@ -11,6 +11,7 @@ class ColliderComponent : public Component
 {
 public:
 	ColliderComponent();
+	virtual ~ColliderComponent();
 	virtual void update(const float& dt) override;
 
 public:
@@ -34,6 +35,7 @@ public:
 		m_BehaviourWithProfile[profile] = response; 
 	}
 
+	// A collider A can collide a collider B while B doesn't collide A because of collision profiles and responses. 
 	bool collides(const ColliderComponent* other) const;
 	bool resolveCollisionWith(ColliderComponent* other);
 

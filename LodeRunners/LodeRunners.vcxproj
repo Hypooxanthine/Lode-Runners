@@ -167,6 +167,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Physics.cpp" />
     <ClCompile Include="src\Game\Entities\Pawns\EnnemyPawn.cpp" />
     <ClCompile Include="src\Game\Entities\Pawns\RunnerPawn.cpp" />
     <ClCompile Include="src\Game\Entities\Pawns\Pawn.cpp" />
@@ -217,6 +218,7 @@
     <ClCompile Include="src\Game\Entities\Tiles\Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Physics.h" />
     <ClInclude Include="src\Game\Entities\Pawns\EnnemyPawn.h" />
     <ClInclude Include="src\Game\Entities\Pawns\RunnerPawn.h" />
     <ClInclude Include="src\Game\Entities\Pawns\Pawn.h" />

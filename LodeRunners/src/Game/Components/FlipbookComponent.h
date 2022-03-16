@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Component.h"
 
 class FlipbookAsset;
@@ -27,7 +28,7 @@ public:
 	float getTotalDuration() const;
 
 private:
-	Ref<FlipbookAsset> m_FbAsset = nullptr;
+	Ref<const FlipbookAsset> m_FbAsset = nullptr;
 
 	size_t m_CurrentFrame = 0;
 	float m_FrameDuration = 1.f;

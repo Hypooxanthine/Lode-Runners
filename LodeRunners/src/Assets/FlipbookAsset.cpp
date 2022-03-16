@@ -15,7 +15,7 @@ FlipbookAsset::FlipbookAsset(const FlipbookAsset& other)
 		m_Frames.push_back(MakeRef<SpriteAsset>(*s));
 }
 
-void FlipbookAsset::render(Ref<sf::RenderWindow> window, const size_t& frame, const sf::Vector2f& worldPosition)
+void FlipbookAsset::render(Ref<sf::RenderWindow> window, const size_t& frame, const sf::Vector2f& worldPosition) const
 {
 	m_Frames[frame]->setPosition(worldPosition);
 	window->draw(*m_Frames[frame]);

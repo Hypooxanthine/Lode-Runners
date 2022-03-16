@@ -11,7 +11,7 @@ public:
 	FlipbookAsset();
 	FlipbookAsset(const FlipbookAsset& other);
 
-	void render(Ref<sf::RenderWindow> window, const size_t& frame, const sf::Vector2f& worldPosition);
+	void render(Ref<sf::RenderWindow> window, const size_t& frame, const sf::Vector2f& worldPosition) const;
 
 	void setType(const FlipbookType& type) { m_Type = type; }
 	void addFrame(Ref<SpriteAsset> sheet);

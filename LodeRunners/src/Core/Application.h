@@ -7,6 +7,8 @@
 
 #include "Base.h"
 
+#define GET_EVENT(eventType) Application::get()->getEvent(eventType)
+
 enum class EventType
 {
 	Escape,
