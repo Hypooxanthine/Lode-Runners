@@ -84,8 +84,6 @@ void ColliderComponent::clip(ColliderComponent* other)
 	 * easier to store this response in "this", with the other ones.
 	 */
 
-	const sf::Vector2f moveDir = getParent()->getPosition() - m_LastPosition;
-
 	if(this->getCollisionType() == CollisionType::Static)
 	{
 		/*
@@ -110,6 +108,8 @@ void ColliderComponent::clip(ColliderComponent* other)
 	{
 		// At this point, "this" is dynamic.
 
+		const sf::Vector2f thisMoveVector = this->getParent()->getPosition() - this->m_LastPosition;
+
 		if (other->getCollisionType() == CollisionType::Static)
 		{
 			/* 
@@ -128,7 +128,7 @@ void ColliderComponent::clip(ColliderComponent* other)
 			 * pushing themselves together.
 			 */
 
-
+			const sf::Vector2f otherMoveVector = other->getParent()->getPosition() - other->m_LastPosition;
 		}
 	}
 }
