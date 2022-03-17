@@ -68,6 +68,7 @@ void LobbyState::init()
 	State::init();
 
 	trigerOnPlayerLoginForAll_OnServer(PLAYER_ID, m_PlayerName);
+	Network::Networker::get()->acceptClients();
 }
 
 void LobbyState::update(const float& dt)
@@ -115,5 +116,6 @@ void LobbyState::launch(Ref<LevelAsset> level)
 
 	#endif
 
+	Network::Networker::get()->stopAcceptingClients();
 	pushState(MakeRef<GameState>(level));
 }

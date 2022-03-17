@@ -120,7 +120,7 @@ private: // Replicated functions
 			// If the player belongs to no list (just arrived to the lobby), or if he belongs to runners AND
 			// runners list has at least 2 players, then server accepts to set player's team to ennemies.
 			// Runners list has to contain at least 1 player.
-			if (!playerBelongsToEnnemies(playerID) && canRemovePlayerFromRunners())
+			if (!playerBelongsToEnnemies(playerID) && canRemovePlayerFromRunners() && m_Ennemies.size() < m_MaxEnnemies)
 				this->setPlayerToEnnemyForAll_Multicast(playerID, playerName);
 		},
 		"TeamDispatcherUI", Network::ReplicationMode::OnServer,

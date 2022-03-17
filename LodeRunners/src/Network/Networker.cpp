@@ -199,6 +199,18 @@ namespace Network
 		}
 	}
 
+	void Networker::stopAcceptingClients()
+	{
+		if (m_InterfaceType == InterfaceType::Server)
+			m_Server.stopAcceptingClients();
+	}
+
+	void Networker::acceptClients()
+	{
+		if (m_InterfaceType == InterfaceType::Server)
+			m_Server.resumeAcceptClients();
+	}
+
 	void Networker::reset()
 	{
 		if (m_InterfaceType == InterfaceType::Server)

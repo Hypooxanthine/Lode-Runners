@@ -82,6 +82,11 @@ namespace Network
 		m_IsAcceptingClients = false;
 	}
 
+	void Server::resumeAcceptClients()
+	{
+		// TO BE IMPLEMENTED
+	}
+
 	bool Server::tryListen()
 	{
 		if (m_Listener.listen(m_Port) != sf::Socket::Done)

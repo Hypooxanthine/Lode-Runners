@@ -17,6 +17,7 @@ namespace Network
 
 		void stop();
 		void stopAcceptingClients();
+		void resumeAcceptClients();
 
 		inline void bindOnClientLogout(const std::function<void(const size_t&)>& callback) { m_OnClientLogout = callback; }
 		inline void bindOnAllClientsLogout(const std::function<void(void)>& callback) { m_OnAllClientsLogout = callback; }

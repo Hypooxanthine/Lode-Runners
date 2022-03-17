@@ -55,6 +55,9 @@ namespace Network
 		void fillCallQueue(const ReplicationMode& mode, const size_t& GUID, ByteArray& args);
 		void executeCallQueue();
 
+		void stopAcceptingClients();
+		void acceptClients();
+
 		void reset();
 
 	private: // Private methods
