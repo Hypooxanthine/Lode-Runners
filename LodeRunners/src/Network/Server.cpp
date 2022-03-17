@@ -150,7 +150,7 @@ namespace Network
 
 	void Server::acceptData()
 	{
-		while ((m_Clients.size() > 0 || m_IsAcceptingClients) && !m_RequestedStop)
+		while ((m_Clients.size() > 0 || m_IsAcceptingClients || m_MaxClients == 0) && !m_RequestedStop)
 		{
 			sf::sleep(sf::seconds(FIXED_NETWORK_DELTA_TIME_SECONDS));
 			

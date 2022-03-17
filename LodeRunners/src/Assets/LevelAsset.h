@@ -15,6 +15,7 @@ public:
 
 	std::vector<sf::Vector2u> getEnnemiesStart() const;
 	sf::Vector2u getPlayerStart() const;
+	bool isValid() const;
 
 	void fill(const TileType& type);
 

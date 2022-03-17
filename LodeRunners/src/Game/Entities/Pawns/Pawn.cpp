@@ -8,8 +8,8 @@
 
 #include "../../../Assets/Assets.h"
 
-Pawn::Pawn(Controller* controler, const size_t& ID)
-	: m_Controler(controler), m_ID(ID)
+Pawn::Pawn(const size_t& ID, const std::string& name)
+	: m_ID(ID), m_Name(name)
 {
 	m_Collider = makeComponent<ColliderComponent>("Collider");
 	m_Flipbook = makeComponent<FlipbookComponent>("Flipbook");
@@ -17,14 +17,14 @@ Pawn::Pawn(Controller* controler, const size_t& ID)
 
 std::optional<PlayerController*> Pawn::getPlayerController()
 {
-	auto out = dynamic_cast<PlayerController*>(m_Controler);
+	auto out = dynamic_cast<PlayerController*>(m_Controller);
 
 	return out != nullptr ? out : std::optional<PlayerController*>();
 }
 
 std::optional<AIController*> Pawn::getAIController()
 {
-	auto out = dynamic_cast<AIController*>(m_Controler);
+	auto out = dynamic_cast<AIController*>(m_Controller);
 
 	return out != nullptr ? out : std::optional<AIController*>();
 }

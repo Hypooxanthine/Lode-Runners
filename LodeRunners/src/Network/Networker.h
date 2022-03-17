@@ -40,11 +40,9 @@ namespace Network
 
 		// To be considered : bound callbacks will only be triggered on server.
 		inline void bindOnPlayerLogout(const std::function<void(const size_t&)>& callback) { m_OnPlayerLogoutCallbacks.push_back(callback); }
-		inline void popOnPlayerLogout() { m_OnPlayerLogoutCallbacks.pop_back(); }
 
 		// To be considered : bound callbacks will only be triggered on client.
 		inline void bindOnServerConnexionLost(const std::function<void(void)>& callback) { m_OnServerConnexionLostCallbacks.push_back(callback); }
-		inline void popOnServerConnexionLost() { m_OnServerConnexionLostCallbacks.pop_back(); }
 
 		bool createServer(const size_t& maxClients = 1, const uint32_t& port = 80);
 		bool createClient(const std::string& address = "localhost", const uint32_t& port = 80);
@@ -71,6 +69,7 @@ namespace Network
 
 		std::unordered_map<size_t, std::function<void(ByteArray&)>> m_ReplicatedFunctions;
 		std::queue<std::tuple<ReplicationMode, size_t, ByteArray>> m_CallQueue; // FIFO array for call stack.
+		std::mutex m_CallQueueMutex;
 
 		std::vector<std::function<void(const size_t&)>> m_OnPlayerLogoutCallbacks;
 		std::vector<std::function<void(void)>> m_OnServerConnexionLostCallbacks;

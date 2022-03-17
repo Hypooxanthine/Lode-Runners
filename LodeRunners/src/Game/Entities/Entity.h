@@ -1,5 +1,10 @@
 #pragma once
+
 #include "../../Core/Base.h"
+
+// Tile size can differs depending on the skin. So the space unit is the tile size.
+// (0.f, 0.f) is top-left corner, (26.f, 16.f) is bottom_right corner.
+#define SPACE_UNIT (float)Assets::getElementSize()
 
 class State;
 class Component;
@@ -15,8 +20,8 @@ public:
 	void renderComponents(Ref<sf::RenderWindow> window);
 
 	const sf::Vector2f& getPosition() const { return m_WorldPosition; }
-	void setPosition(const sf::Vector2f& position) { m_WorldPosition = position; }
-	void move(const sf::Vector2f& delta) { m_WorldPosition += delta; }
+	void setPosition(const sf::Vector2f& position);
+	void move(const sf::Vector2f& delta);
 
 	std::optional<Component*> getComponent(const std::string& name);
 

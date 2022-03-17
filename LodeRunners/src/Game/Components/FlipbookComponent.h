@@ -28,7 +28,7 @@ public:
 	float getTotalDuration() const;
 
 private:
-	Ref<const FlipbookAsset> m_FbAsset = nullptr;
+	Ref<FlipbookAsset> m_FbAsset = nullptr;
 
 	size_t m_CurrentFrame = 0;
 	float m_FrameDuration = 1.f;

@@ -192,10 +192,31 @@ namespace Network
 	{
 		while (!m_CallQueue.empty())
 		{
-			auto& [mode, GUID, args] = m_CallQueue.front();
+			std::tuple<ReplicationMode, size_t, ByteArray> callCopy;
 
-			call(mode, GUID, args);
-			m_CallQueue.pop();
+			{
+				/*
+				 * This is quite important.
+				 * This function may, and will, call functions that will add new calls to the call queue.
+				 * That being said, there is a high risk of deadlock here, because this scope could take the ownership
+				 * of the lock, then call a function that adds a call to the call queue, but... The lock ownership is already
+				 * taken. The problem is that we can't delay calls that add new calls, we MUST execute calls in the exact same
+				 * order that they were sent. We cannot neither not use locks here, because the fastest the network is,
+				 * the fastest the call queue is filled. So when we call a function, then pop the call from the call queue, if
+				 * a call is added in between, all the data just goes wild because of std::queue internally dynamic memory allocation.
+				 * So we copy the next call, then pop it from the queue.
+				 * Then we release de the lock and perform the call. The call may fill the call queue, but there is
+				 * no problem because we're working with a copy of the call.
+				 * Copying is not great in general, but I couldn't find any other solution that wouldn't lead to
+				 * a deadlock here.
+				 */
+
+				std::lock_guard<std::mutex> lock(m_CallQueueMutex);
+				callCopy = m_CallQueue.front();
+				m_CallQueue.pop();
+			}
+
+			call(std::get<0>(callCopy), std::get<1>(callCopy), std::get<2>(callCopy));
 		}
 	}
 
@@ -218,12 +239,16 @@ namespace Network
 		else if (m_InterfaceType == InterfaceType::Client)
 			m_Client.stop();
 
+		m_OnPlayerLogoutCallbacks.clear();
+		m_OnServerConnexionLostCallbacks.clear();
+
 		m_InterfaceType = InterfaceType::None;
 		LOG_INFO("Networker reset.");
 	}
 
 	void Networker::fillCallQueue(const ReplicationMode& mode, const size_t& GUID, ByteArray& args)
 	{
+		std::lock_guard<std::mutex> lock(m_CallQueueMutex);
 		m_CallQueue.emplace(mode, GUID, args);
 	}
 

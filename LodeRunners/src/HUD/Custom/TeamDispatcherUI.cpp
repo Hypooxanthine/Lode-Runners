@@ -2,12 +2,12 @@
 
 const float PLAYER_ENTRY_RELATIVE_HEIGHT = .1f;
 
-TeamDispatcherUI::TeamDispatcherUI(const size_t& maxEnnemies, const std::string& playerName)
-	: TeamDispatcherUI(nullptr, maxEnnemies, playerName)
+TeamDispatcherUI::TeamDispatcherUI(const std::string& playerName)
+	: TeamDispatcherUI(nullptr, playerName)
 {}
 
-TeamDispatcherUI::TeamDispatcherUI(Widget* parent, const size_t& maxEnnemies, const std::string& playerName)
-	: Widget(parent), m_MaxEnnemies(maxEnnemies), m_Name(playerName)
+TeamDispatcherUI::TeamDispatcherUI(Widget* parent, const std::string& playerName)
+	: Widget(parent), m_Name(playerName)
 {
 	// Titles ("Runners" and "Ennemies")
 	m_RunnersTitleText = MakeRef<TextWidget>(this);
@@ -29,7 +29,7 @@ TeamDispatcherUI::TeamDispatcherUI(Widget* parent, const size_t& maxEnnemies, co
 	m_EnnemiesNumberText = MakeRef<TextWidget>(this);
 	m_EnnemiesNumberText->setRelativePosition({ .6f, .1f });
 	m_EnnemiesNumberText->setRelativeSize({ .3f, .1f });
-	m_EnnemiesNumberText->setText("0 / " + std::to_string(m_MaxEnnemies));
+	m_EnnemiesNumberText->setText("0 / 0");
 
 	// Joining buttons
 	m_JoinRunnersButton = MakeRef<TextButtonWidget>(this, "Join");
@@ -72,7 +72,7 @@ void TeamDispatcherUI::onPlayerLogout(const size_t& playerID)
 	// TO BE IMPLEMENTED
 
 	auto ennemiesIt = std::find_if(m_Ennemies.begin(), m_Ennemies.end(),
-		[&](const std::tuple<size_t, std::string, Ref<TextWidget>>& element)
+		[&](const PlayerEntry& element)
 		{
 			return std::get<0>(element) == playerID;
 		}
@@ -83,7 +83,7 @@ void TeamDispatcherUI::onPlayerLogout(const size_t& playerID)
 		std::for_each
 		(
 			ennemiesIt + 1, m_Ennemies.end(),
-			[this](const std::tuple<size_t, std::string, Ref<TextWidget>>& element)
+			[this](const PlayerEntry& element)
 			{
 				auto& widget = std::get<2>(element);
 				widget->setRelativePosition({ widget->getRelativePosition().x, widget->getRelativePosition().y - PLAYER_ENTRY_RELATIVE_HEIGHT });
@@ -99,7 +99,7 @@ void TeamDispatcherUI::onPlayerLogout(const size_t& playerID)
 	auto runnersIt = std::find_if
 	(
 		m_Runners.begin(), m_Runners.end(),
-		[&](const std::tuple<size_t, std::string, Ref<TextWidget>>& element) -> bool
+		[&](const PlayerEntry& element) -> bool
 		{
 			return std::get<0>(element) == playerID;
 		}
@@ -110,7 +110,7 @@ void TeamDispatcherUI::onPlayerLogout(const size_t& playerID)
 		std::for_each
 		(
 			runnersIt + 1, m_Runners.end(),
-			[this](const std::tuple<size_t, std::string, Ref<TextWidget>>& element)
+			[this](const PlayerEntry& element)
 			{
 				auto& widget = std::get<2>(element);
 				widget->setRelativePosition({ widget->getRelativePosition().x, widget->getRelativePosition().y - PLAYER_ENTRY_RELATIVE_HEIGHT });
@@ -147,12 +147,32 @@ void TeamDispatcherUI::setMaxEnnemies(const size_t& val)
 	updateNumbersTexts();
 }
 
+std::vector<std::pair<size_t, std::string>> TeamDispatcherUI::getRunners() const
+{
+	std::vector<std::pair<size_t, std::string>> out;
+
+	for (auto& p : m_Runners)
+		out.emplace_back(std::get<0>(p), std::get<1>(p));
+
+	return out;
+}
+
+std::vector<std::pair<size_t, std::string>> TeamDispatcherUI::getEnnemies() const
+{
+	std::vector<std::pair<size_t, std::string>> out;
+
+	for (auto& e : m_Ennemies)
+		out.emplace_back(std::get<0>(e), std::get<1>(e));
+
+	return out;
+}
+
 void TeamDispatcherUI::setPlayerToRunner(const size_t& playerID, const std::string& playerName)
 {
 	auto runnersIt = std::find_if
 	(
 		m_Runners.begin(), m_Runners.end(),
-		[&](const std::tuple<size_t, std::string, Ref<TextWidget>>& element) -> bool
+		[&](const PlayerEntry& element) -> bool
 		{
 			return std::get<0>(element) == playerID;
 		}
@@ -164,7 +184,7 @@ void TeamDispatcherUI::setPlayerToRunner(const size_t& playerID, const std::stri
 	auto ennemiesIt = std::find_if
 	(
 		m_Ennemies.begin(), m_Ennemies.end(),
-		[&](const std::tuple<size_t, std::string, Ref<TextWidget>>& element) -> bool
+		[&](const PlayerEntry& element) -> bool
 		{
 			return std::get<0>(element) == playerID;
 		}
@@ -176,7 +196,7 @@ void TeamDispatcherUI::setPlayerToRunner(const size_t& playerID, const std::stri
 		std::for_each
 		(
 			ennemiesIt + 1, m_Ennemies.end(),
-			[this](const std::tuple<size_t, std::string, Ref<TextWidget>>& element)
+			[this](const PlayerEntry& element)
 			{
 				auto& widget = std::get<2>(element);
 				widget->setRelativePosition({ widget->getRelativePosition().x, widget->getRelativePosition().y - PLAYER_ENTRY_RELATIVE_HEIGHT });
@@ -197,7 +217,7 @@ void TeamDispatcherUI::setPlayerToEnnemy(const size_t& playerID, const std::stri
 	auto ennemiesIt = std::find_if
 	(
 		m_Ennemies.begin(), m_Ennemies.end(),
-		[&](const std::tuple<size_t, std::string, Ref<TextWidget>>& element) -> bool
+		[&](const PlayerEntry& element) -> bool
 		{
 			return std::get<0>(element) == playerID;
 		}
@@ -209,7 +229,7 @@ void TeamDispatcherUI::setPlayerToEnnemy(const size_t& playerID, const std::stri
 	auto runnersIt = std::find_if
 	(
 		m_Runners.begin(), m_Runners.end(),
-		[&](const std::tuple<size_t, std::string, Ref<TextWidget>>& element) -> bool
+		[&](const PlayerEntry& element) -> bool
 		{
 			return std::get<0>(element) == playerID;
 		}
@@ -222,7 +242,7 @@ void TeamDispatcherUI::setPlayerToEnnemy(const size_t& playerID, const std::stri
 		std::for_each
 		(
 			runnersIt + 1, m_Runners.end(),
-			[this](const std::tuple<size_t, std::string, Ref<TextWidget>>& element)
+			[this](const PlayerEntry& element)
 			{
 				auto& widget = std::get<2>(element);
 				widget->setRelativePosition({ widget->getRelativePosition().x, widget->getRelativePosition().y - PLAYER_ENTRY_RELATIVE_HEIGHT });
@@ -243,9 +263,9 @@ void TeamDispatcherUI::updateNumbersTexts()
 	m_RunnersNumberText->setText(std::to_string(m_Runners.size()));
 }
 
-std::tuple<size_t, std::string, Ref<TextWidget>> TeamDispatcherUI::makeRunnerEntry(const size_t& playerID, const std::string& playerName)
+TeamDispatcherUI::PlayerEntry TeamDispatcherUI::makeRunnerEntry(const size_t& playerID, const std::string& playerName)
 {
-	std::tuple<size_t, std::string, Ref<TextWidget>> out = { playerID, playerName, MakeRef<TextWidget>(m_RunnersField.get()) };
+	PlayerEntry out = { playerID, playerName, MakeRef<TextWidget>(m_RunnersField.get()) };
 
 	std::get<2>(out)->setRelativePosition({ 0.f, PLAYER_ENTRY_RELATIVE_HEIGHT * m_Runners.size() });
 	std::get<2>(out)->setRelativeSize({ 1.f, PLAYER_ENTRY_RELATIVE_HEIGHT });
@@ -259,9 +279,9 @@ std::tuple<size_t, std::string, Ref<TextWidget>> TeamDispatcherUI::makeRunnerEnt
 	return out;
 }
 
-std::tuple<size_t, std::string, Ref<TextWidget>> TeamDispatcherUI::makeEnnemyEntry(const size_t& playerID, const std::string& playerName)
+TeamDispatcherUI::PlayerEntry TeamDispatcherUI::makeEnnemyEntry(const size_t& playerID, const std::string& playerName)
 {
-	std::tuple<size_t, std::string, Ref<TextWidget>> out = { playerID, playerName, MakeRef<TextWidget>(m_EnnemiesField.get()) };
+	PlayerEntry out = { playerID, playerName, MakeRef<TextWidget>(m_EnnemiesField.get()) };
 
 	std::get<2>(out)->setRelativePosition({ 0.f, PLAYER_ENTRY_RELATIVE_HEIGHT * m_Ennemies.size() });
 	std::get<2>(out)->setRelativeSize({ 1.f, PLAYER_ENTRY_RELATIVE_HEIGHT });
@@ -280,7 +300,7 @@ bool TeamDispatcherUI::playerBelongsToRunners(const size_t& playerID) const
 	auto runnersIt = std::find_if
 	(
 		m_Runners.begin(), m_Runners.end(),
-		[&](const std::tuple<size_t, std::string, Ref<TextWidget>>& element) -> bool
+		[&](const PlayerEntry& element) -> bool
 		{
 			return std::get<0>(element) == playerID;
 		}
@@ -294,7 +314,7 @@ bool TeamDispatcherUI::playerBelongsToEnnemies(const size_t& playerID) const
 	auto ennemyIt = std::find_if
 	(
 		m_Ennemies.begin(), m_Ennemies.end(),
-		[&](const std::tuple<size_t, std::string, Ref<TextWidget>>& element) -> bool
+		[&](const PlayerEntry& element) -> bool
 		{
 			return std::get<0>(element) == playerID;
 		}

@@ -1,8 +1,18 @@
 #pragma once
 
 #include "../Core/Base.h"
-#include "../Assets/LevelAsset.h"
-#include "Entities/Tiles/Tile.h"
+
+class LevelAsset;
+enum class TileType;
+
+class Tile;
+class Pawn;
+class PlayerController;
+
+// first = playerID, second = playerName.
+using Player = std::pair<size_t, std::string>;
+
+using TilePosition = sf::Vector2u;
 
 class Level
 {
@@ -19,11 +29,22 @@ public:
 	// Values between 0 and 1 for the edges of the window.
 	void setViewport(const sf::FloatRect& viewport);
 
+	void addRunner(const Player& runner);
+	void addEnnemy(const Player& ennemy);
+
 private: // Private methods
 	void initTiles(const LevelAsset* levelAsset);
 
 private: // Private members
 	std::array<Ref<Tile>, TILES_HEIGHT * TILES_WIDTH> m_Tiles;
+
+	TilePosition m_RunnerSpawn;
+	std::vector<TilePosition> m_EnnemiesSpawns;
+
+	// Only one player controller per instance.
+	Ref<PlayerController> m_PlayerController;
+	std::vector<Ref<Pawn>> m_Pawns;
+
 	sf::View m_View;
 };
 

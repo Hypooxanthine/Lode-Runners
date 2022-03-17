@@ -44,7 +44,7 @@ PreLobbyState::PreLobbyState()
 	Widget::bindWidgets(m_CreateServerMaxClientsTextBox.get(), m_HUD.get());
 	m_CreateServerMaxClientsTextBox->setGlobalPosition({ .55f, .36f });
 	m_CreateServerMaxClientsTextBox->setGlobalSize({ .05f, .04f });
-	m_CreateServerMaxClientsTextBox->setText("1");
+	m_CreateServerMaxClientsTextBox->setText("0");
 
 	m_JoinServerButton = MakeRef<TextButtonWidget>("Join server");
 	Widget::bindWidgets(m_JoinServerButton.get(), m_HUD.get());

@@ -79,7 +79,7 @@ namespace Network
 		void operator() (const ReplicationMode& mode, Args&&... args) { call(mode, std::forward<Args>(args)...); }
 
 	private:
-		void call(ByteArray& buffer)
+		void call(ByteArray buffer)
 		{
 			size_t cursor = 0;
 

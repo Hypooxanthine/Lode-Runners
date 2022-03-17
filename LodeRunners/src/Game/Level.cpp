@@ -1,5 +1,13 @@
 #include "Level.h"
+
+#include "../Assets/Assets.h"
+
+#include "../Network/Network.h"
+
 #include "Entities/Tiles/Tile.h"
+#include "Entities/Pawns/RunnerPawn.h"
+#include "Entities/Pawns/EnnemyPawn.h"
+#include "Controllers/PlayerController.h"
 
 /* CONSTRUCTORS */
 
@@ -18,6 +26,14 @@ void Level::update(const float& dt)
 		t->updateComponents(dt);
 		t->update(dt);
 	}
+
+	for (auto& p : m_Pawns)
+	{
+		p->updateComponents(dt);
+		p->update(dt);
+	}
+
+	m_PlayerController->update(dt);
 }
 
 void Level::render(Ref<sf::RenderWindow> window)
@@ -27,6 +43,12 @@ void Level::render(Ref<sf::RenderWindow> window)
 	{
 		t->renderComponents(window);
 		t->render(window);
+	}
+
+	for (auto& p : m_Pawns)
+	{
+		p->renderComponents(window);
+		p->render(window);
 	}
 }
 
@@ -72,8 +94,8 @@ void Level::setTile(const size_t& index, const TileType& type)
 	m_Tiles[index]->setPosition
 	(
 		{
-			(float)Assets::getElementSize() * (index % TILES_WIDTH),
-			(float)Assets::getElementSize() * (index / TILES_WIDTH)
+			(float)(index % TILES_WIDTH),
+			(float)(index / TILES_WIDTH)
 		}
 	);
 }
@@ -88,10 +110,40 @@ void Level::setViewport(const sf::FloatRect& viewport)
 	m_View.setViewport(viewport);
 }
 
+void Level::addRunner(const Player& runner)
+{
+	m_Pawns.push_back(MakeRef<RunnerPawn>(runner.first, runner.second));
+
+	if (runner.first == PLAYER_ID)
+	{
+		ASSERT(m_PlayerController == nullptr, "A game instance can't hold two PlayerControllers !");
+
+		m_PlayerController = MakeRef<PlayerController>();
+		m_PlayerController->setControlledPawn(m_Pawns.back().get());
+		m_Pawns.back()->setController(m_PlayerController.get());
+	}
+
+	m_Pawns.back()->setPosition({ (float)m_RunnerSpawn.x, (float)m_RunnerSpawn.y });
+}
+
+void Level::addEnnemy(const Player& ennemy)
+{
+
+}
+
 /* PRIVATE MEMBER FUNCTIONS */
 
 void Level::initTiles(const LevelAsset* levelAsset)
 {
 	for (size_t i = 0; i < levelAsset->getSize(); i++)
-		setTile(i, levelAsset->at(i)->getType());
+	{
+		auto& type = levelAsset->at(i)->getType();
+
+		setTile(i, type);
+
+		if (type == TileType::PlayerStart)
+			m_RunnerSpawn = { (unsigned)i % TILES_WIDTH, (unsigned)i / TILES_WIDTH };
+		else if (type == TileType::EnnemyStart)
+			m_EnnemiesSpawns.push_back({ (unsigned)i % TILES_WIDTH, (unsigned)i / TILES_WIDTH });
+	}
 }

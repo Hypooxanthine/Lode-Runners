@@ -57,6 +57,29 @@ sf::Vector2u LevelAsset::getPlayerStart() const
 	return out.value();
 }
 
+bool LevelAsset::isValid() const
+{
+	size_t playersNumber = 0;
+	size_t exitsNumber = 0;
+
+	for (auto& t : m_Data)
+	{
+		switch (t->getType())
+		{
+		case TileType::PlayerStart:
+			playersNumber++;
+			break;
+		case TileType::LevelEnd:
+			exitsNumber++;
+			break;
+		default:
+			break;
+		}
+	}
+
+	return playersNumber == 1 && exitsNumber == 1;
+}
+
 void LevelAsset::fill(const TileType& type)
 {
 	for (size_t i = 0; i < getSize(); i++)

@@ -1,5 +1,6 @@
 #include "Entity.h"
 
+#include "../../Assets/Assets.h"
 #include "../Components/Component.h"
 
 void Entity::updateComponents(const float& dt)
@@ -12,6 +13,16 @@ void Entity::renderComponents(Ref<sf::RenderWindow> window)
 {
 	for (Ref<Component> c : m_Components)
 		c->render(window);
+}
+
+void Entity::setPosition(const sf::Vector2f& position)
+{
+	m_WorldPosition = position * SPACE_UNIT;
+}
+
+void Entity::move(const sf::Vector2f& delta)
+{
+	m_WorldPosition += delta * SPACE_UNIT;
 }
 
 std::optional<Component*> Entity::getComponent(const std::string& name)

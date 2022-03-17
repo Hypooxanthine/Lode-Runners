@@ -7,12 +7,17 @@
 class TeamDispatcherUI : public Widget
 {
 public:
-	TeamDispatcherUI(const size_t& maxEnnemies, const std::string& playerName);
-	TeamDispatcherUI(Widget* parent, const size_t& maxEnnemies, const std::string& playerName);
+	using PlayerEntry = std::tuple<size_t, std::string, Ref<TextWidget>>;
+public:
+	TeamDispatcherUI(const std::string& playerName);
+	TeamDispatcherUI(Widget* parent, const std::string& playerName);
 
 	void onPlayerLogout(const size_t& playerID);
 
 	void setMaxEnnemies(const size_t& val);
+
+	std::vector<std::pair<size_t, std::string>> getRunners() const;
+	std::vector<std::pair<size_t, std::string>> getEnnemies() const;
 
 private: // Private member functions
 	void setPlayerToRunner(const size_t& playerID, const std::string& playerName);
@@ -20,8 +25,8 @@ private: // Private member functions
 
 	void updateNumbersTexts();
 
-	std::tuple<size_t, std::string, Ref<TextWidget>> makeRunnerEntry(const size_t& playerID, const std::string& playerName);
-	std::tuple<size_t, std::string, Ref<TextWidget>> makeEnnemyEntry(const size_t& playerID, const std::string& playerName);
+	PlayerEntry makeRunnerEntry(const size_t& playerID, const std::string& playerName);
+	PlayerEntry makeEnnemyEntry(const size_t& playerID, const std::string& playerName);
 
 	bool isEnnemiesListFull() const { return m_Ennemies.size() == m_MaxEnnemies; }
 	bool canRemovePlayerFromRunners() const { return m_Runners.size() > 1; }
@@ -35,7 +40,7 @@ private: // Private members
 	Ref<TextWidget> m_RunnersNumberText, m_EnnemiesNumberText;
 
 	Ref<Widget> m_RunnersField, m_EnnemiesField;
-	std::vector<std::tuple<size_t, std::string, Ref<TextWidget>>> m_Runners, m_Ennemies;
+	std::vector<PlayerEntry> m_Runners, m_Ennemies;
 
 	Ref<TextButtonWidget> m_JoinRunnersButton, m_JoinEnnemiesButton;
 

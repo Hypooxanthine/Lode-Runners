@@ -8,10 +8,13 @@ class Physics;
 
 class PlayerController;
 
+// first = playerID, second = playerName.
+using Player = std::pair<size_t, std::string>;
+
 class GameState : public State
 {
 public:
-	GameState(Ref<LevelAsset> level);
+	GameState(Ref<LevelAsset> level, const std::vector<Player>& runners, const std::vector<Player>& ennemies);
 
 	virtual void init() override;
 	virtual void update(const float& dt) override;
@@ -23,7 +26,5 @@ private:
 	Ref<Physics> m_Physics;
 
 	Ref<Level> m_Level;
-
-	Ref<PlayerController> m_PlayerController;
 };
 

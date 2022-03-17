@@ -15,7 +15,7 @@ LobbyState::LobbyState(const std::string& name)
 	m_TitleText->setBold();
 	m_TitleText->setText("Lobby");
 
-	m_TeamDispatcher = MakeRef<TeamDispatcherUI>(m_HUD.get(), 0, m_PlayerName);
+	m_TeamDispatcher = MakeRef<TeamDispatcherUI>(m_HUD.get(), m_PlayerName);
 	m_TeamDispatcher->setRelativePosition({ .1f, .15f });
 	m_TeamDispatcher->setRelativeSize({ .8f, .65f });
 
@@ -55,11 +55,6 @@ LobbyState::LobbyState(const std::string& name)
 
 LobbyState::~LobbyState()
 {
-	if (IS_SERVER)
-		Network::Networker::get()->popOnPlayerLogout();
-	else
-		Network::Networker::get()->popOnServerConnexionLost();
-
 	Network::Networker::get()->reset();
 }
 
@@ -116,6 +111,13 @@ void LobbyState::launch(Ref<LevelAsset> level)
 
 	#endif
 
-	Network::Networker::get()->stopAcceptingClients();
-	pushState(MakeRef<GameState>(level));
+	if(level->isValid())
+	{
+		Network::Networker::get()->stopAcceptingClients();
+		pushState(MakeRef<GameState>(level, m_TeamDispatcher->getRunners(), m_TeamDispatcher->getEnnemies()));
+	}
+	else
+	{
+		LOG_WARN("Couldn't launch game with level " + level->getName() + " : level not valid.");
+	}
 }

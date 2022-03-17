@@ -54,7 +54,7 @@ bool ColliderComponent::collides(const ColliderComponent* other) const
 
 bool ColliderComponent::resolveCollisionWith(ColliderComponent* other)
 {
-	if(this->collides(other))
+	if (this->collides(other))
 	{
 		// If "this" blocks "other"
 		if (this->getBehaviourWith(other->getCollisionProfile()) == CollisionResponse::Blocks)
@@ -74,6 +74,8 @@ bool ColliderComponent::resolveCollisionWith(ColliderComponent* other)
 		else
 			return false;
 	}
+	else
+		return false;
 }
 
 // To be implemented
