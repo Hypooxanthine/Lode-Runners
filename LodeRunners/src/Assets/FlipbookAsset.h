@@ -13,6 +13,7 @@ public:
 
 	void render(Ref<sf::RenderWindow> window, const size_t& frame, const sf::Vector2f& worldPosition) const;
 
+	const FlipbookType& getType() const { return m_Type; }
 	void setType(const FlipbookType& type) { m_Type = type; }
 	void addFrame(Ref<SpriteAsset> sheet);
 

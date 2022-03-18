@@ -39,8 +39,7 @@ void Application::run()
 		updateEvents();
 
 		Network::Networker::get()->executeCallQueue();
-		if (m_Window->hasFocus())
-			update();
+		update();
 
 		render();
 		checkState();

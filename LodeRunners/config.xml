@@ -22,13 +22,24 @@
                         <Frame x="1" y="1"/>
                         <Frame x="1" y="2"/>
                         <Frame x="1" y="3"/>
+						<Frame x="1" y="4"/>
+						<Frame x="1" y="5"/>
+						<Frame x="1" y="6"/>
+						<Frame x="1" y="7"/>
                     </Flipbook>
                     <Flipbook name="PlayerRight">
                         <Frame x="2" y="0"/>
                         <Frame x="2" y="1"/>
                         <Frame x="2" y="2"/>
                         <Frame x="2" y="3"/>
+						<Frame x="2" y="4"/>
+						<Frame x="2" y="5"/>
+						<Frame x="2" y="6"/>
+						<Frame x="2" y="7"/>
                     </Flipbook>
+					<Flipbook name="PlayerIdle">
+						<Frame x="0" y="0"/>
+					</Flipbook>
                     <Flipbook name="PlayerDigLeft">
                         <Frame x="3" y="0"/>
                         <Frame x="3" y="1"/>
@@ -65,6 +76,9 @@
                         <Frame x="9" y="2"/>
                         <Frame x="9" y="3"/>
                     </Flipbook>
+					<Flipbook name="EnnemyIdle">
+						<Frame x="0" y="0"/>
+					</Flipbook>
                     <Flipbook name="EnnemyClimbLadder">
                         <Frame x="10" y="0"/>
                         <Frame x="10" y="1"/>

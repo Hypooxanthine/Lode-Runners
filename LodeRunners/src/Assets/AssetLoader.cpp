@@ -33,6 +33,7 @@ void AssetLoader::init()
 
 	FILL_XML_FLIPBOOKS_NAMES(PlayerLeft);
 	FILL_XML_FLIPBOOKS_NAMES(PlayerRight);
+	FILL_XML_FLIPBOOKS_NAMES(PlayerIdle);
 	FILL_XML_FLIPBOOKS_NAMES(PlayerDigLeft);
 	FILL_XML_FLIPBOOKS_NAMES(PlayerDigRight);
 	FILL_XML_FLIPBOOKS_NAMES(PlayerClimbLadder);
@@ -40,6 +41,7 @@ void AssetLoader::init()
 	FILL_XML_FLIPBOOKS_NAMES(PlayerFall);
 	FILL_XML_FLIPBOOKS_NAMES(EnnemyLeft);
 	FILL_XML_FLIPBOOKS_NAMES(EnnemyRight);
+	FILL_XML_FLIPBOOKS_NAMES(EnnemyIdle);
 	FILL_XML_FLIPBOOKS_NAMES(EnnemyClimbLadder);
 	FILL_XML_FLIPBOOKS_NAMES(EnnemyClimbBridge);
 	FILL_XML_FLIPBOOKS_NAMES(EnnemyFall);
@@ -177,6 +179,8 @@ void AssetLoader::loadFlipbooks(std::unordered_map<FlipbookType, Ref<FlipbookAss
 	for (const std::pair<FlipbookType, std::string>& p : m_XMLFlipbookNames)
 	{
 		auto flipbookAsset = MakeRef<FlipbookAsset>();
+		flipbookAsset->setType(p.first);
+
 		auto flipbookElement = getFlipbook(handle, p.second, name);
 
 		// Getting all frames from flipbook

@@ -14,6 +14,7 @@ public:
 	virtual void render(Ref<sf::RenderWindow> window) override;
 	virtual void update(const float& dt) override;
 
+	const FlipbookType& getType() const;
 	void setType(const FlipbookType& type);
 
 	size_t getFramesNumber() const;

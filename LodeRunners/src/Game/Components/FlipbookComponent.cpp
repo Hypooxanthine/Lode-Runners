@@ -34,6 +34,11 @@ void FlipbookComponent::update(const float& dt)
 	}
 }
 
+const FlipbookType& FlipbookComponent::getType() const
+{
+	return m_FbAsset->getType();
+}
+
 void FlipbookComponent::setType(const FlipbookType& type)
 {
 	m_FbAsset = MakeRef<FlipbookAsset>(*Assets::getFlipbook(type));
