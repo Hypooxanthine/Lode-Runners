@@ -30,7 +30,7 @@ protected:
 	FlipbookComponent* m_Flipbook;
 
 private:
-	Controller* m_Controller;
+	Controller* m_Controller = nullptr;
 
 	size_t m_ID;
 	std::string m_Name;

@@ -9,12 +9,12 @@ SpriteComponent::SpriteComponent(const SpriteAsset* asset)
 
 void SpriteComponent::render(Ref<sf::RenderWindow> window)
 {
-	m_SpriteAsset->setPosition(getParent()->getPosition());
+	m_SpriteAsset->setPosition(getParent()->getPosition() * SPACE_UNIT);
 	window->draw(*m_SpriteAsset);
 }
 
 sf::Vector2f SpriteComponent::getWorldSize() const
 {
 	auto bounds = m_SpriteAsset->getGlobalBounds();
-	return { bounds.width, bounds.height };
+	return { bounds.width / SPACE_UNIT, bounds.height / SPACE_UNIT };
 }

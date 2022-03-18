@@ -12,6 +12,4 @@ public:
 
 private: // Private members
 	sf::Vector2f m_LastPosition;
-
-	float m_AnimAccumulator = 0.f;
 };

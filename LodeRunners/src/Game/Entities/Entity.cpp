@@ -15,6 +15,11 @@ void Entity::renderComponents(Ref<sf::RenderWindow> window)
 		c->render(window);
 }
 
+sf::Vector2f Entity::getPosition() const
+{
+	return m_WorldPosition / SPACE_UNIT;
+}
+
 void Entity::setPosition(const sf::Vector2f& position)
 {
 	m_WorldPosition = position * SPACE_UNIT;

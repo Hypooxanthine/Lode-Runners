@@ -15,10 +15,10 @@ public:
 	const std::string& getName() const { return m_Name; }
 	void setName(const std::string& name) { m_Name = name; }
 
-	const sf::Vector2f& getRelativePosition() const { return m_RelativePosition; }
-	sf::Vector2f getWorldPosition() const;
+	sf::Vector2f getRelativePosition() const;
+	void setRelativePosition(const sf::Vector2f& pos);
 
-	void setRelativePosition(const sf::Vector2f& pos) { m_RelativePosition = pos; }
+	sf::Vector2f getWorldPosition() const;
 
 protected:
 	Entity* getParent() { return m_Parent; }

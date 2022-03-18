@@ -19,7 +19,7 @@ public:
 	void updateComponents(const float& dt);
 	void renderComponents(Ref<sf::RenderWindow> window);
 
-	const sf::Vector2f& getPosition() const { return m_WorldPosition; }
+	sf::Vector2f getPosition() const;
 	void setPosition(const sf::Vector2f& position);
 	void move(const sf::Vector2f& delta);
 

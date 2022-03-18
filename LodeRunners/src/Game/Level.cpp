@@ -12,7 +12,7 @@
 /* CONSTRUCTORS */
 
 Level::Level(Ref<LevelAsset> levelAsset)
-	: m_View({0.f, 0.f, (float)Assets::getElementSize() * TILES_WIDTH, (float)Assets::getElementSize() * TILES_HEIGHT})
+	: m_View({0.f, 0.f, SPACE_UNIT * TILES_WIDTH, SPACE_UNIT * TILES_HEIGHT})
 {
 	initTiles(levelAsset.get());
 }
