@@ -15,6 +15,10 @@ Pawn::Pawn(const size_t& ID, const std::string& name)
 	m_Flipbook = makeComponent<FlipbookComponent>("Flipbook");
 }
 
+void Pawn::update(const float& dt)
+{
+}
+
 std::optional<PlayerController*> Pawn::getPlayerController()
 {
 	auto out = dynamic_cast<PlayerController*>(m_Controller);

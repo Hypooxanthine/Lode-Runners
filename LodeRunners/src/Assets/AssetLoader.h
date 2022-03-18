@@ -29,7 +29,6 @@ enum class FlipbookType
 
 	PlayerLeft = 0,
 	PlayerRight,
-	PlayerIdle,
 	PlayerDigLeft,
 	PlayerDigRight,
 	PlayerClimbLadder,
@@ -38,7 +37,6 @@ enum class FlipbookType
 
 	EnnemyLeft,
 	EnnemyRight,
-	EnnemyIdle,
 	EnnemyClimbLadder,
 	EnnemyClimbBridge,
 	EnnemyFall,

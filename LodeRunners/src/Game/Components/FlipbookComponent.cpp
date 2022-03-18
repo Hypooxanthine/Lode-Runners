@@ -25,6 +25,8 @@ void FlipbookComponent::render(Ref<sf::RenderWindow> window)
 
 void FlipbookComponent::update(const float& dt)
 {
+	if (m_Frozen) return;
+
 	m_TimeAccumulator += dt;
 
 	if (m_TimeAccumulator > m_FrameDuration)

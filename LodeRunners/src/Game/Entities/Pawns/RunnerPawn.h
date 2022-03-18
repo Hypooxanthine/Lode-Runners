@@ -11,5 +11,5 @@ public:
 	void render(Ref<sf::RenderWindow> window) override;
 
 private: // Private members
-	sf::Vector2f m_LastPosition;
+	float m_Speed = 3.f;
 };

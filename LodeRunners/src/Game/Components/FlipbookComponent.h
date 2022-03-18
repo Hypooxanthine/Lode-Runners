@@ -23,6 +23,10 @@ public:
 	void nextFrame();
 	void previousFrame();
 
+	void freeze() { m_Frozen = true; }
+	void unFreeze() { m_Frozen = false; }
+	const bool& isFrozen() const { return m_Frozen; }
+
 	void setFrameDuration(const float& duration) { m_FrameDuration = duration; }
 	void setTotalDuration(const float& duration);
 	const float& getFrameDuration() const { return m_FrameDuration; }
@@ -34,5 +38,7 @@ private:
 	size_t m_CurrentFrame = 0;
 	float m_FrameDuration = 1.f;
 	float m_TimeAccumulator = 0.f;
+
+	bool m_Frozen = false;
 };
 

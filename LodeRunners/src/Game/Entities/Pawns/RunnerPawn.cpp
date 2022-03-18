@@ -12,31 +12,46 @@ RunnerPawn::RunnerPawn(const size_t& ID, const std::string& name)
 
 	m_Collider->setRelativePosition({ .25f, 0.f });
 	m_Collider->setHitbox({ .5f, 1.f });
-
-	m_LastPosition = getPosition();
 }
 
 void RunnerPawn::update(const float& dt)
 {
-	sf::Vector2f movement = getPosition() - m_LastPosition;
+	if (m_IsMovingRight && !m_IsMovingLeft)
+	{
+		if(m_Flipbook->getType() != FlipbookType::PlayerRight || m_Flipbook->isFrozen())
+		{
+			LOG_TRACE("Starting moving right.");
+			m_Flipbook->setType(FlipbookType::PlayerRight);
+			m_Flipbook->setCurrentFrame(0);
+			m_Flipbook->unFreeze();
+		}
+	}
+	else if (m_IsMovingLeft && !m_IsMovingRight)
+	{
+		if(m_Flipbook->getType() != FlipbookType::PlayerLeft || m_Flipbook->isFrozen())
+		{
+			LOG_TRACE("Starting moving left.");
+			m_Flipbook->setType(FlipbookType::PlayerLeft);
+			m_Flipbook->setCurrentFrame(0);
+			m_Flipbook->unFreeze();
+		}
+	}
+	else
+	{
+		if(!m_Flipbook->isFrozen())
+		{
+			LOG_TRACE("Starting idling.");
+			m_Flipbook->freeze();
+		}
+	}
 
-	if (movement.x > 0.f && m_Flipbook->getType() != FlipbookType::PlayerRight)
+	if (IS_SERVER)
 	{
-		m_Flipbook->setType(FlipbookType::PlayerRight);
-		m_Flipbook->setCurrentFrame(0);
+		if (m_IsMovingLeft)
+			move_Multicast(-dt * m_Speed, 0.f);
+		if (m_IsMovingRight)
+			move_Multicast(dt * m_Speed, 0.f);
 	}
-	else if (movement.x < 0.f && m_Flipbook->getType() != FlipbookType::PlayerLeft)
-	{
-		m_Flipbook->setType(FlipbookType::PlayerLeft);
-		m_Flipbook->setCurrentFrame(0);
-	}
-	else if (m_Flipbook->getType() != FlipbookType::PlayerIdle)
-	{
-		m_Flipbook->setType(FlipbookType::PlayerIdle);
-		m_Flipbook->setCurrentFrame(0);
-	}
-
-	m_LastPosition = getPosition();
 }
 
 void RunnerPawn::render(Ref<sf::RenderWindow> window)
