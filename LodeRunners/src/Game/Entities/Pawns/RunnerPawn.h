@@ -9,7 +9,4 @@ public:
 
 	void update(const float& dt) override;
 	void render(Ref<sf::RenderWindow> window) override;
-
-private: // Private members
-	float m_Speed = 3.f;
 };

@@ -11,6 +11,7 @@ class AIController;
 
 class FlipbookComponent;
 class ColliderComponent;
+class TextComponent;
 
 class Pawn : public Entity
 {
@@ -19,6 +20,9 @@ public:
 public:
 	Pawn() = delete;
 	Pawn(const size_t& ID, const std::string& name);
+
+	virtual void onBeginOverlap(Entity* other) override;
+	virtual void onEndOverlap(Entity* other) override;
 
 	virtual void update(const float& dt) override;
 
@@ -35,13 +39,21 @@ public:
 	std::optional<PlayerController*> getPlayerController();
 	std::optional<AIController*> getAIController();
 
-protected:
+protected: // Protected members
 	ColliderComponent* m_Collider;
 	FlipbookComponent* m_Flipbook;
+	TextComponent* m_NameText;
+
+	size_t m_OverlappingLadders = 0;
+	size_t m_OverlappingBridges = 0;
+	bool m_IsFalling = false;
+
+	float m_Speed = 3.f;
+	float m_GravityForce = 8.f;
 
 	bool m_IsMovingLeft = false, m_IsMovingRight = false, m_IsMovingUp = false, m_IsMovingDown = false;
 
-private:
+private: // Private members
 	Controller* m_Controller;
 
 	std::string m_Name;

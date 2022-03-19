@@ -167,6 +167,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Entities\Gold.cpp" />
     <ClCompile Include="src\Game\Entities\BlockingWall.cpp" />
     <ClCompile Include="src\Game\Physics.cpp" />
     <ClCompile Include="src\Game\Entities\Pawns\EnnemyPawn.cpp" />
@@ -218,8 +219,10 @@
     <ClCompile Include="src\Game\Entities\Tiles\StoneTile.cpp" />
     <ClCompile Include="src\Game\Entities\Tiles\Tile.cpp" />
     <ClCompile Include="src\HUD\Custom\TeamDispatcherUI.cpp" />
+    <ClCompile Include="src\Game\Components\TextComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Entities\Gold.h" />
     <ClInclude Include="src\Game\Entities\BlockingWall.h" />
     <ClInclude Include="src\Game\Physics.h" />
     <ClInclude Include="src\Game\Entities\Pawns\EnnemyPawn.h" />
@@ -277,6 +280,7 @@
     <ClInclude Include="src\Game\Entities\Tiles\StoneTile.h" />
     <ClInclude Include="src\Game\Entities\Tiles\Tile.h" />
     <ClInclude Include="src\HUD\Custom\TeamDispatcherUI.h" />
+    <ClInclude Include="src\Game\Components\TextComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config.xml" />

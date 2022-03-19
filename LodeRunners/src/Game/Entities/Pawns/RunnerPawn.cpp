@@ -1,8 +1,10 @@
 #include "RunnerPawn.h"
 
 #include "../../../Assets/Assets.h"
+
 #include "../../Components/FlipbookComponent.h"
 #include "../../Components/ColliderComponent.h"
+#include "../../Components/TextComponent.h"
 
 RunnerPawn::RunnerPawn(const size_t& ID, const std::string& name)
 	: Pawn(ID, name)
@@ -12,10 +14,17 @@ RunnerPawn::RunnerPawn(const size_t& ID, const std::string& name)
 
 	m_Collider->setRelativePosition({ .25f, 0.f });
 	m_Collider->setHitbox({ .5f, 1.f });
+
+	if(name != "")
+		m_NameText->setColor(sf::Color(0x3f85fc));
+
+	m_Speed = 3.f;
 }
 
 void RunnerPawn::update(const float& dt)
 {
+	Pawn::update(dt);
+
 	if (m_IsMovingRight && !m_IsMovingLeft)
 	{
 		if(m_Flipbook->getType() != FlipbookType::PlayerRight || m_Flipbook->isFrozen())
@@ -43,18 +52,6 @@ void RunnerPawn::update(const float& dt)
 			LOG_TRACE("Starting idling.");
 			m_Flipbook->freeze();
 		}
-	}
-
-	if (IS_SERVER)
-	{
-		if (m_IsMovingLeft)
-			move({ -dt * m_Speed, 0.f });
-		if (m_IsMovingRight)
-			move({ dt * m_Speed, 0.f });
-		if (m_IsMovingUp)
-			move({ 0.f, -dt * m_Speed });
-		if (m_IsMovingDown)
-			move({ 0.f, dt * m_Speed });
 	}
 }
 

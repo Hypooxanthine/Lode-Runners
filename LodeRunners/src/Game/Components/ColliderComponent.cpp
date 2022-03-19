@@ -48,14 +48,15 @@ void ColliderComponent::update(const float& dt)
 
 void ColliderComponent::render(Ref<sf::RenderWindow> window)
 {
-	sf::RectangleShape shape;
-	shape.setPosition(getWorldPosition() * SPACE_UNIT);
-	shape.setSize(getHitbox() * SPACE_UNIT);
-	shape.setOutlineThickness(-1.f);
-	shape.setFillColor(sf::Color::Transparent);
-	shape.setOutlineColor(sf::Color::Red);
-
-	window->draw(shape);
+	/* Uncomment to see debug collider shapes. */
+	//sf::RectangleShape shape;
+	//shape.setPosition(getWorldPosition() * SPACE_UNIT);
+	//shape.setSize(getHitbox() * SPACE_UNIT);
+	//shape.setOutlineThickness(-1.f);
+	//shape.setFillColor(sf::Color::Transparent);
+	//shape.setOutlineColor(sf::Color::Red);
+	//
+	//window->draw(shape);
 }
 
 sf::Vector2f ColliderComponent::getHitbox() const
