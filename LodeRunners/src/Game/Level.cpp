@@ -130,7 +130,18 @@ void Level::addRunner(const Player& runner)
 
 void Level::addEnnemy(const Player& ennemy)
 {
+	m_Pawns.push_back(MakeRef<EnnemyPawn>(ennemy.first, ennemy.second));
 
+	if (ennemy.first == PLAYER_ID)
+	{
+		ASSERT(m_PlayerController == nullptr, "A game instance can't hold two PlayerControllers !");
+
+		m_PlayerController = MakeRef<PlayerController>();
+		m_PlayerController->setControlledPawn(m_Pawns.back().get());
+		m_Pawns.back()->setController(m_PlayerController.get());
+	}
+
+	m_Pawns.back()->setPositionLocal({ (float)m_RunnerSpawn.x, (float)m_RunnerSpawn.y });
 }
 
 /* PRIVATE MEMBER FUNCTIONS */

@@ -16,6 +16,11 @@ GameState::GameState(Ref<LevelAsset> level, const std::vector<Player>& runners, 
 	{
 		m_Level->addRunner(p);
 	}
+
+	for (auto& p : ennemies)
+	{
+		m_Level->addEnnemy(p);
+	}
 }
 
 void GameState::init()

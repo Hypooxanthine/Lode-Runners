@@ -83,25 +83,23 @@ private: // Replicated functions
 
 	CREATE_REPLICATED_FUNCTION
 	(
-		setPlayerToRunnerForAll_Multicast,
+		setPlayerToRunner_OnClients,
 		[this](const size_t& playerID, const std::string& playerName) -> void
 		{
-			LOG_INFO("Player " + playerName + " joining runners.");
 			this->setPlayerToRunner(playerID, playerName);
 		},
-		"TeamDispatcherUI", Network::ReplicationMode::Multicast,
+		"TeamDispatcherUI", Network::ReplicationMode::OnClients,
 		const size_t&, const std::string&
 	);
 
 	CREATE_REPLICATED_FUNCTION
 	(
-		setPlayerToEnnemyForAll_Multicast,
+		setPlayerToEnnemy_OnClients,
 		[this](const size_t& playerID, const std::string& playerName) -> void
 		{
-			LOG_INFO("Player " + playerName + " joining ennemies.");
 			this->setPlayerToEnnemy(playerID, playerName);
 		},
-		"TeamDispatcherUI", Network::ReplicationMode::Multicast,
+		"TeamDispatcherUI", Network::ReplicationMode::OnClients,
 		const size_t&, const std::string&
 	);
 
@@ -111,7 +109,11 @@ private: // Replicated functions
 		[this](const size_t& playerID, const std::string& playerName) -> void
 		{
 			if(!playerBelongsToRunners(playerID))
-				this->setPlayerToRunnerForAll_Multicast(playerID, playerName);
+			{
+				// First locally to avoid concurrency.
+				this->setPlayerToRunner(playerID, playerName);
+				this->setPlayerToRunner_OnClients(playerID, playerName);
+			}
 		},
 		"TeamDispatcherUI", Network::ReplicationMode::OnServer,
 		const size_t&, const std::string&
@@ -126,7 +128,11 @@ private: // Replicated functions
 			// runners list has at least 2 players, then server accepts to set player's team to ennemies.
 			// Runners list has to contain at least 1 player.
 			if (!playerBelongsToEnnemies(playerID) && canRemovePlayerFromRunners() && m_Ennemies.size() < m_MaxEnnemies)
-				this->setPlayerToEnnemyForAll_Multicast(playerID, playerName);
+			{
+				// First locally to avoid concurrency.
+				this->setPlayerToEnnemy(playerID, playerName);
+				this->setPlayerToEnnemy_OnClients(playerID, playerName);
+			}
 		},
 		"TeamDispatcherUI", Network::ReplicationMode::OnServer,
 		const size_t&, const std::string&

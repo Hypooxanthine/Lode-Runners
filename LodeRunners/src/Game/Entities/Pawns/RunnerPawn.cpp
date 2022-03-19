@@ -15,7 +15,7 @@ RunnerPawn::RunnerPawn(const size_t& ID, const std::string& name)
 	m_Collider->setRelativePosition({ .25f, 0.f });
 	m_Collider->setHitbox({ .5f, 1.f });
 
-	if(name != "")
+	if (name != "")
 		m_NameText->setColor(sf::Color(0x3f85fc));
 
 	m_Speed = 3.f;
@@ -27,7 +27,7 @@ void RunnerPawn::update(const float& dt)
 
 	if (m_IsMovingRight && !m_IsMovingLeft)
 	{
-		if(m_Flipbook->getType() != FlipbookType::PlayerRight || m_Flipbook->isFrozen())
+		if (m_Flipbook->getType() != FlipbookType::PlayerRight || m_Flipbook->isFrozen())
 		{
 			LOG_TRACE("Starting moving right.");
 			m_Flipbook->setType(FlipbookType::PlayerRight);
@@ -37,7 +37,7 @@ void RunnerPawn::update(const float& dt)
 	}
 	else if (m_IsMovingLeft && !m_IsMovingRight)
 	{
-		if(m_Flipbook->getType() != FlipbookType::PlayerLeft || m_Flipbook->isFrozen())
+		if (m_Flipbook->getType() != FlipbookType::PlayerLeft || m_Flipbook->isFrozen())
 		{
 			LOG_TRACE("Starting moving left.");
 			m_Flipbook->setType(FlipbookType::PlayerLeft);
@@ -47,7 +47,7 @@ void RunnerPawn::update(const float& dt)
 	}
 	else
 	{
-		if(!m_Flipbook->isFrozen())
+		if (!m_Flipbook->isFrozen())
 		{
 			LOG_TRACE("Starting idling.");
 			m_Flipbook->freeze();

@@ -169,6 +169,8 @@ std::vector<std::pair<size_t, std::string>> TeamDispatcherUI::getEnnemies() cons
 
 void TeamDispatcherUI::setPlayerToRunner(const size_t& playerID, const std::string& playerName)
 {
+	LOG_INFO("Player " + playerName + " joining runners.");
+
 	auto runnersIt = std::find_if
 	(
 		m_Runners.begin(), m_Runners.end(),
@@ -213,6 +215,8 @@ void TeamDispatcherUI::setPlayerToRunner(const size_t& playerID, const std::stri
 
 void TeamDispatcherUI::setPlayerToEnnemy(const size_t& playerID, const std::string& playerName)
 {
+	LOG_INFO("Player " + playerName + " joining ennemies.");
+
 	// Trying to find player in ennemies list.
 	auto ennemiesIt = std::find_if
 	(
