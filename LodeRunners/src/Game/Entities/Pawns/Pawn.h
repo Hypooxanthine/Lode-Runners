@@ -36,7 +36,7 @@ protected:
 	bool m_IsMovingLeft = false, m_IsMovingRight = false, m_IsMovingUp = false, m_IsMovingDown = false;
 
 private:
-	Controller* m_Controller = nullptr;
+	Controller* m_Controller;
 
 	size_t m_ID;
 	std::string m_Name;

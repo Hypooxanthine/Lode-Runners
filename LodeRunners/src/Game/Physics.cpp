@@ -13,12 +13,42 @@ Physics::Physics()
 
 void Physics::update()
 {
-	for (size_t i = 0; i < m_Colliders.size(); i++)
+	std::vector<ColliderComponent*> dynamicColliders;
+
+	for (auto& c : m_Colliders)
+		if (c->getCollisionType() == CollisionType::Dynamic)
+			dynamicColliders.push_back(c);
+
+	for (size_t i = 0; i < dynamicColliders.size(); i++)
 	{
-		for (size_t j = i + 1; i < m_Colliders.size(); j++)
+		sf::Vector2f contactPoint, contactNormal;
+		float t = 0.f;
+		std::vector<std::pair<size_t, float>> collisions;
+
+		for (size_t j = 0; j < m_Colliders.size(); j++)
 		{
-			m_Colliders[i]->resolveCollisionWith(m_Colliders[j]);
+			if (m_Colliders[j]->getCollisionType() != CollisionType::Static) continue;
+
+			if (dynamicWithStatic(dynamicColliders[i], m_Colliders[j], dynamicColliders[i]->getLastPos(), contactPoint, contactNormal, t))
+			{
+				LOG_TRACE("Collision");
+				collisions.push_back({ i, t });
+			}
 		}
+
+		std::sort
+		(
+			collisions.begin(), collisions.end(),
+			[](const std::pair<size_t, float>& a, const std::pair<size_t, float>& b)
+			{
+				return a.second < b.second;
+			}
+		);
+
+		for (auto& c : collisions)
+			resolveDynamicWithStatic(dynamicColliders[i], m_Colliders[c.first], dynamicColliders[i]->getLastPos());
+
+		dynamicColliders[i]->m_LastPosition = dynamicColliders[i]->getWorldPosition();
 	}
 }
 
@@ -154,7 +184,7 @@ bool Physics::resolveDynamicWithStatic(ColliderComponent* dynColl, ColliderCompo
 
 	if (dynamicWithStatic(dynColl, statColl, previousPos, contactPoint, contactNormal, contactTime))
 	{
-		auto& hitbox = dynColl->getHitbox();
+		auto hitbox = dynColl->getHitbox();
 
 		// Collider has to be here.
 		sf::Vector2f fixedPosition = contactPoint + sf::Vector2f(contactNormal.x * hitbox.x, contactNormal.y * hitbox.y);
@@ -164,114 +194,4 @@ bool Physics::resolveDynamicWithStatic(ColliderComponent* dynColl, ColliderCompo
 	}
 	else
 		return false;
-}
-
-bool Physics::pointInRect(const sf::Vector2f& point, const sf::FloatRect& rect)
-{
-	return point.x >= rect.left && point.x <= rect.left + rect.width
-		&& point.y >= rect.top && point.y <= rect.top + rect.height;
-}
-
-bool Physics::rectCrossesRect(const sf::FloatRect& a, const sf::FloatRect& b)
-{
-	return a.left < b.left + b.width && a.left + a.width > b.left
-		&& a.top < b.top + b.height && a.top + a.height > b.top;
-}
-
-bool Physics::rayThroughRect(const Physics::Ray& ray, const sf::FloatRect& rect, sf::Vector2f& contactPoint, sf::Vector2f& contactNormal, float& tHitNear)
-{
-	contactPoint = { 0.f, 0.f };
-	contactNormal = { 0.f, 0.f };
-
-	// Multiplication is faster than division so we cache it.
-	sf::Vector2f invDir = { 1.f / ray.direction.x, 1.f / ray.direction.y };
-
-	sf::Vector2f tNear = 
-	{
-		(rect.left - ray.origin.x)* invDir.x,
-		(rect.top - ray.origin.y) * invDir.y 
-	};
-	sf::Vector2f tFar =
-	{
-		(rect.left + rect.width - ray.origin.x) * invDir.x,
-		(rect.top + rect.height - ray.origin.y) * invDir.y
-	};
-
-	if (std::isnan(tFar.y) || std::isnan(tFar.x)) return false;
-	if (std::isnan(tNear.y) || std::isnan(tNear.x)) return false;
-
-	if (tNear.x > tFar.x) std::swap(tNear.x, tFar.x);
-	if (tNear.y < tFar.y) std::swap(tNear.y, tFar.y);
-
-	if (tNear.x > tFar.y || tNear.y > tFar.x) return false;
-
-	tHitNear = std::max(tNear.x, tNear.y);
-	float tHitFar = std::min(tFar.x, tFar.y);
-
-	if (tHitFar < 0.f) return false;
-
-	// C(t) = O + t * D, Contact = C(t) with t = near time collision.
-	contactPoint = ray.origin + tHitNear * ray.direction;
-
-	if (tNear.x > tNear.y)
-	{
-		if (invDir.x < 0.f)
-			contactNormal = { 1.f, 0.f };
-		else
-			contactNormal = { -1.f, 0.f };
-	}
-	else if (tNear.x < tNear.y)
-	{
-		if (invDir.x < 0.f)
-			contactNormal = { 0.f, 1.f };
-		else
-			contactNormal = { 0.f, -1.f };
-	}
-
-	return true;
-}
-
-bool Physics::dynamicRectThroughRect(const sf::FloatRect& dynRect, const sf::Vector2f& velocity, const sf::FloatRect& statRect, const float& dt, sf::Vector2f& contactPoint, sf::Vector2f& contactNormal, float& contactTime)
-{
-	if (velocity.x == 0.f && velocity.y == 0.f) return false;
-
-	// We have to expand target rectangle by the dimensions of dynamic rectangle.
-	sf::FloatRect expandedStatRect =
-	{
-		sf::Vector2f(statRect.left - dynRect.width / 2.f, statRect.top - dynRect.height / 2.f),
-		sf::Vector2f(statRect.width + dynRect.width, statRect.height + dynRect.height)
-	};
-
-	if (rayThroughRect
-	(
-		Ray
-		(
-			sf::Vector2f(dynRect.left + dynRect.width, dynRect.top + dynRect.height) / 2.f,
-			velocity * dt
-		),
-		expandedStatRect, contactPoint, contactNormal, contactTime
-	))
-		return (contactTime >= 0.f && contactTime < 1.f);
-	else
-		return false;
-}
-
-bool Physics::resolveDynamicRectWithRect(ColliderComponent* dynRect, sf::Vector2f& velocity, std::array<ColliderComponent*, 4>& contacts, const float& dt, ColliderComponent* statRect)
-{
-	sf::Vector2f contactPoint, contactNormal;
-	float contactTime = 0.f;
-
-	if (dynamicRectThroughRect(dynRect->getHitRect(), velocity, statRect->getHitRect(), dt, contactPoint, contactNormal, contactTime))
-	{
-		if (contactNormal.y > 0.f) contacts[0] = statRect; else nullptr;
-		if (contactNormal.x < 0.f) contacts[0] = statRect; else nullptr;
-		if (contactNormal.y < 0.f) contacts[0] = statRect; else nullptr;
-		if (contactNormal.x > 0.f) contacts[0] = statRect; else nullptr;
-
-		velocity.x += contactNormal.x * std::abs(velocity.x) * (1 - contactTime);
-		velocity.y += contactNormal.y * std::abs(velocity.y) * (1 - contactTime);
-		return true;
-	}
-
-	return false;
 }

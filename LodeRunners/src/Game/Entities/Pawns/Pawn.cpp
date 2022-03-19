@@ -9,7 +9,7 @@
 #include "../../../Assets/Assets.h"
 
 Pawn::Pawn(const size_t& ID, const std::string& name)
-	: m_ID(ID), m_Name(name)
+	: m_ID(ID), m_Name(name), m_Controller(nullptr)
 {
 	m_Collider = makeComponent<ColliderComponent>("Collider");
 	m_Flipbook = makeComponent<FlipbookComponent>("Flipbook");

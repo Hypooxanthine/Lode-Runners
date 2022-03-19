@@ -1,11 +1,12 @@
 #include "ColliderComponent.h"
 
 #include "../Physics.h"
+#include "../../Assets/Assets.h"
 
 ColliderComponent::ColliderComponent()
 {
 	if(m_ColType == CollisionType::Dynamic)
-		m_LastPosition = getParent()->getPosition();
+		m_LastPosition = getWorldPosition();
 
 	m_BehaviourWithProfile[CollisionProfile::Tile] = CollisionResponse::Ignore;
 	m_BehaviourWithProfile[CollisionProfile::Runner] = CollisionResponse::Ignore;
@@ -26,7 +27,7 @@ void ColliderComponent::update(const float& dt)
 	{
 		auto& collider = m_OverlappingColliders[i - 1];
 
-		if (!this->collides(collider) || this->getBehaviourWith(collider->getCollisionProfile()) != CollisionResponse::Overlaps)
+		if (!getHitRect().intersects(collider->getHitRect()) || this->getBehaviourWith(collider->getCollisionProfile()) != CollisionResponse::Overlaps)
 		{
 			this->getParent()->onEndOverlap(collider->getParent());
 
@@ -42,95 +43,68 @@ void ColliderComponent::update(const float& dt)
 			m_OverlappingColliders.erase(m_OverlappingColliders.begin() + i - 1);
 		}
 	}
+
+	//m_LastPosition = getWorldPosition();
 }
 
-bool ColliderComponent::collides(const ColliderComponent* other) const
+void ColliderComponent::render(Ref<sf::RenderWindow> window)
 {
-	if (m_BehaviourWithProfile.at(other->getCollisionProfile()) != CollisionResponse::Ignore)
-		return getHitRect().intersects(other->getHitRect());
-	else
-		return false;
+	sf::RectangleShape shape;
+	shape.setPosition(getWorldPosition() * SPACE_UNIT);
+	shape.setSize(getHitbox() * SPACE_UNIT);
+	shape.setOutlineThickness(-2.f);
+	shape.setFillColor(sf::Color::Transparent);
+	shape.setOutlineColor(sf::Color::Red);
+
+	window->draw(shape);
 }
 
-bool ColliderComponent::resolveCollisionWith(ColliderComponent* other)
+sf::Vector2f ColliderComponent::getHitbox() const
 {
-	if (this->collides(other))
-	{
-		// If "this" blocks "other"
-		if (this->getBehaviourWith(other->getCollisionProfile()) == CollisionResponse::Blocks)
-		{
-			// "other" and "this" have to clip
-			clip(other);
-			return true;
-		}
-		// If "this" overlaps "other"
-		else if (this->getBehaviourWith(other->getCollisionProfile()) == CollisionResponse::Overlaps)
-		{
-			// No collision to resolve, but we must trigger onBeginOverlap
-			this->getParent()->onBeginOverlap(other->getParent());
-			m_OverlappingColliders.push_back(other);
-			return true;
-		}
-		else
-			return false;
-	}
-	else
-		return false;
+	return m_Hitbox;
 }
 
-// To be implemented
-void ColliderComponent::clip(ColliderComponent* other)
+void ColliderComponent::setHitbox(const sf::Vector2f& size)
 {
-	/* At this point we know that "this" blocks "other", and that a collision occured. The wording isn't really correct :
-	 * in fact, this means  that "this" can't overlap "other". So we should say that "other" blocks "this". But this is
-	 * easier to store this response in "this", with the other ones.
-	 */
+	m_Hitbox = size;
+}
 
-	if(this->getCollisionType() == CollisionType::Static)
-	{
-		/*
-		 *  if (other->getCollisionType() == CollisionType::Static)
-		 *  {
-		 *  	// Shouldn't happen because the colliders should both be "static" <=> they never move.
-		 *  	// It could happen when to static colliders were spawned at the same place.
-		 *  	// Not doing anything is fine, because it allows to place multiple colliders at the same
-		 *  	// place whitout causing any collision issue.
-		 *  	// By the way : a tile is static, and should response "Ignore" to another tile.
-		 *  	// It should only block pawns.
-		 *  }
-		 *  else
-		 *  {
-		 *  	// Not really important. "this" is static, and blocks "other" <=> "this" can't overlap "other".
-		 *  	// But "this" being static, it should never try to overlap anything ("this" is not moving).
-		 *  }
-		 */
-	}
-	// Here comes the fun
-	else
-	{
-		// At this point, "this" is dynamic.
+sf::FloatRect ColliderComponent::getHitRect() const
+{
+	return sf::FloatRect(getWorldPosition(), m_Hitbox);
+}
 
-		const sf::Vector2f thisMoveVector = this->getParent()->getPosition() - this->m_LastPosition;
+const CollisionType& ColliderComponent::getCollisionType() const
+{
+	return m_ColType;
+}
 
-		if (other->getCollisionType() == CollisionType::Static)
-		{
-			/* 
-			 * "this" is dynamic and "other" is static.
-			 * In order to resolve collisions, we need to clip "this" only, and let "other" where it is.
-			 */
+void ColliderComponent::setCollisionType(const CollisionType& type)
+{
+	m_ColType = type;
+}
 
+const CollisionProfile& ColliderComponent::getCollisionProfile() const
+{
+	return m_ColProfile;
+}
 
-		}
-		else
-		{
-			/* 
-			 * "this" is dynamic and "other" is dynamic.
-			 * In order to resolve collisions, we need to clip both enties together.
-			 * We need to sum the movement vectors, and move both of the entities, because they are
-			 * pushing themselves together.
-			 */
+void ColliderComponent::setCollisionProfile(const CollisionProfile& profile)
+{
+	m_ColProfile = profile;
+}
 
-			const sf::Vector2f otherMoveVector = other->getParent()->getPosition() - other->m_LastPosition;
-		}
-	}
+const CollisionResponse& ColliderComponent::getBehaviourWith(const CollisionProfile& profile) const
+{
+	return m_BehaviourWithProfile.at(profile);
+}
+
+void ColliderComponent::setBehavioursWith(const CollisionProfile& profile, const CollisionResponse& response)
+{
+	m_BehaviourWithProfile[profile] = response;
+}
+
+sf::Vector2f ColliderComponent::getLastPos() const
+{
+	return m_LastPosition;
 }

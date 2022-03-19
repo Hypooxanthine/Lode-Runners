@@ -12,6 +12,7 @@ RunnerPawn::RunnerPawn(const size_t& ID, const std::string& name)
 
 	m_Collider->setRelativePosition({ .25f, 0.f });
 	m_Collider->setHitbox({ .5f, 1.f });
+	m_Collider->setCollisionType(CollisionType::Dynamic);
 }
 
 void RunnerPawn::update(const float& dt)

@@ -40,7 +40,7 @@ LobbyState::LobbyState(const std::string& name)
 		(
 			[this]()
 			{
-				sendLevelToAll_Multicast(*Assets::getLevelAsset(m_LevelSelector->getSelectedLevelName()));
+				sendLevelToAll_Multicast(*Assets::getLevelAsset(m_LevelSelector->getSelectedLevelName(), true));
 			}
 		);
 	}
