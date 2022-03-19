@@ -109,7 +109,7 @@ bool Physics::rayWithHitbox(const Ray& ray, const sf::FloatRect& hitbox, sf::Vec
 	if (std::isnan(tNear.y) || std::isnan(tNear.x)) return false;
 
 	if (tNear.x > tFar.x) std::swap(tNear.x, tFar.x);
-	if (tNear.y < tFar.y) std::swap(tNear.y, tFar.y);
+	if (tNear.y > tFar.y) std::swap(tNear.y, tFar.y);
 
 	if (tNear.x > tFar.y || tNear.y > tFar.x) return false;
 
@@ -130,7 +130,7 @@ bool Physics::rayWithHitbox(const Ray& ray, const sf::FloatRect& hitbox, sf::Vec
 	}
 	else if (tNear.x < tNear.y)
 	{
-		if (invDir.x < 0.f)
+		if (invDir.y < 0.f)
 			contactNormal = { 0.f, 1.f };
 		else
 			contactNormal = { 0.f, -1.f };
@@ -144,17 +144,18 @@ bool Physics::dynamicWithStatic(const ColliderComponent* dynColl, const Collider
 	auto dynRect = dynColl->getHitRect();
 
 	// If there wasn't any movement
-	if (sf::Vector2f(dynRect.left, dynRect.top) == previousPos) return false;
+	if (sf::Vector2f(dynRect.left, dynRect.top) == previousPos)
+	{
+		return false;
+	}
 
-	auto statRect = dynColl->getHitRect();
+	auto statRect = statColl->getHitRect();
 
 	// This is static hitbox expendend by the half size of the dynamic hitbox. It'll allow the dynamic hitbox to clip to the static one.
 	sf::FloatRect expendedStatRect
 	(
-		statRect.left - dynRect.width / 2.f,
-		statRect.top - dynRect.top / 2.f,
-		statRect.width + dynRect.width,
-		statRect.height + dynRect.height
+		statColl->getWorldPosition() - dynColl->getHitbox() / 2.f,
+		statColl->getHitbox() + dynColl->getHitbox()
 	);
 
 	// The ray starts from the center of the previous dynamic hitbox and ends on the center of the current dynamic hitbox.
@@ -162,8 +163,8 @@ bool Physics::dynamicWithStatic(const ColliderComponent* dynColl, const Collider
 	Ray ray =
 	{
 		// Center of the hitbox
-		previousPos + sf::Vector2f(dynRect.width, dynRect.height) / 2.f,
-		sf::Vector2f(dynRect.left, dynRect.top) - previousPos
+		previousPos + dynColl->getHitbox() / 2.f,
+		dynColl->getWorldPosition() - previousPos
 	};
 
 	if (rayWithHitbox(ray, expendedStatRect, contactPoint, contactNormal, contactTime))
@@ -191,6 +192,8 @@ bool Physics::resolveDynamicWithStatic(ColliderComponent* dynColl, ColliderCompo
 		sf::Vector2f move = fixedPosition - dynColl->getWorldPosition();
 
 		dynColl->getParent()->move(move);
+
+		return true;
 	}
 	else
 		return false;

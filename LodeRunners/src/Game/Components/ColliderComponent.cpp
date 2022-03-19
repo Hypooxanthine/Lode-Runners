@@ -43,8 +43,6 @@ void ColliderComponent::update(const float& dt)
 			m_OverlappingColliders.erase(m_OverlappingColliders.begin() + i - 1);
 		}
 	}
-
-	//m_LastPosition = getWorldPosition();
 }
 
 void ColliderComponent::render(Ref<sf::RenderWindow> window)
@@ -52,7 +50,7 @@ void ColliderComponent::render(Ref<sf::RenderWindow> window)
 	sf::RectangleShape shape;
 	shape.setPosition(getWorldPosition() * SPACE_UNIT);
 	shape.setSize(getHitbox() * SPACE_UNIT);
-	shape.setOutlineThickness(-2.f);
+	shape.setOutlineThickness(-1.f);
 	shape.setFillColor(sf::Color::Transparent);
 	shape.setOutlineColor(sf::Color::Red);
 

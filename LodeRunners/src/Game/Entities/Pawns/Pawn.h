@@ -51,8 +51,8 @@ public: // Replicated functions
 			this->setPosition({ x, y });
 		},
 		"Pawn" + std::to_string(m_ID), Network::ReplicationMode::Multicast,
-		const float&, const float&
-	);
+			const float&, const float&
+			);
 
 	CREATE_REPLICATED_FUNCTION
 	(
@@ -62,8 +62,8 @@ public: // Replicated functions
 			setPosition_Multicast(x, y);
 		},
 		"Pawn" + std::to_string(m_ID), Network::ReplicationMode::OnServer,
-		const float&, const float&
-	);
+			const float&, const float&
+			);
 
 	CREATE_REPLICATED_FUNCTION
 	(
@@ -73,8 +73,8 @@ public: // Replicated functions
 			this->move({ x, y });
 		},
 		"Pawn" + std::to_string(m_ID), Network::ReplicationMode::Multicast,
-		const float&, const float&
-	);
+			const float&, const float&
+			);
 
 	CREATE_REPLICATED_FUNCTION
 	(
@@ -84,8 +84,8 @@ public: // Replicated functions
 			move_Multicast(x, y);
 		},
 		"Pawn" + std::to_string(m_ID), Network::ReplicationMode::OnServer,
-		const float&, const float&
-	);
+			const float&, const float&
+			);
 
 	CREATE_REPLICATED_FUNCTION
 	(

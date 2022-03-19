@@ -52,6 +52,10 @@ void RunnerPawn::update(const float& dt)
 			move_Multicast(-dt * m_Speed, 0.f);
 		if (m_IsMovingRight)
 			move_Multicast(dt * m_Speed, 0.f);
+		if (m_IsMovingUp)
+			move_Multicast(0.f, -dt * m_Speed);
+		if (m_IsMovingDown)
+			move_Multicast(0.f, dt * m_Speed);
 	}
 }
 
