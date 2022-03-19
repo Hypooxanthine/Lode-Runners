@@ -38,6 +38,12 @@ std::optional<Component*> Entity::getComponent(const std::string& name)
 	return std::optional<Component*>();
 }
 
+void Entity::onBeginOverlap(Entity* other)
+{}
+
+void Entity::onEndOverlap(Entity* other)
+{}
+
 bool Entity::removeComponent(const std::string& name)
 {
 	for (size_t i = 0; i < m_Components.size(); i++)

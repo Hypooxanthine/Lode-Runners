@@ -2,6 +2,7 @@
 
 #include "../Entity.h"
 
+#include "../../../Assets/Assets.h"
 #include "../../../Network/Network.h"
 
 class Controller;
@@ -23,6 +24,11 @@ public:
 
 	void setController(Controller* controller) { m_Controller = controller; }
 
+	virtual void setPosition(const sf::Vector2f& position) override;
+	virtual void move(const sf::Vector2f& delta) override;
+
+	void setPositionLocal(const sf::Vector2f& position);
+
 	const size_t& getID() const { return m_ID; }
 	const std::string& getName() const { return m_Name; }
 
@@ -38,54 +44,67 @@ protected:
 private:
 	Controller* m_Controller;
 
-	size_t m_ID;
 	std::string m_Name;
+
+	// For networking
+	size_t m_ID = 0;
 
 public: // Replicated functions
 
 	CREATE_REPLICATED_FUNCTION
 	(
-		setPosition_Multicast,
+		setPosition_OnClients,
 		[this](const float& x, const float& y)
 		{
-			this->setPosition({ x, y });
+			setPositionLocal({ x, y });
 		},
-		"Pawn" + std::to_string(m_ID), Network::ReplicationMode::Multicast,
-			const float&, const float&
-			);
+		"Pawn" + std::to_string(m_ID), Network::ReplicationMode::OnClients,
+		const float&, const float&
+	);
 
 	CREATE_REPLICATED_FUNCTION
 	(
 		setPosition_OnServer,
 		[this](const float& x, const float& y)
 		{
-			setPosition_Multicast(x, y);
+			m_WorldPosition.x = x * SPACE_UNIT;
+			m_WorldPosition.y = y * SPACE_UNIT;
+
+			Physics::get()->fixEntityPosition(this);
+
+			setPosition_OnClients(getPosition().x, getPosition().y);
 		},
 		"Pawn" + std::to_string(m_ID), Network::ReplicationMode::OnServer,
-			const float&, const float&
-			);
+		const float&, const float&
+	);
 
 	CREATE_REPLICATED_FUNCTION
 	(
-		move_Multicast,
+		move_OnClients,
 		[this](const float& x, const float& y)
 		{
-			this->move({ x, y });
+			m_WorldPosition.x += x * SPACE_UNIT;
+			m_WorldPosition.y += y * SPACE_UNIT;
 		},
-		"Pawn" + std::to_string(m_ID), Network::ReplicationMode::Multicast,
-			const float&, const float&
-			);
+		"Pawn" + std::to_string(m_ID), Network::ReplicationMode::OnClients,
+		const float&, const float&
+	);
 
 	CREATE_REPLICATED_FUNCTION
 	(
 		move_OnServer,
 		[this](const float& x, const float& y)
 		{
-			move_Multicast(x, y);
+			m_WorldPosition.x += x * SPACE_UNIT;
+			m_WorldPosition.y += y * SPACE_UNIT;
+
+			Physics::get()->fixEntityPosition(this);
+
+			setPosition_OnClients(getPosition().x, getPosition().y);
 		},
 		"Pawn" + std::to_string(m_ID), Network::ReplicationMode::OnServer,
-			const float&, const float&
-			);
+		const float&, const float&
+	);
 
 	CREATE_REPLICATED_FUNCTION
 	(

@@ -8,7 +8,8 @@ ColliderComponent::ColliderComponent()
 	if(m_ColType == CollisionType::Dynamic)
 		m_LastPosition = getWorldPosition();
 
-	m_BehaviourWithProfile[CollisionProfile::Tile] = CollisionResponse::Ignore;
+	m_BehaviourWithProfile[CollisionProfile::TileSolid] = CollisionResponse::Ignore;
+	m_BehaviourWithProfile[CollisionProfile::TileTransparent] = CollisionResponse::Ignore;
 	m_BehaviourWithProfile[CollisionProfile::Runner] = CollisionResponse::Ignore;
 	m_BehaviourWithProfile[CollisionProfile::Man] = CollisionResponse::Ignore;
 
@@ -80,6 +81,7 @@ const CollisionType& ColliderComponent::getCollisionType() const
 void ColliderComponent::setCollisionType(const CollisionType& type)
 {
 	m_ColType = type;
+	Physics::get()->updateColliderType(this);
 }
 
 const CollisionProfile& ColliderComponent::getCollisionProfile() const
@@ -102,7 +104,33 @@ void ColliderComponent::setBehavioursWith(const CollisionProfile& profile, const
 	m_BehaviourWithProfile[profile] = response;
 }
 
-sf::Vector2f ColliderComponent::getLastPos() const
+bool ColliderComponent::ignores(const ColliderComponent* other) const
+{
+	return getBehaviourWith(other->getCollisionProfile()) == CollisionResponse::Ignore;
+}
+
+bool ColliderComponent::overlaps(const ColliderComponent* other) const
+{
+	return getBehaviourWith(other->getCollisionProfile()) == CollisionResponse::Overlaps;
+}
+
+bool ColliderComponent::blocks(const ColliderComponent* other) const
+{
+	return getBehaviourWith(other->getCollisionProfile()) == CollisionResponse::Blocks;
+}
+
+void ColliderComponent::notifyOverlaps(ColliderComponent* other)
+{
+	m_OverlappingColliders.push_back(other);
+	getParent()->onBeginOverlap(other->getParent());
+}
+
+sf::Vector2f ColliderComponent::getLastPosition() const
 {
 	return m_LastPosition;
+}
+
+void ColliderComponent::setLastPosition(const sf::Vector2f& position)
+{
+	m_LastPosition = position;
 }

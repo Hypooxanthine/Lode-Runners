@@ -8,6 +8,7 @@ enum class TileType;
 class Tile;
 class Pawn;
 class PlayerController;
+class BlockingWall;
 
 // first = playerID, second = playerName.
 using Player = std::pair<size_t, std::string>;
@@ -34,9 +35,11 @@ public:
 
 private: // Private methods
 	void initTiles(const LevelAsset* levelAsset);
+	void initBlockingWalls();
 
 private: // Private members
 	std::array<Ref<Tile>, TILES_HEIGHT * TILES_WIDTH> m_Tiles;
+	Ref<BlockingWall> m_WallL, m_WallR, m_WallU, m_WallD;
 
 	TilePosition m_RunnerSpawn;
 	std::vector<TilePosition> m_EnnemiesSpawns;

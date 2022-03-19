@@ -12,7 +12,6 @@ RunnerPawn::RunnerPawn(const size_t& ID, const std::string& name)
 
 	m_Collider->setRelativePosition({ .25f, 0.f });
 	m_Collider->setHitbox({ .5f, 1.f });
-	m_Collider->setCollisionType(CollisionType::Dynamic);
 }
 
 void RunnerPawn::update(const float& dt)
@@ -49,13 +48,13 @@ void RunnerPawn::update(const float& dt)
 	if (IS_SERVER)
 	{
 		if (m_IsMovingLeft)
-			move_Multicast(-dt * m_Speed, 0.f);
+			move({ -dt * m_Speed, 0.f });
 		if (m_IsMovingRight)
-			move_Multicast(dt * m_Speed, 0.f);
+			move({ dt * m_Speed, 0.f });
 		if (m_IsMovingUp)
-			move_Multicast(0.f, -dt * m_Speed);
+			move({ 0.f, -dt * m_Speed });
 		if (m_IsMovingDown)
-			move_Multicast(0.f, dt * m_Speed);
+			move({ 0.f, dt * m_Speed });
 	}
 }
 

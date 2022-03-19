@@ -4,7 +4,7 @@
 
 enum class CollisionType { Static, Dynamic };
 
-enum class CollisionProfile { Tile, Runner, Man };
+enum class CollisionProfile { TileSolid, TileTransparent, Runner, Man };
 enum class CollisionResponse { Ignore, Overlaps, Blocks };
 
 class ColliderComponent : public Component
@@ -31,13 +31,20 @@ public:
 	const CollisionResponse& getBehaviourWith(const CollisionProfile& profile) const;
 	void setBehavioursWith(const CollisionProfile& profile, const CollisionResponse& response);
 
-	sf::Vector2f getLastPos() const;
+	bool ignores(const ColliderComponent* other) const;
+	bool overlaps(const ColliderComponent* other) const;
+	bool blocks(const ColliderComponent* other) const;
+
+	void notifyOverlaps(ColliderComponent* other);
+
+	sf::Vector2f getLastPosition() const;
+	void setLastPosition(const sf::Vector2f& position);
 
 private: // Private members
 	sf::Vector2f m_Hitbox;
 
 	CollisionType m_ColType = CollisionType::Static;
-	CollisionProfile m_ColProfile = CollisionProfile::Tile;
+	CollisionProfile m_ColProfile = CollisionProfile::TileSolid;
 	
 	std::map<CollisionProfile, CollisionResponse> m_BehaviourWithProfile;
 

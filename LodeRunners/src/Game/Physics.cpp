@@ -2,6 +2,8 @@
 
 #include "Components/ColliderComponent.h"
 
+#include "Entities/Pawns/Pawn.h"
+
 Physics* Physics::m_Instance = nullptr;
 
 Physics::Physics()
@@ -13,61 +15,100 @@ Physics::Physics()
 
 void Physics::update()
 {
-	std::vector<ColliderComponent*> dynamicColliders;
-
-	for (auto& c : m_Colliders)
-		if (c->getCollisionType() == CollisionType::Dynamic)
-			dynamicColliders.push_back(c);
-
-	for (size_t i = 0; i < dynamicColliders.size(); i++)
-	{
-		sf::Vector2f contactPoint, contactNormal;
-		float t = 0.f;
-		std::vector<std::pair<size_t, float>> collisions;
-
-		for (size_t j = 0; j < m_Colliders.size(); j++)
-		{
-			if (m_Colliders[j]->getCollisionType() != CollisionType::Static) continue;
-
-			if (dynamicWithStatic(dynamicColliders[i], m_Colliders[j], dynamicColliders[i]->getLastPos(), contactPoint, contactNormal, t))
-			{
-				LOG_TRACE("Collision");
-				collisions.push_back({ i, t });
-			}
-		}
-
-		std::sort
-		(
-			collisions.begin(), collisions.end(),
-			[](const std::pair<size_t, float>& a, const std::pair<size_t, float>& b)
-			{
-				return a.second < b.second;
-			}
-		);
-
-		for (auto& c : collisions)
-			resolveDynamicWithStatic(dynamicColliders[i], m_Colliders[c.first], dynamicColliders[i]->getLastPos());
-
-		dynamicColliders[i]->m_LastPosition = dynamicColliders[i]->getWorldPosition();
-	}
+	
 }
 
 void Physics::registerCollider(ColliderComponent* collider)
 {
 	m_Colliders.push_back(collider);
+
+	// We cache dynamic and static colliders to perform faster collision resolving.
+	if (collider->getCollisionType() == CollisionType::Dynamic)
+		m_DynamicColliders.push_back(collider);
+	else if (collider->getCollisionType() == CollisionType::Static)
+		m_StaticColliders.push_back(collider);
 }
 
-bool Physics::unregisterCollider(ColliderComponent* collider)
+void Physics::unregisterCollider(ColliderComponent* collider)
 {
 	auto it = std::find(m_Colliders.begin(), m_Colliders.end(), collider);
 
 	if (it != m_Colliders.end())
-	{
 		m_Colliders.erase(it);
-		return true;
+
+	if (collider->getCollisionType() == CollisionType::Dynamic)
+	{
+		it = std::find(m_DynamicColliders.begin(), m_DynamicColliders.end(), collider);
+
+		if (it != m_DynamicColliders.end())
+			m_DynamicColliders.erase(it);
+	}
+	else if(collider->getCollisionType() == CollisionType::Static)
+	{
+		it = std::find(m_StaticColliders.begin(), m_StaticColliders.end(), collider);
+
+		if (it != m_StaticColliders.end())
+			m_StaticColliders.erase(it);
+	}
+}
+
+void Physics::updateColliderType(ColliderComponent* collider)
+{
+	std::vector<ColliderComponent*>::iterator it;
+
+	// Checking if collider was stored in static or dynamic colliders (and removing it).
+	it = std::find(m_DynamicColliders.begin(), m_DynamicColliders.end(), collider);
+
+	if (it != m_DynamicColliders.end())
+		m_DynamicColliders.erase(it);
+	else
+	{
+		it = std::find(m_StaticColliders.begin(), m_StaticColliders.end(), collider);
+
+		if (it != m_StaticColliders.end())
+			m_StaticColliders.erase(it);
 	}
 
-	return false;
+	if (collider->getCollisionType() == CollisionType::Dynamic)
+		m_DynamicColliders.push_back(collider);
+	else if (collider->getCollisionType() == CollisionType::Static)
+		m_StaticColliders.push_back(collider);
+}
+
+void Physics::fixEntityPosition(Entity* entity) const
+{
+	auto collider = entity->getComponent<ColliderComponent>();
+
+	if (!collider || collider.value()->getCollisionType() != CollisionType::Dynamic) return;
+
+	sf::Vector2f contactPoint, contactNormal;
+	float t = 0.f;
+	std::vector<std::pair<size_t, float>> collisions;
+
+	for (size_t j = 0; j < m_Colliders.size(); j++)
+	{
+		if (m_Colliders[j]->getCollisionType() != CollisionType::Static) continue;
+
+		if (dynamicWithStatic(collider.value(), m_Colliders[j], collider.value()->getLastPosition(), contactPoint, contactNormal, t))
+		{
+			collisions.push_back({ j, t });
+		}
+	}
+
+	std::sort
+	(
+		collisions.begin(), collisions.end(),
+		[](const std::pair<size_t, float>& a, const std::pair<size_t, float>& b)
+		{
+			return a.second < b.second;
+		}
+	);
+
+	for (auto& c : collisions)
+		resolveDynamicWithStatic(collider.value(), m_Colliders[c.first]);
+
+	collider.value()->m_LastPosition = collider.value()->getWorldPosition();
+
 }
 
 bool Physics::pointInCollider(const sf::Vector2f& point, const ColliderComponent* collider) const
@@ -173,7 +214,7 @@ bool Physics::dynamicWithStatic(const ColliderComponent* dynColl, const Collider
 		return false;
 }
 
-bool Physics::resolveDynamicWithStatic(ColliderComponent* dynColl, ColliderComponent* statColl, const sf::Vector2f& previousPos) const
+void Physics::resolveDynamicWithStatic(ColliderComponent* dynColl, ColliderComponent* statColl) const
 {
 	// Here will be stored contact point and normal between dynamic Collider and static Collider.
 	sf::Vector2f contactPoint, contactNormal;
@@ -183,18 +224,21 @@ bool Physics::resolveDynamicWithStatic(ColliderComponent* dynColl, ColliderCompo
 
 	// If there is no collision, previous values are meaningless.
 
-	if (dynamicWithStatic(dynColl, statColl, previousPos, contactPoint, contactNormal, contactTime))
+	if(dynColl->blocks(statColl))
 	{
-		auto hitbox = dynColl->getHitbox();
-
-		// Collider has to be here.
-		sf::Vector2f fixedPosition = contactPoint + sf::Vector2f(contactNormal.x * hitbox.x, contactNormal.y * hitbox.y);
-		sf::Vector2f move = fixedPosition - dynColl->getWorldPosition();
-
-		dynColl->getParent()->move(move);
-
-		return true;
+		if (dynamicWithStatic(dynColl, statColl, dynColl->getLastPosition(), contactPoint, contactNormal, contactTime))
+			dynColl->getParent()->m_WorldPosition = (contactPoint - dynColl->getRelativePosition() - dynColl->getHitbox() / 2.f) * SPACE_UNIT;
 	}
-	else
-		return false;
+	else if (dynColl->overlaps(statColl) || statColl->overlaps(dynColl))
+	{
+		if (dynamicWithStatic(dynColl, statColl, dynColl->getLastPosition(), contactPoint, contactNormal, contactTime))
+		{
+			if(dynColl->overlaps(statColl))
+				dynColl->notifyOverlaps(statColl);
+
+			if (statColl->overlaps(dynColl))
+				statColl->notifyOverlaps(dynColl);
+		}
+	}
+	
 }

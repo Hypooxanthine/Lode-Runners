@@ -8,6 +8,7 @@
 #include "Entities/Pawns/RunnerPawn.h"
 #include "Entities/Pawns/EnnemyPawn.h"
 #include "Controllers/PlayerController.h"
+#include "Entities/BlockingWall.h"
 
 /* CONSTRUCTORS */
 
@@ -15,6 +16,7 @@ Level::Level(Ref<LevelAsset> levelAsset)
 	: m_View({0.f, 0.f, SPACE_UNIT * TILES_WIDTH, SPACE_UNIT * TILES_HEIGHT})
 {
 	initTiles(levelAsset.get());
+	initBlockingWalls();
 }
 
 /* PUBLIC MEMBER FUNCTIONS */
@@ -123,7 +125,7 @@ void Level::addRunner(const Player& runner)
 		m_Pawns.back()->setController(m_PlayerController.get());
 	}
 
-	m_Pawns.back()->setPosition({ (float)m_RunnerSpawn.x, (float)m_RunnerSpawn.y });
+	m_Pawns.back()->setPositionLocal({ (float)m_RunnerSpawn.x, (float)m_RunnerSpawn.y });
 }
 
 void Level::addEnnemy(const Player& ennemy)
@@ -146,4 +148,23 @@ void Level::initTiles(const LevelAsset* levelAsset)
 		else if (type == TileType::EnnemyStart)
 			m_EnnemiesSpawns.push_back({ (unsigned)i % TILES_WIDTH, (unsigned)i / TILES_WIDTH });
 	}
+}
+
+void Level::initBlockingWalls()
+{
+	m_WallL = MakeRef<BlockingWall>();
+	m_WallL->setPosition({ -1.f, 0.f });
+	m_WallL->setSize({ 1.f, (float)TILES_HEIGHT });
+
+	m_WallR = MakeRef<BlockingWall>();
+	m_WallR->setPosition({ (float)TILES_WIDTH, 0.f});
+	m_WallR->setSize({ 1.f, (float)TILES_HEIGHT });
+
+	m_WallU = MakeRef<BlockingWall>();
+	m_WallU->setPosition({ 0.f, -1.f });
+	m_WallU->setSize({ (float)TILES_WIDTH, 1.f});
+
+	m_WallD = MakeRef<BlockingWall>();
+	m_WallD->setPosition({ 0.f, (float)TILES_HEIGHT });
+	m_WallD->setSize({ (float)TILES_WIDTH, 1.f });
 }
