@@ -11,6 +11,8 @@ public:
 	virtual void render(Ref<sf::RenderWindow> window) {}
 
 	void setParent(Entity* p) { m_Parent = p; }
+	Entity* getParent() { return m_Parent; }
+	const Entity* getParent() const { return m_Parent; }
 
 	const std::string& getName() const { return m_Name; }
 	void setName(const std::string& name) { m_Name = name; }
@@ -19,10 +21,6 @@ public:
 	void setRelativePosition(const sf::Vector2f& pos);
 
 	sf::Vector2f getWorldPosition() const;
-
-protected:
-	Entity* getParent() { return m_Parent; }
-	const Entity* getParent() const { return m_Parent; }
 
 private:
 	std::string m_Name;
