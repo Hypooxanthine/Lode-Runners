@@ -15,9 +15,6 @@ EnnemyPawn::EnnemyPawn(const size_t& ID, const std::string& name)
 	m_Collider->setRelativePosition({ .25f, 0.f });
 	m_Collider->setHitbox({ .5f, 1.f });
 
-	if (name != "")
-		m_NameText->setColor(sf::Color(230, 135, 11));
-
 	m_Speed = 3.f;
 }
 

@@ -26,7 +26,8 @@ Pawn::Pawn(const size_t& ID, const std::string& name)
 
 	m_NameText = makeComponent<TextComponent>("Name");
 
-	if (name == "") return;
+	if (name != "")
+		m_NameText->setColor(ID == PLAYER_ID ? sf::Color::Red : sf::Color(230, 135, 11));
 
 	m_NameText->setRelativePosition({ .5f, -.15f });
 	m_NameText->setText(name);
