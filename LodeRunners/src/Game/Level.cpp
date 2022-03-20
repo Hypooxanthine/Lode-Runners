@@ -174,7 +174,7 @@ void Level::initTiles(const LevelAsset* levelAsset)
 
 		if (type == TileType::Gold)
 		{
-			m_Golds.push_back(MakeRef<GoldTile>());
+			m_Golds.push_back(MakeRef<GoldTile>(i)); // We can just pass i as ID, there is only one gold per tile.
 			m_Golds.back()->setPosition({ (float)(i % TILES_WIDTH), (float)(i / TILES_WIDTH) });
 		}
 	}

@@ -62,7 +62,7 @@ void RunnerPawn::onBeginOverlap(Entity* other)
 
 	if (asGold)
 	{
-		asGold->pickUp();
+		asGold->pickup_OnServer();
 		m_GoldsTaken++;
 		m_Score += GOLD_POINTS;
 

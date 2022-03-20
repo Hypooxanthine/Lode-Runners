@@ -62,7 +62,7 @@ void EnnemyPawn::onBeginOverlap(Entity* other)
 
 	if (asGold)
 	{
-		asGold->hide();
+		asGold->hide_OnServer();
 		m_CarriedGold = asGold;
 	}
 }

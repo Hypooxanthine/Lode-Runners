@@ -5,8 +5,8 @@
 #include "../../Components/SpriteComponent.h"
 #include "../../Components/ColliderComponent.h"
 
-GoldTile::GoldTile()
-	: Tile()
+GoldTile::GoldTile(const size_t& ID)
+	: Tile(), m_ID(ID)
 {
 	m_Collider = makeComponent<ColliderComponent>("Collider");
 	m_Collider->setCollisionType(CollisionType::Static);
@@ -27,6 +27,7 @@ void GoldTile::hide()
 	m_Collider->setCollisionProfile(CollisionProfile::NoCollision);
 
 	m_Sprite = nullptr;
+	m_Hidden = true;
 }
 
 void GoldTile::show()
@@ -34,6 +35,8 @@ void GoldTile::show()
 	m_Sprite = makeComponent<SpriteComponent>("Sprite", Assets::getTile(TileType::Gold).get());
 
 	m_Collider->setCollisionProfile(CollisionProfile::TileTransparent);
+
+	m_Hidden = false;
 }
 
 const bool& GoldTile::wasTaken() const
