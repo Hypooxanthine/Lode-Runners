@@ -9,6 +9,7 @@
 #include "Entities/Pawns/EnnemyPawn.h"
 #include "Controllers/PlayerController.h"
 #include "Entities/BlockingWall.h"
+#include "Entities/Tiles/Gold.h"
 
 /* CONSTRUCTORS */
 
@@ -29,6 +30,12 @@ void Level::update(const float& dt)
 		t->update(dt);
 	}
 
+	for (auto& g : m_Golds)
+	{
+		g->updateComponents(dt);
+		g->update(dt);
+	}
+
 	for (auto& p : m_Pawns)
 	{
 		p->updateComponents(dt);
@@ -45,6 +52,12 @@ void Level::render(Ref<sf::RenderWindow> window)
 	{
 		t->renderComponents(window);
 		t->render(window);
+	}
+
+	for (auto& g : m_Golds)
+	{
+		g->renderComponents(window);
+		g->render(window);
 	}
 
 	for (auto& p : m_Pawns)
@@ -158,6 +171,12 @@ void Level::initTiles(const LevelAsset* levelAsset)
 			m_RunnerSpawn = { (unsigned)i % TILES_WIDTH, (unsigned)i / TILES_WIDTH };
 		else if (type == TileType::EnnemyStart)
 			m_EnnemiesSpawns.push_back({ (unsigned)i % TILES_WIDTH, (unsigned)i / TILES_WIDTH });
+
+		if (type == TileType::Gold)
+		{
+			m_Golds.push_back(MakeRef<GoldTile>());
+			m_Golds.back()->setPosition({ (float)(i % TILES_WIDTH), (float)(i / TILES_WIDTH) });
+		}
 	}
 }
 

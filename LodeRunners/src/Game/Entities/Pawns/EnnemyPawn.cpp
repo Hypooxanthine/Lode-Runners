@@ -6,6 +6,8 @@
 #include "../../Components/ColliderComponent.h"
 #include "../../Components/TextComponent.h"
 
+#include "../Tiles/Gold.h"
+
 EnnemyPawn::EnnemyPawn(const size_t& ID, const std::string& name)
 	: Pawn(ID, name)
 {
@@ -50,4 +52,22 @@ void EnnemyPawn::update(const float& dt)
 			m_Flipbook->freeze();
 		}
 	}
+}
+
+void EnnemyPawn::onBeginOverlap(Entity* other)
+{
+	Pawn::onBeginOverlap(other);
+
+	GoldTile* asGold = dynamic_cast<GoldTile*>(other);
+
+	if (asGold)
+	{
+		asGold->hide();
+		m_CarriedGold = asGold;
+	}
+}
+
+void EnnemyPawn::onEndOverlap(Entity* other)
+{
+	Pawn::onEndOverlap(other);
 }

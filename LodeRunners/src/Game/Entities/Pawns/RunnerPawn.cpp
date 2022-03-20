@@ -6,6 +6,8 @@
 #include "../../Components/ColliderComponent.h"
 #include "../../Components/TextComponent.h"
 
+#include "../Tiles/Gold.h"
+
 RunnerPawn::RunnerPawn(const size_t& ID, const std::string& name)
 	: Pawn(ID, name)
 {
@@ -52,6 +54,23 @@ void RunnerPawn::update(const float& dt)
 	}
 }
 
-void RunnerPawn::render(Ref<sf::RenderWindow> window)
+void RunnerPawn::onBeginOverlap(Entity* other)
 {
+	Pawn::onBeginOverlap(other);
+
+	GoldTile* asGold = dynamic_cast<GoldTile*>(other);
+
+	if (asGold)
+	{
+		asGold->pickUp();
+		m_GoldsTaken++;
+		m_Score += GOLD_POINTS;
+
+		LOG_INFO("Player {} picked up a gold. New score : {}.", getName(), m_Score);
+	}
+}
+
+void RunnerPawn::onEndOverlap(Entity* other)
+{
+	Pawn::onEndOverlap(other);
 }

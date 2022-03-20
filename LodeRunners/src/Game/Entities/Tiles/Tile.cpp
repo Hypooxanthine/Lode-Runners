@@ -32,3 +32,8 @@ Ref<Tile> Tile::MakeTile(const TileType& type)
         break;
     }
 }
+
+sf::Vector2u Tile::getTileMapPosition() const
+{
+    return (sf::Vector2u)getPosition();
+}

@@ -9,6 +9,7 @@ class Tile;
 class Pawn;
 class PlayerController;
 class BlockingWall;
+class GoldTile;
 
 // first = playerID, second = playerName.
 using Player = std::pair<size_t, std::string>;
@@ -38,13 +39,16 @@ private: // Private methods
 	void initBlockingWalls();
 
 private: // Private members
+	/* Level resources */
 	std::array<Ref<Tile>, TILES_HEIGHT * TILES_WIDTH> m_Tiles;
 	Ref<BlockingWall> m_WallL, m_WallR, m_WallU, m_WallD;
 
 	TilePosition m_RunnerSpawn;
 	std::vector<TilePosition> m_EnnemiesSpawns;
 
-	// Only one player controller per instance.
+	std::vector<Ref<GoldTile>> m_Golds;
+
+	/* Only one player controller per instance. */
 	Ref<PlayerController> m_PlayerController;
 	std::vector<Ref<Pawn>> m_Pawns;
 
