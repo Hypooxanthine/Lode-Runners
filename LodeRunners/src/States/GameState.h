@@ -8,6 +8,8 @@ class Physics;
 
 class PlayerController;
 
+class GameUI;
+
 // first = playerID, second = playerName.
 using Player = std::pair<size_t, std::string>;
 
@@ -22,9 +24,13 @@ public:
 
 	virtual void onResize() override;
 
+	void setScore(const size_t& score);
+
 private:
 	Ref<Physics> m_Physics;
 
 	Ref<Level> m_Level;
+
+	Ref<GameUI> m_HUD;
 };
 

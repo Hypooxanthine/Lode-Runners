@@ -229,6 +229,11 @@ void Application::killState()
 	m_PopStateRequest = true;
 }
 
+State* Application::getCurrentState()
+{
+	return m_States.top().get();
+}
+
 [[noreturn]] void Application::emergencyStop(const std::string& errMsg)
 {
 	LOG_ERROR(std::string("Emergency stop has been called. Details:\n") + errMsg);

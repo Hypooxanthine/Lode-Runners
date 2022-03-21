@@ -8,6 +8,8 @@
 
 #include "../Tiles/Gold.h"
 
+#include "../../../States/GameState.h"
+
 RunnerPawn::RunnerPawn(const size_t& ID, const std::string& name)
 	: Pawn(ID, name)
 {
@@ -65,6 +67,9 @@ void RunnerPawn::onBeginOverlap(Entity* other)
 		asGold->pickup_OnServer();
 		m_GoldsTaken++;
 		m_Score += GOLD_POINTS;
+
+		auto state = dynamic_cast<GameState*>(Application::get()->getCurrentState());
+		if (state) state->setScore(m_Score);
 
 		LOG_INFO("Player {} picked up a gold. New score : {}.", getName(), m_Score);
 	}

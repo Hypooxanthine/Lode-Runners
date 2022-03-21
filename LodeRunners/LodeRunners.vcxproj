@@ -167,6 +167,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\HUD\Custom\GameUI.cpp" />
     <ClCompile Include="src\Game\Entities\Tiles\Gold.cpp" />
     <ClCompile Include="src\Game\Entities\BlockingWall.cpp" />
     <ClCompile Include="src\Game\Physics.cpp" />
@@ -222,6 +223,7 @@
     <ClCompile Include="src\Game\Components\TextComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\HUD\Custom\GameUI.h" />
     <ClInclude Include="src\Game\Entities\Tiles\Gold.h" />
     <ClInclude Include="src\Game\Entities\BlockingWall.h" />
     <ClInclude Include="src\Game\Physics.h" />
