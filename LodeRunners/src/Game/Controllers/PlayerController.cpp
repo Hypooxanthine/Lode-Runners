@@ -1,6 +1,7 @@
 #include "PlayerController.h"
 
 #include "../Entities/Pawns/Pawn.h"
+#include "../Entities/Pawns/RunnerPawn.h"
 
 void PlayerController::update(const float& dt)
 {
@@ -48,5 +49,18 @@ void PlayerController::update(const float& dt)
 		m_MoveDownOld = false;
 	}
 
+	if (GET_EVENT(EventType::DigLeft))
+	{
+		RunnerPawn* asRunner = dynamic_cast<RunnerPawn*>(getPawn());
 
+		if (asRunner)
+			asRunner->dig_OnServer(DigTarget::Left);
+	}
+	if (GET_EVENT(EventType::DigRight))
+	{
+		RunnerPawn* asRunner = dynamic_cast<RunnerPawn*>(getPawn());
+
+		if (asRunner)
+			asRunner->dig_OnServer(DigTarget::Right);
+	}
 }

@@ -57,10 +57,12 @@ const Event& Application::getEvent(const EventType& type) const
 
 void Application::updateEvents()
 {
-	// Action events. These actions trigger with the OS' delay between key presses. So we need to disable them this way, not only when the key is released.
+	// Action events. We want these actions to trigger with the OS' delay between key presses. So we need to disable them this way, not only when the key is released.
 	m_Events[EventType::TextEntered].activated = false;
 	m_Events[EventType::TextErased].activated = false;
 	m_Events[EventType::Escape].activated = false;
+	m_Events[EventType::DigLeft].activated = false;
+	m_Events[EventType::DigRight].activated = false;
 
 	m_Events[EventType::TextEntered].text = "";
 
@@ -110,10 +112,10 @@ void Application::updateEvents()
 				m_Events[EventType::MoveRight].activated = true;
 				break;
 			case sf::Keyboard::A:
-				m_Events[EventType::DigRight].activated = true;
+				m_Events[EventType::DigLeft].activated = true;
 				break;
 			case sf::Keyboard::E:
-				m_Events[EventType::DigLeft].activated = true;
+				m_Events[EventType::DigRight].activated = true;
 				break;
 			case sf::Keyboard::BackSpace:
 				m_Events[EventType::TextErased].activated = true;
@@ -139,12 +141,6 @@ void Application::updateEvents()
 				break;
 			case sf::Keyboard::D:
 				m_Events[EventType::MoveRight].activated = false;
-				break;
-			case sf::Keyboard::A:
-				m_Events[EventType::DigRight].activated = false;
-				break;
-			case sf::Keyboard::E:
-				m_Events[EventType::DigLeft].activated = false;
 				break;
 			}
 			break;

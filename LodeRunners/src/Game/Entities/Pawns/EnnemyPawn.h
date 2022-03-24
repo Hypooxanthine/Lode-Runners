@@ -7,7 +7,7 @@ class GoldTile;
 class EnnemyPawn : public Pawn
 {
 public:
-	EnnemyPawn(const size_t& ID, const std::string& name);
+	EnnemyPawn(const size_t& ID, const std::string& name, TileMap* tileMap);
 
 	void update(const float& dt) override;
 

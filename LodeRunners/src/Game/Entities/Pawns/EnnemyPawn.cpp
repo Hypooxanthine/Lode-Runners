@@ -8,8 +8,8 @@
 
 #include "../Tiles/Gold.h"
 
-EnnemyPawn::EnnemyPawn(const size_t& ID, const std::string& name)
-	: Pawn(ID, name)
+EnnemyPawn::EnnemyPawn(const size_t& ID, const std::string& name, TileMap* tileMap)
+	: Pawn(ID, name, tileMap)
 {
 	m_Flipbook->setType(FlipbookType::PlayerLeft);
 	m_Flipbook->setTotalDuration(.8f);

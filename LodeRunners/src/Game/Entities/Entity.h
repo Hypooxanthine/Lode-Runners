@@ -3,7 +3,6 @@
 #include "../../Core/Base.h"
 
 #include "../../Network/Network.h"
-#include "../Physics.h"
 
 // Tile size can differs depending on the skin. So the space unit is the tile size.
 // (0.f, 0.f) is top-left corner, (26.f, 16.f) is bottom_right corner.

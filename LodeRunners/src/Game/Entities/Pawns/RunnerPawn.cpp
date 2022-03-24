@@ -8,10 +8,12 @@
 
 #include "../Tiles/Gold.h"
 
+#include "../TileMap.h"
+
 #include "../../../States/GameState.h"
 
-RunnerPawn::RunnerPawn(const size_t& ID, const std::string& name)
-	: Pawn(ID, name)
+RunnerPawn::RunnerPawn(const size_t& ID, const std::string& name, TileMap* tileMap)
+	: Pawn(ID, name, tileMap)
 {
 	m_Flipbook->setType(FlipbookType::PlayerLeft);
 	m_Flipbook->setTotalDuration(.8f);
@@ -30,7 +32,6 @@ void RunnerPawn::update(const float& dt)
 	{
 		if (m_Flipbook->getType() != FlipbookType::PlayerRight || m_Flipbook->isFrozen())
 		{
-			LOG_TRACE("Starting moving right.");
 			m_Flipbook->setType(FlipbookType::PlayerRight);
 			m_Flipbook->setCurrentFrame(0);
 			m_Flipbook->unFreeze();
@@ -40,7 +41,6 @@ void RunnerPawn::update(const float& dt)
 	{
 		if (m_Flipbook->getType() != FlipbookType::PlayerLeft || m_Flipbook->isFrozen())
 		{
-			LOG_TRACE("Starting moving left.");
 			m_Flipbook->setType(FlipbookType::PlayerLeft);
 			m_Flipbook->setCurrentFrame(0);
 			m_Flipbook->unFreeze();
@@ -50,7 +50,6 @@ void RunnerPawn::update(const float& dt)
 	{
 		if (!m_Flipbook->isFrozen())
 		{
-			LOG_TRACE("Starting idling.");
 			m_Flipbook->freeze();
 		}
 	}
@@ -78,4 +77,40 @@ void RunnerPawn::onBeginOverlap(Entity* other)
 void RunnerPawn::onEndOverlap(Entity* other)
 {
 	Pawn::onEndOverlap(other);
+}
+
+sf::Vector2u RunnerPawn::getDigTargetPos(const DigTarget& target) const
+{
+	auto out = (sf::Vector2u)getPosition();
+
+	out.y++;
+
+	if (target == DigTarget::Left)
+		out.x--;
+	else
+		out.x++;
+
+	return out;
+}
+
+BrickTile* RunnerPawn::getBrick(const sf::Vector2u& pos) const
+{
+	return dynamic_cast<BrickTile*>(m_TileMap->getTile(size_t(pos.x + pos.y * TILES_WIDTH)));
+}
+
+std::optional<BrickTile*> RunnerPawn::getBrickDigTarget(const DigTarget& target) const
+{
+	std::optional<BrickTile*> out;
+	auto tileTarget = getDigTargetPos(target);
+
+	if ( tileTarget.x >= TILES_WIDTH || tileTarget.y >= TILES_HEIGHT) return out;
+
+	out = getBrick(tileTarget);
+
+	if (out.value() != nullptr) return out;
+	else
+	{
+		out.reset();
+		return out;
+	}
 }

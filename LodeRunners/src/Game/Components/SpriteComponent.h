@@ -13,6 +13,8 @@ public:
 
 	sf::Vector2f getWorldSize() const;
 
+	void setSprite(const SpriteAsset* asset);
+
 private:
 	Ref<SpriteAsset> m_SpriteAsset;
 };

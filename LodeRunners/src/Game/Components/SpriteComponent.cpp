@@ -4,7 +4,7 @@
 
 SpriteComponent::SpriteComponent(const SpriteAsset* asset)
 {
-	m_SpriteAsset = MakeRef<SpriteAsset>(*asset);
+	setSprite(asset);
 }
 
 void SpriteComponent::render(Ref<sf::RenderWindow> window)
@@ -17,4 +17,9 @@ sf::Vector2f SpriteComponent::getWorldSize() const
 {
 	auto bounds = m_SpriteAsset->getGlobalBounds();
 	return { bounds.width / SPACE_UNIT, bounds.height / SPACE_UNIT };
+}
+
+void SpriteComponent::setSprite(const SpriteAsset* asset)
+{
+	m_SpriteAsset = MakeRef<SpriteAsset>(*asset);
 }

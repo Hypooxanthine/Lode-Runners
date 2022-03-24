@@ -16,3 +16,22 @@ BrickTile::BrickTile()
 	m_Collider->setBehavioursWith(CollisionProfile::Man, CollisionResponse::Blocks);
 	m_Collider->setBehavioursWith(CollisionProfile::Runner, CollisionResponse::Blocks);
 }
+
+void BrickTile::dig()
+{
+	m_IsDug = true;
+	hide();
+	LOG_TRACE("Dug !");
+}
+
+void BrickTile::hide()
+{
+	m_SpriteComponent->setSprite(Assets::getTile(TileType::Blank).get());
+	m_Collider->setCollisionProfile(CollisionProfile::TileTransparent);
+}
+
+void BrickTile::show()
+{
+	m_SpriteComponent->setSprite(Assets::getTile(TileType::Brick).get());
+	m_Collider->setCollisionProfile(CollisionProfile::TileSolid);
+}

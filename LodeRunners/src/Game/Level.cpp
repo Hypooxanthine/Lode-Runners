@@ -82,7 +82,7 @@ void Level::setViewport(const sf::FloatRect& viewport)
 
 void Level::addRunner(const Player& runner)
 {
-	m_Pawns.push_back(MakeRef<RunnerPawn>(runner.first, runner.second));
+	m_Pawns.push_back(MakeRef<RunnerPawn>(runner.first, runner.second, m_TileMap.get()));
 
 	if (runner.first == PLAYER_ID)
 	{
@@ -100,7 +100,7 @@ void Level::addRunner(const Player& runner)
 
 void Level::addEnnemy(const Player& ennemy)
 {
-	m_Pawns.push_back(MakeRef<EnnemyPawn>(ennemy.first, ennemy.second));
+	m_Pawns.push_back(MakeRef<EnnemyPawn>(ennemy.first, ennemy.second, m_TileMap.get()));
 
 	if (ennemy.first == PLAYER_ID)
 	{

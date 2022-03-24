@@ -12,8 +12,8 @@
 #include "../Tiles/LadderTile.h"
 #include "../Tiles/BridgeTile.h"
 
-Pawn::Pawn(const size_t& ID, const std::string& name)
-	: m_ID(ID), m_Name(name), m_Controller(nullptr)
+Pawn::Pawn(const size_t& ID, const std::string& name, TileMap* tileMap)
+	: m_ID(ID), m_Name(name), m_Controller(nullptr), m_TileMap(tileMap)
 {
 	m_Collider = makeComponent<ColliderComponent>("Collider");
 	m_Collider->setCollisionType(CollisionType::Dynamic);
