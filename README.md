@@ -15,7 +15,7 @@ EDIT : matchmaking server will take too much time. It could be a great improveme
 2. Bug fixes
   - [DONE] Prevent people from connecting to the server if it is full. Currently clients can connect, but server doesn't register them. So server won't send anything to these unregistered clients, and they will just wait from something that will never happen.
   - Overlapping issue when an entity is standing above and between a solid and a transparent tile.
-  - Score replication has to be fixed.
+  - [DONE] Score replication has to be fixed.
   - Fix behaviour when server / a client leaves in GameState.
 3. Improvements
   - [DONE] Implement a timestep in Networker threads to free some CPU time

@@ -57,6 +57,7 @@ void RunnerPawn::update(const float& dt)
 	}
 }
 
+// Only called on server
 void RunnerPawn::onBeginOverlap(Entity* other)
 {
 	Pawn::onBeginOverlap(other);
@@ -66,16 +67,13 @@ void RunnerPawn::onBeginOverlap(Entity* other)
 	if (asGold)
 	{
 		asGold->pickup_OnServer();
-		m_GoldsTaken++;
-		m_Score += GOLD_POINTS;
-
-		auto state = dynamic_cast<GameState*>(Application::get()->getCurrentState());
-		if (state) state->setScore(m_Score);
+		setScore_Multicast(m_Score + GOLD_POINTS);
 
 		LOG_INFO("Player {} picked up a gold. New score : {}.", getName(), m_Score);
 	}
 }
 
+// Only called on server
 void RunnerPawn::onEndOverlap(Entity* other)
 {
 	Pawn::onEndOverlap(other);
@@ -123,4 +121,17 @@ std::optional<BrickTile*> RunnerPawn::getBrickDigTarget(const DigTarget& target)
 		out.reset();
 		return out;
 	}
+}
+
+void RunnerPawn::setScore(const size_t& score)
+{
+	m_Score = score;
+	m_GoldsTaken++;
+
+	if(getID() == PLAYER_ID)
+	{
+		auto state = dynamic_cast<GameState*>(Application::get()->getCurrentState());
+		if (state) state->setScore(m_Score);
+	}
+
 }

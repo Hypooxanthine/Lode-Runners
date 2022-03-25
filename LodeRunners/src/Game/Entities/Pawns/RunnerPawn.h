@@ -29,6 +29,8 @@ private: // Private member functions
 	// This function is safe.
 	std::optional<BrickTile*> getBrickDigTarget(const DigTarget& target) const;
 
+	void setScore(const size_t& score);
+
 private: // Private members
 	size_t m_Score = 0;
 	size_t m_GoldsTaken = 0;
@@ -77,5 +79,16 @@ public: // Replicated functions
 		kill_Multicast,
 		[this]() {this->kill(); },
 		"RunnerPawn" + std::to_string(getID()), Network::ReplicationMode::Multicast
+	);
+
+	CREATE_REPLICATED_FUNCTION
+	(
+		setScore_Multicast,
+		[this](const size_t& score)
+		{
+			setScore(score);
+		},
+		"RunnerPawn" + std::to_string(getID()), Network::ReplicationMode::Multicast,
+		const size_t&
 	);
 };
