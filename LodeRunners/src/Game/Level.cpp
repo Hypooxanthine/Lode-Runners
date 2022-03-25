@@ -96,6 +96,7 @@ void Level::addRunner(const Player& runner)
 	TilePosition pos = m_TileMap->getRunnersSpawn();
 
 	m_Pawns.back()->setPositionLocal({ (float)pos.x, (float)pos.y });
+	m_RunnersNb++;
 }
 
 void Level::addEnnemy(const Player& ennemy)
@@ -114,4 +115,22 @@ void Level::addEnnemy(const Player& ennemy)
 	}
 
 	m_Pawns.back()->setPositionLocal({ spawnPoint.x, spawnPoint.y });
+}
+
+void Level::notifyRunnerDeath(RunnerPawn* runner)
+{
+	if (std::find(m_DeadRunners.begin(), m_DeadRunners.end(), runner) != m_DeadRunners.end())
+		return; // Pawn already registered as dead.
+
+	m_DeadRunners.push_back(runner);
+
+	// If all runners are dead
+	if (m_DeadRunners.size() == m_RunnersNb)
+		endLevel();
+}
+
+void Level::endLevel()
+{
+	// To be implemented.
+	LOG_TRACE("To be implemented : endLevel() function.");
 }

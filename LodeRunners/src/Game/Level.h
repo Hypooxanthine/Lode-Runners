@@ -7,6 +7,7 @@ class LevelAsset;
 class TileMap;
 
 class Pawn;
+class RunnerPawn;
 class PlayerController;
 
 // first = playerID, second = playerName.
@@ -29,12 +30,21 @@ public:
 	void addRunner(const Player& runner);
 	void addEnnemy(const Player& ennemy);
 
+	void notifyRunnerDeath(RunnerPawn* runner);
+
+private: // Private member functions
+	void endLevel();
+
 private: // Private members
 	Ref<TileMap> m_TileMap;
 
 	/* Only one player controller per instance. */
 	Ref<PlayerController> m_PlayerController;
+
 	std::vector<Ref<Pawn>> m_Pawns;
+
+	size_t m_RunnersNb = 0;
+	std::vector<RunnerPawn*> m_DeadRunners;
 
 	sf::View m_View;
 };

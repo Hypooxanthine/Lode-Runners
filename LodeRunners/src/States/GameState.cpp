@@ -71,3 +71,8 @@ void GameState::setScore(const size_t& score)
 {
 	m_HUD->setScore(score);
 }
+
+void GameState::notifyRunnerDeath(RunnerPawn* runner)
+{
+	m_Level->notifyRunnerDeath(runner);
+}

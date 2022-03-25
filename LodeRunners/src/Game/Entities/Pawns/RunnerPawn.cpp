@@ -85,6 +85,14 @@ void RunnerPawn::kill()
 	m_IsKilled = true;
 	m_Flipbook->setRender(false);
 	m_NameText->setRender(false);
+
+	if (IS_SERVER)
+	{
+		GameState* gs = dynamic_cast<GameState*>(Application::get()->getCurrentState());
+
+		if (gs)
+			gs->notifyRunnerDeath(this);
+	}
 }
 
 sf::Vector2u RunnerPawn::getDigTargetPos(const DigTarget& target) const

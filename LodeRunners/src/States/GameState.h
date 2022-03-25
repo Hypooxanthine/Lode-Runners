@@ -7,6 +7,7 @@ class LevelAsset;
 class Physics;
 
 class PlayerController;
+class RunnerPawn;
 
 class GameUI;
 
@@ -25,6 +26,8 @@ public:
 	virtual void onResize() override;
 
 	void setScore(const size_t& score);
+
+	void notifyRunnerDeath(RunnerPawn* runner);
 
 private:
 	Ref<Physics> m_Physics;
