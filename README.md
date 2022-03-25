@@ -8,6 +8,8 @@ EDIT : matchmaking server will take too much time. It could be a great improveme
 1. Main features
   - End-game checking system.
   - Level end ladder spawn.
+  - Back-to-lobby system (at the end of the game).
+  - Scores saving system with leaderboard (another project/application ?).
   - Settings
     - Skin selector
 2. Bug fixes
