@@ -87,7 +87,7 @@ void Physics::fixEntityPosition(Entity* entity) const
 
 	for (size_t j = 0; j < m_Colliders.size(); j++)
 	{
-		if (m_Colliders[j]->getCollisionType() != CollisionType::Static) continue;
+		//if (m_Colliders[j]->getCollisionType() != CollisionType::Static) continue;
 
 		if (dynamicWithStatic(collider.value(), m_Colliders[j], collider.value()->getLastPosition(), contactPoint, contactNormal, t))
 		{

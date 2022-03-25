@@ -18,6 +18,7 @@ RunnerPawn::RunnerPawn(const size_t& ID, const std::string& name, TileMap* tileM
 	m_Flipbook->setType(FlipbookType::PlayerLeft);
 	m_Flipbook->setTotalDuration(.8f);
 
+	m_Collider->setCollisionProfile(CollisionProfile::Runner);
 	m_Collider->setRelativePosition({ .25f, 0.f });
 	m_Collider->setHitbox({ .5f, 1.f });
 
@@ -74,6 +75,8 @@ void RunnerPawn::onBeginOverlap(Entity* other)
 		GameState* gs = dynamic_cast<GameState*>(Application::get()->getCurrentState());
 
 		if (gs) gs->notifyGoldPicked();
+
+		return;
 	}
 }
 

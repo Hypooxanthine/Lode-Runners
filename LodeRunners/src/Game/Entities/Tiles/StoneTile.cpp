@@ -12,6 +12,6 @@ StoneTile::StoneTile()
 	m_Collider->setHitbox(m_SpriteComponent->getWorldSize());
 	m_Collider->setCollisionType(CollisionType::Static);
 	m_Collider->setCollisionProfile(CollisionProfile::TileSolid);
-	m_Collider->setBehavioursWith(CollisionProfile::Man, CollisionResponse::Blocks);
+	m_Collider->setBehavioursWith(CollisionProfile::Ennemy, CollisionResponse::Blocks);
 	m_Collider->setBehavioursWith(CollisionProfile::Runner, CollisionResponse::Blocks);
 }

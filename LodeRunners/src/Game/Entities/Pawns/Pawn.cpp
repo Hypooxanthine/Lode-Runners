@@ -18,8 +18,6 @@ Pawn::Pawn(const size_t& ID, const std::string& name, TileMap* tileMap)
 {
 	m_Collider = makeComponent<ColliderComponent>("Collider");
 	m_Collider->setCollisionType(CollisionType::Dynamic);
-	m_Collider->setBehavioursWith(CollisionProfile::Man, CollisionResponse::Overlaps);
-	m_Collider->setBehavioursWith(CollisionProfile::Runner, CollisionResponse::Ignore);
 	m_Collider->setBehavioursWith(CollisionProfile::TileSolid, CollisionResponse::Blocks);
 	m_Collider->setBehavioursWith(CollisionProfile::TileTransparent, CollisionResponse::Overlaps);
 

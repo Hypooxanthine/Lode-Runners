@@ -18,8 +18,6 @@ BrickTile::BrickTile(const size_t& ID)
 	m_Collider->setHitbox({ 1.f, 1.f });
 	m_Collider->setCollisionType(CollisionType::Static);
 	m_Collider->setCollisionProfile(CollisionProfile::TileSolid);
-	m_Collider->setBehavioursWith(CollisionProfile::Man, CollisionResponse::Blocks);
-	m_Collider->setBehavioursWith(CollisionProfile::Runner, CollisionResponse::Blocks);
 }
 
 void BrickTile::update(const float& dt)
@@ -96,5 +94,7 @@ void BrickTile::refill()
 			if (asEnnemy)
 				asEnnemy->respawn_Multicast();
 		}
+
+		m_OverlappingPawns.erase(m_OverlappingPawns.begin() + i - 1);
 	}
 }

@@ -12,7 +12,7 @@ ColliderComponent::ColliderComponent()
 	m_BehaviourWithProfile[CollisionProfile::TileTransparent] = CollisionResponse::Ignore;
 	m_BehaviourWithProfile[CollisionProfile::NoCollision] = CollisionResponse::Ignore;
 	m_BehaviourWithProfile[CollisionProfile::Runner] = CollisionResponse::Ignore;
-	m_BehaviourWithProfile[CollisionProfile::Man] = CollisionResponse::Ignore;
+	m_BehaviourWithProfile[CollisionProfile::Ennemy] = CollisionResponse::Ignore;
 
 	Physics::get()->registerCollider(this);
 }

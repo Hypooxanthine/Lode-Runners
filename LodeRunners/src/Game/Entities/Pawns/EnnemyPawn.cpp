@@ -9,12 +9,16 @@
 #include "../Tiles/Gold.h"
 #include "../Tiles/BrickTile.h"
 
+#include "RunnerPawn.h"
+
 EnnemyPawn::EnnemyPawn(const size_t& ID, const std::string& name, TileMap* tileMap, const sf::Vector2f& spawnPoint)
 	: Pawn(ID, name, tileMap), m_SpawnPoint(spawnPoint)
 {
 	m_Flipbook->setType(FlipbookType::PlayerLeft);
 	m_Flipbook->setTotalDuration(.8f);
 
+	m_Collider->setCollisionProfile(CollisionProfile::Ennemy);
+	m_Collider->setBehavioursWith(CollisionProfile::Runner, CollisionResponse::Overlaps);
 	m_Collider->setRelativePosition({ .25f, 0.f });
 	m_Collider->setHitbox({ .5f, 1.f });
 
@@ -62,6 +66,8 @@ void EnnemyPawn::onBeginOverlap(Entity* other)
 	{
 		asGold->hide_OnServer();
 		m_CarriedGold = asGold;
+
+		return;
 	}
 
 	if (m_CarriedGold)
@@ -72,6 +78,17 @@ void EnnemyPawn::onBeginOverlap(Entity* other)
 			m_CarriedGold->show_OnServer();
 			m_CarriedGold = nullptr;
 		}
+
+		return;
+	}
+
+	RunnerPawn* asRunner = dynamic_cast<RunnerPawn*>(other);
+
+	if (asRunner)
+	{
+		asRunner->kill_Multicast();
+
+		return;
 	}
 }
 
