@@ -19,7 +19,7 @@ FlipbookComponent::FlipbookComponent(const FlipbookType& type)
 
 void FlipbookComponent::render(Ref<sf::RenderWindow> window)
 {
-	if(m_FbAsset)
+	if(m_FbAsset && m_Render)
 		m_FbAsset->render(window, m_CurrentFrame, getWorldPosition() * SPACE_UNIT);
 }
 

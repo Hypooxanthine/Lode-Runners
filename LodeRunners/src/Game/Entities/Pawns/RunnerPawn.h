@@ -17,6 +17,7 @@ public:
 	virtual void onEndOverlap(Entity* other) override;
 
 	void kill();
+	const bool& isKilled() const { return m_IsKilled; }
 
 private: // Private member functions
 	// This function is safe, but the return value may be unsafe.

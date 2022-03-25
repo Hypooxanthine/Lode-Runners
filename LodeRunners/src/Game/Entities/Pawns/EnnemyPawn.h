@@ -7,7 +7,7 @@ class GoldTile;
 class EnnemyPawn : public Pawn
 {
 public:
-	EnnemyPawn(const size_t& ID, const std::string& name, TileMap* tileMap);
+	EnnemyPawn(const size_t& ID, const std::string& name, TileMap* tileMap, const sf::Vector2f& spawnPoint);
 
 	void update(const float& dt) override;
 
@@ -18,6 +18,8 @@ public:
 
 private:
 	GoldTile* m_CarriedGold = nullptr;
+
+	sf::Vector2f m_SpawnPoint;
 
 public: // Replicated functions
 

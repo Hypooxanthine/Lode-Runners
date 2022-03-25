@@ -14,6 +14,9 @@ public:
 	virtual void render(Ref<sf::RenderWindow> window) override;
 	virtual void update(const float& dt) override;
 
+	void setRender(const bool& val) { m_Render = val; }
+	const bool& getRender() const { return m_Render; }
+
 	const FlipbookType& getType() const;
 	void setType(const FlipbookType& type);
 
@@ -34,6 +37,8 @@ public:
 
 private:
 	Ref<FlipbookAsset> m_FbAsset = nullptr;
+
+	bool m_Render = true;
 
 	size_t m_CurrentFrame = 0;
 	float m_FrameDuration = 1.f;

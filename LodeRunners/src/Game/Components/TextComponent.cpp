@@ -15,8 +15,11 @@ void TextComponent::update(const float& dt)
 
 void TextComponent::render(Ref<sf::RenderWindow> window)
 {
-	m_Text.setPosition(getWorldPosition() * SPACE_UNIT + m_PosCorrection);
-	window->draw(m_Text);
+	if(m_Render)
+	{
+		m_Text.setPosition(getWorldPosition() * SPACE_UNIT + m_PosCorrection);
+		window->draw(m_Text);
+	}
 }
 
 std::string TextComponent::getText() const

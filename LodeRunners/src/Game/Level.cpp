@@ -100,7 +100,9 @@ void Level::addRunner(const Player& runner)
 
 void Level::addEnnemy(const Player& ennemy)
 {
-	m_Pawns.push_back(MakeRef<EnnemyPawn>(ennemy.first, ennemy.second, m_TileMap.get()));
+	auto spawnPoint = (sf::Vector2f)m_TileMap->nextEnnemySpawn();
+
+	m_Pawns.push_back(MakeRef<EnnemyPawn>(ennemy.first, ennemy.second, m_TileMap.get(), spawnPoint));
 
 	if (ennemy.first == PLAYER_ID)
 	{
@@ -111,7 +113,5 @@ void Level::addEnnemy(const Player& ennemy)
 		m_Pawns.back()->setController(m_PlayerController.get());
 	}
 
-	TilePosition pos = m_TileMap->nextEnnemySpawn();
-
-	m_Pawns.back()->setPositionLocal({ (float)pos.x, (float)pos.y });
+	m_Pawns.back()->setPositionLocal({ spawnPoint.x, spawnPoint.y });
 }

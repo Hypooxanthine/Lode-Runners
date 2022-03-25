@@ -85,6 +85,8 @@ void RunnerPawn::kill()
 {
 	LOG_TRACE("Killed !");
 	m_IsKilled = true;
+	m_Flipbook->setRender(false);
+	m_NameText->setRender(false);
 }
 
 sf::Vector2u RunnerPawn::getDigTargetPos(const DigTarget& target) const

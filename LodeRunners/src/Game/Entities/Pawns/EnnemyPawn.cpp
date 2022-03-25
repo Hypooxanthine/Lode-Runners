@@ -8,8 +8,8 @@
 
 #include "../Tiles/Gold.h"
 
-EnnemyPawn::EnnemyPawn(const size_t& ID, const std::string& name, TileMap* tileMap)
-	: Pawn(ID, name, tileMap)
+EnnemyPawn::EnnemyPawn(const size_t& ID, const std::string& name, TileMap* tileMap, const sf::Vector2f& spawnPoint)
+	: Pawn(ID, name, tileMap), m_SpawnPoint(spawnPoint)
 {
 	m_Flipbook->setType(FlipbookType::PlayerLeft);
 	m_Flipbook->setTotalDuration(.8f);
@@ -72,4 +72,6 @@ void EnnemyPawn::onEndOverlap(Entity* other)
 void EnnemyPawn::respawn()
 {
 	LOG_TRACE("Respawned !");
+
+	setPositionLocal(m_SpawnPoint);
 }

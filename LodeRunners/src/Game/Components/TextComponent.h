@@ -9,8 +9,12 @@ public:
 	enum class VerticalAlign { Top, Middle, Bottom };
 public:
 	TextComponent();
+
 	virtual void update(const float& dt);
 	virtual void render(Ref<sf::RenderWindow> window);
+
+	void setRender(const bool& val) { m_Render = val; }
+	const bool& getRender() const { return m_Render; }
 
 	std::string getText() const;
 	void setText(const std::string& text);
@@ -42,6 +46,8 @@ private: // Private member functions
 private: // Private members
 	sf::Text m_Text;
 	sf::Font m_Font;
+
+	bool m_Render = true;
 
 	HorizontalAlign m_HAlign = HorizontalAlign::Left;
 	VerticalAlign m_VAlign = VerticalAlign::Top;
