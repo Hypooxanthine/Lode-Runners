@@ -91,7 +91,7 @@ void RunnerPawn::kill()
 
 sf::Vector2u RunnerPawn::getDigTargetPos(const DigTarget& target) const
 {
-	auto out = (sf::Vector2u)getPosition();
+	auto out = (sf::Vector2u)m_Collider->getWorldPosition();
 
 	out.y++;
 
