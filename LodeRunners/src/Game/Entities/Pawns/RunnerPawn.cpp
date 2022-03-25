@@ -26,6 +26,8 @@ RunnerPawn::RunnerPawn(const size_t& ID, const std::string& name, TileMap* tileM
 
 void RunnerPawn::update(const float& dt)
 {
+	if (m_IsKilled) return;
+
 	Pawn::update(dt);
 
 	if (m_IsMovingRight && !m_IsMovingLeft)
@@ -77,6 +79,12 @@ void RunnerPawn::onBeginOverlap(Entity* other)
 void RunnerPawn::onEndOverlap(Entity* other)
 {
 	Pawn::onEndOverlap(other);
+}
+
+void RunnerPawn::kill()
+{
+	LOG_TRACE("Killed !");
+	m_IsKilled = true;
 }
 
 sf::Vector2u RunnerPawn::getDigTargetPos(const DigTarget& target) const

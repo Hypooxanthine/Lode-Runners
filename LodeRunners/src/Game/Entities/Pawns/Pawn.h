@@ -70,6 +70,18 @@ private: // Private members
 
 public: // Replicated functions
 
+	// Set position without physics check.
+	CREATE_REPLICATED_FUNCTION
+	(
+		forcePosition_Multicast,
+		[this](const float& x, const float& y)
+		{
+			setPositionLocal({ x, y });
+		},
+		"Pawn" + std::to_string(m_ID), Network::ReplicationMode::Multicast,
+		const float&, const float&
+	);
+
 	CREATE_REPLICATED_FUNCTION
 	(
 		setPosition_OnClients,

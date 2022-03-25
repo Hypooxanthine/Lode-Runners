@@ -11,6 +11,7 @@
 
 #include "../Tiles/LadderTile.h"
 #include "../Tiles/BridgeTile.h"
+#include "../Tiles/BrickTile.h"
 
 Pawn::Pawn(const size_t& ID, const std::string& name, TileMap* tileMap)
 	: m_ID(ID), m_Name(name), m_Controller(nullptr), m_TileMap(tileMap)
@@ -45,6 +46,11 @@ void Pawn::onBeginOverlap(Entity* other)
 		m_OverlappingLadders++;
 	else if (dynamic_cast<BridgeTile*>(other) != nullptr)
 		m_OverlappingBridges++;
+	else
+	{
+		BrickTile* asBrick = dynamic_cast<BrickTile*>(other);
+		if (asBrick) asBrick->notifyPawnOverlap(this);
+	}
 }
 
 void Pawn::onEndOverlap(Entity* other)
@@ -53,6 +59,11 @@ void Pawn::onEndOverlap(Entity* other)
 		m_OverlappingLadders--;
 	else if (dynamic_cast<BridgeTile*>(other) != nullptr)
 		m_OverlappingBridges--;
+	else
+	{
+		BrickTile* asBrick = dynamic_cast<BrickTile*>(other);
+		if (asBrick) asBrick->notifyPawnEndOverlap(this);
+	}
 }
 
 void Pawn::update(const float& dt)

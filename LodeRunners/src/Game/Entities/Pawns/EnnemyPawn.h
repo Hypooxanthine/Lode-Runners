@@ -14,6 +14,17 @@ public:
 	virtual void onBeginOverlap(Entity* other) override;
 	virtual void onEndOverlap(Entity* other) override;
 
+	void respawn();
+
 private:
 	GoldTile* m_CarriedGold = nullptr;
+
+public: // Replicated functions
+
+	CREATE_REPLICATED_FUNCTION
+	(
+		respawn_Multicast,
+		[this]() {this->respawn(); },
+		"EnnemyPawn" + std::to_string(getID()), Network::ReplicationMode::Multicast
+	);
 };

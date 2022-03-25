@@ -3,6 +3,8 @@
 
 Ref<Tile> Tile::MakeTile(const TileType& type)
 {
+    static size_t brickTilesID = 0;
+
     switch (type)
     {
     default:
@@ -10,7 +12,7 @@ Ref<Tile> Tile::MakeTile(const TileType& type)
         return MakeRef<BlankTile>();
         break;
     case TileType::Brick:
-        return MakeRef<BrickTile>();
+        return MakeRef<BrickTile>(brickTilesID++);
         break;
     case TileType::Stone:
         return MakeRef<StoneTile>();

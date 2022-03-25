@@ -26,20 +26,18 @@ void EnnemyPawn::update(const float& dt)
 
 	if (m_IsMovingRight && !m_IsMovingLeft)
 	{
-		if (m_Flipbook->getType() != FlipbookType::PlayerRight || m_Flipbook->isFrozen())
+		if (m_Flipbook->getType() != FlipbookType::EnnemyRight || m_Flipbook->isFrozen())
 		{
-			LOG_TRACE("Starting moving right.");
-			m_Flipbook->setType(FlipbookType::PlayerRight);
+			m_Flipbook->setType(FlipbookType::EnnemyRight);
 			m_Flipbook->setCurrentFrame(0);
 			m_Flipbook->unFreeze();
 		}
 	}
 	else if (m_IsMovingLeft && !m_IsMovingRight)
 	{
-		if (m_Flipbook->getType() != FlipbookType::PlayerLeft || m_Flipbook->isFrozen())
+		if (m_Flipbook->getType() != FlipbookType::EnnemyLeft || m_Flipbook->isFrozen())
 		{
-			LOG_TRACE("Starting moving left.");
-			m_Flipbook->setType(FlipbookType::PlayerLeft);
+			m_Flipbook->setType(FlipbookType::EnnemyLeft);
 			m_Flipbook->setCurrentFrame(0);
 			m_Flipbook->unFreeze();
 		}
@@ -48,7 +46,6 @@ void EnnemyPawn::update(const float& dt)
 	{
 		if (!m_Flipbook->isFrozen())
 		{
-			LOG_TRACE("Starting idling.");
 			m_Flipbook->freeze();
 		}
 	}
@@ -70,4 +67,9 @@ void EnnemyPawn::onBeginOverlap(Entity* other)
 void EnnemyPawn::onEndOverlap(Entity* other)
 {
 	Pawn::onEndOverlap(other);
+}
+
+void EnnemyPawn::respawn()
+{
+	LOG_TRACE("Respawned !");
 }

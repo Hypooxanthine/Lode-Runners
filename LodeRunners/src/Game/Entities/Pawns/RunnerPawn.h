@@ -16,6 +16,8 @@ public:
 	virtual void onBeginOverlap(Entity* other) override;
 	virtual void onEndOverlap(Entity* other) override;
 
+	void kill();
+
 private: // Private member functions
 	// This function is safe, but the return value may be unsafe.
 	sf::Vector2u getDigTargetPos(const DigTarget& target) const;
@@ -29,6 +31,8 @@ private: // Private member functions
 private: // Private members
 	size_t m_Score = 0;
 	size_t m_GoldsTaken = 0;
+
+	bool m_IsKilled = false;
 
 public: // Replicated functions
 	
@@ -65,5 +69,12 @@ public: // Replicated functions
 		},
 		"RunnerPawn" + std::to_string(getID()), Network::ReplicationMode::OnClients,
 		const sf::Vector2u&
+	);
+
+	CREATE_REPLICATED_FUNCTION
+	(
+		kill_Multicast,
+		[this]() {this->kill(); },
+		"RunnerPawn" + std::to_string(getID()), Network::ReplicationMode::Multicast
 	);
 };
