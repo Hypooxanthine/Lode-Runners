@@ -16,5 +16,5 @@ EDIT : matchmaking server will take too much time. It could be a great improveme
 ## Screenshots
 ![Alt text](/screenshots/MainMenu_0.png?raw=true)
 ![Alt text](/screenshots/LevelEditor_0.png?raw=true)
-![Alt text](/screenshots/LevelEditor_1.png?raw=true)
 ![Alt text](/screenshots/PreLobby_0.png?raw=true)
+![Alt text](/screenshots/Game_0.png?raw=true)
