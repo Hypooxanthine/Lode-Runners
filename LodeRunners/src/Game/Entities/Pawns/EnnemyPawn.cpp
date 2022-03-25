@@ -26,18 +26,18 @@ void EnnemyPawn::update(const float& dt)
 
 	if (m_IsMovingRight && !m_IsMovingLeft)
 	{
-		if (m_Flipbook->getType() != FlipbookType::EnnemyRight || m_Flipbook->isFrozen())
+		if (m_Flipbook->getType() != FlipbookType::PlayerRight || m_Flipbook->isFrozen())
 		{
-			m_Flipbook->setType(FlipbookType::EnnemyRight);
+			m_Flipbook->setType(FlipbookType::PlayerRight);
 			m_Flipbook->setCurrentFrame(0);
 			m_Flipbook->unFreeze();
 		}
 	}
 	else if (m_IsMovingLeft && !m_IsMovingRight)
 	{
-		if (m_Flipbook->getType() != FlipbookType::EnnemyLeft || m_Flipbook->isFrozen())
+		if (m_Flipbook->getType() != FlipbookType::PlayerLeft || m_Flipbook->isFrozen())
 		{
-			m_Flipbook->setType(FlipbookType::EnnemyLeft);
+			m_Flipbook->setType(FlipbookType::PlayerLeft);
 			m_Flipbook->setCurrentFrame(0);
 			m_Flipbook->unFreeze();
 		}
