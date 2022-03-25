@@ -19,6 +19,7 @@ Pawn::Pawn(const size_t& ID, const std::string& name, TileMap* tileMap)
 	m_Collider = makeComponent<ColliderComponent>("Collider");
 	m_Collider->setCollisionType(CollisionType::Dynamic);
 	m_Collider->setBehavioursWith(CollisionProfile::TileSolid, CollisionResponse::Blocks);
+	m_Collider->setBehavioursWith(CollisionProfile::LadderTop, CollisionResponse::Blocks);
 	m_Collider->setBehavioursWith(CollisionProfile::TileTransparent, CollisionResponse::Overlaps);
 
 	m_Flipbook = makeComponent<FlipbookComponent>("Flipbook");
@@ -73,8 +74,15 @@ void Pawn::update(const float& dt)
 		if (m_IsMovingRight)
 			move({ dt * m_Speed, 0.f });
 
+		if(m_IsMovingDown)
+			m_Collider->setBehavioursWith(CollisionProfile::LadderTop, CollisionResponse::Ignore);
+		else
+			m_Collider->setBehavioursWith(CollisionProfile::LadderTop, CollisionResponse::Blocks);
+
 		if (m_OverlappingLadders > 0 || m_OverlappingBridges > 0)
 		{
+			m_Collider->setBehavioursWith(CollisionProfile::LadderTop, CollisionResponse::Ignore);
+
 			if (m_IsMovingUp)
 				move({ 0.f, -dt * m_Speed });
 			if (m_IsMovingDown)

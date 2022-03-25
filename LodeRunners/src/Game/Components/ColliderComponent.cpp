@@ -13,6 +13,7 @@ ColliderComponent::ColliderComponent()
 	m_BehaviourWithProfile[CollisionProfile::NoCollision] = CollisionResponse::Ignore;
 	m_BehaviourWithProfile[CollisionProfile::Runner] = CollisionResponse::Ignore;
 	m_BehaviourWithProfile[CollisionProfile::Ennemy] = CollisionResponse::Ignore;
+	m_BehaviourWithProfile[CollisionProfile::LadderTop] = CollisionResponse::Ignore;
 
 	Physics::get()->registerCollider(this);
 }

@@ -4,7 +4,7 @@
 
 enum class CollisionType { Static, Dynamic };
 
-enum class CollisionProfile { TileSolid, TileTransparent, NoCollision, Runner, Ennemy };
+enum class CollisionProfile { TileSolid, TileTransparent, NoCollision, Runner, Ennemy, LadderTop };
 enum class CollisionResponse { Ignore, Overlaps, Blocks };
 
 class ColliderComponent : public Component
