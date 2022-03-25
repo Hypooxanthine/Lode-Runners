@@ -143,9 +143,6 @@ void Level::notifyRunnerDeath(RunnerPawn* runner)
 
 void Level::onAllGoldsPicked()
 {
-	// To be implemented.
-	LOG_TRACE("To be implemented : endLevel() function.");
-
 	const auto exitTileMapPos = m_TileMap->getExitTile()->getTileMapPosition();
 
 	m_TileMap->setTile(exitTileMapPos.x, exitTileMapPos.y, TileType::Ladder);
@@ -167,4 +164,6 @@ void Level::onAllGoldsPicked()
 
 void Level::onAllRunnersDead()
 {
+	// To be implemented.
+	LOG_TRACE("To be implemented : onAllRunnersDead() function.");
 }
