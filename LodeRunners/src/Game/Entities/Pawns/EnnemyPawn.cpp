@@ -7,6 +7,7 @@
 #include "../../Components/TextComponent.h"
 
 #include "../Tiles/Gold.h"
+#include "../Tiles/BrickTile.h"
 
 EnnemyPawn::EnnemyPawn(const size_t& ID, const std::string& name, TileMap* tileMap, const sf::Vector2f& spawnPoint)
 	: Pawn(ID, name, tileMap), m_SpawnPoint(spawnPoint)
@@ -57,10 +58,20 @@ void EnnemyPawn::onBeginOverlap(Entity* other)
 
 	GoldTile* asGold = dynamic_cast<GoldTile*>(other);
 
-	if (asGold)
+	if (m_CarriedGold == nullptr && asGold)
 	{
 		asGold->hide_OnServer();
 		m_CarriedGold = asGold;
+	}
+
+	if (m_CarriedGold)
+	{
+		BrickTile* asBrick = dynamic_cast<BrickTile*>(other);
+		if (asBrick)
+		{
+			m_CarriedGold->show_OnServer();
+			m_CarriedGold = nullptr;
+		}
 	}
 }
 
