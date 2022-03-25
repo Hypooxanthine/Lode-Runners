@@ -8,7 +8,8 @@ class LadderTile : public Tile
 {
 public:
 	LadderTile();
-	LadderTile(const bool& isExit);
+
+	void setExit(const bool& val = true) { m_IsExit = true; }
 
 protected:
 	ColliderComponent* m_Collider;

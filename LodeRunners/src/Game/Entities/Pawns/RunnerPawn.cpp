@@ -70,6 +70,10 @@ void RunnerPawn::onBeginOverlap(Entity* other)
 		setScore_Multicast(m_Score + GOLD_POINTS);
 
 		LOG_INFO("Player {} picked up a gold. New score : {}.", getName(), m_Score);
+
+		GameState* gs = dynamic_cast<GameState*>(Application::get()->getCurrentState());
+
+		if (gs) gs->notifyGoldPicked();
 	}
 }
 

@@ -1,6 +1,7 @@
 #include "GameState.h"
 
 #include "../Assets/Assets.h"
+
 #include "../Game/Level.h"
 #include "../Game/Physics.h"
 #include "../Game/Controllers/PlayerController.h"
@@ -70,6 +71,11 @@ void GameState::onResize()
 void GameState::setScore(const size_t& score)
 {
 	m_HUD->setScore(score);
+}
+
+void GameState::notifyGoldPicked()
+{
+	m_Level->notifyGoldPicked();
 }
 
 void GameState::notifyRunnerDeath(RunnerPawn* runner)

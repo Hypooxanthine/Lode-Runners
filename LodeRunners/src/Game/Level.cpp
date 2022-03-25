@@ -7,13 +7,17 @@
 #include "Entities/TileMap.h"
 #include "Entities/Pawns/RunnerPawn.h"
 #include "Entities/Pawns/EnnemyPawn.h"
+
+#include "Entities/Tiles/ExitTile.h"
+#include "Entities/Tiles/LadderTile.h"
+
 #include "Controllers/PlayerController.h"
 
 /* CONSTRUCTORS */
 
 Level::Level(Ref<LevelAsset> levelAsset)
 	: m_View({0.f, 0.f, SPACE_UNIT * TILES_WIDTH, SPACE_UNIT * TILES_HEIGHT}),
-	  m_TileMap(MakeRef<TileMap>(levelAsset))
+	  m_TileMap(MakeRef<TileMap>(levelAsset)), m_GoldsNb(m_TileMap->getGoldsNb())
 {}
 
 /* PUBLIC MEMBER FUNCTIONS */
@@ -117,6 +121,14 @@ void Level::addEnnemy(const Player& ennemy)
 	m_Pawns.back()->setPositionLocal({ spawnPoint.x, spawnPoint.y });
 }
 
+void Level::notifyGoldPicked()
+{
+	m_PickedUpGolds++;
+
+	if (m_PickedUpGolds == m_GoldsNb)
+		onAllGoldsPicked_Multicast();
+}
+
 void Level::notifyRunnerDeath(RunnerPawn* runner)
 {
 	if (std::find(m_DeadRunners.begin(), m_DeadRunners.end(), runner) != m_DeadRunners.end())
@@ -126,11 +138,33 @@ void Level::notifyRunnerDeath(RunnerPawn* runner)
 
 	// If all runners are dead
 	if (m_DeadRunners.size() == m_RunnersNb)
-		endLevel();
+		onAllRunnersDead_Multicast();
 }
 
-void Level::endLevel()
+void Level::onAllGoldsPicked()
 {
 	// To be implemented.
 	LOG_TRACE("To be implemented : endLevel() function.");
+
+	const auto exitTileMapPos = m_TileMap->getExitTile()->getTileMapPosition();
+
+	m_TileMap->setTile(exitTileMapPos.x, exitTileMapPos.y, TileType::Ladder);
+	dynamic_cast<LadderTile*>(m_TileMap->getTile(exitTileMapPos.x, exitTileMapPos.y))->setExit();
+
+	// We want to create ladders on the exit tile but also on every blank tiles below.
+	auto isBlankTile = [this](const sf::Vector2u& pos) -> bool
+	{
+		if (pos.x >= TILES_WIDTH || pos.y >= TILES_HEIGHT) return false;
+
+		return dynamic_cast<BlankTile*>(m_TileMap->getTile(size_t(pos.x + pos.y * TILES_WIDTH))) != nullptr;
+	};
+
+	for (sf::Vector2u cursor(exitTileMapPos.x, exitTileMapPos.y + 1); isBlankTile(cursor); cursor.y++)
+	{
+		m_TileMap->setTile(cursor.x, cursor.y, TileType::Ladder);
+	}
+}
+
+void Level::onAllRunnersDead()
+{
 }

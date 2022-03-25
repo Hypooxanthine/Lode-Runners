@@ -2,6 +2,7 @@
 
 #include "Tiles/Tile.h"
 #include "Tiles/Gold.h"
+#include "Tiles/ExitTile.h"
 #include "BlockingWall.h"
 
 TileMap::TileMap(Ref<LevelAsset> levelAsset)
@@ -59,14 +60,14 @@ void TileMap::setTile(const size_t& x, const size_t& y, const TileType& type)
 	setTile(y * TILES_WIDTH + x, type);
 }
 
-const Tile* TileMap::getTile(const size_t& index) const
+Tile* TileMap::getTile(const size_t& index)
 {
 	return m_Tiles[index].get();
 }
 
-Tile* TileMap::getTile(const size_t& index)
+Tile* TileMap::getTile(const size_t& x, const size_t& y)
 {
-	return m_Tiles[index].get();
+	return getTile(x + y * TILES_WIDTH);
 }
 
 TilePosition TileMap::getRunnersSpawn() const
@@ -96,6 +97,10 @@ void TileMap::initTiles(const LevelAsset* levelAsset)
 		{
 			m_Golds.push_back(MakeRef<GoldTile>(i)); // We can just pass i as ID, there is only one gold per tile.
 			m_Golds.back()->setPosition({ (float)(i % TILES_WIDTH), (float)(i / TILES_WIDTH) });
+		}
+		else if (type == TileType::LevelEnd)
+		{
+			m_ExitTile = dynamic_cast<ExitTile*>(getTile(i));
 		}
 	}
 }

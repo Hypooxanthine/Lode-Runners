@@ -27,6 +27,7 @@ public:
 
 	void setScore(const size_t& score);
 
+	void notifyGoldPicked();
 	void notifyRunnerDeath(RunnerPawn* runner);
 
 private:

@@ -5,12 +5,7 @@
 #include "../../../Assets/Assets.h"
 
 LadderTile::LadderTile()
-	: LadderTile(false)
-{
-}
-
-LadderTile::LadderTile(const bool& isExit)
-	: m_IsExit(isExit)
+	: Tile()
 {
 	m_SpriteComponent = makeComponent<SpriteComponent>("Sprite", Assets::getTile(TileType::Ladder).get());
 
