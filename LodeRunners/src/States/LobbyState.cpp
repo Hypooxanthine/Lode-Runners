@@ -51,6 +51,7 @@ LobbyState::LobbyState(const std::string& name)
 	else
 		Network::Networker::get()->bindOnServerConnexionLost([this]() { kill(); });
 
+	trigerOnPlayerLoginForAll_OnServer(PLAYER_ID, m_PlayerName);
 }
 
 LobbyState::~LobbyState()
@@ -62,7 +63,6 @@ void LobbyState::init()
 {
 	State::init();
 
-	trigerOnPlayerLoginForAll_OnServer(PLAYER_ID, m_PlayerName);
 	Network::Networker::get()->acceptClients();
 }
 

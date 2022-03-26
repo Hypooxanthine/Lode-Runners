@@ -8,8 +8,6 @@ Physics* Physics::m_Instance = nullptr;
 
 Physics::Physics()
 {
-	ASSERT(m_Instance == nullptr, "Physics singleton already exists.");
-
 	m_Instance = this;
 }
 

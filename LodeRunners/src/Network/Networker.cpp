@@ -153,6 +153,8 @@ namespace Network
 		LOG_INFO(debugStr);
 		#endif*/
 
+		if (!m_ReplicatedFunctions.contains(GUID)) return;
+
 		if (m_InterfaceType == InterfaceType::None) return;
 
 		if (mode == ReplicationMode::NotReplicated)
@@ -163,7 +165,6 @@ namespace Network
 		{
 			if (m_InterfaceType == InterfaceType::Server)
 			{
-				ASSERT(m_ReplicatedFunctions.contains(GUID), "Trying to call an unregistered function. GUID : " + std::to_string(GUID) + ".");	
 				m_ReplicatedFunctions.at(GUID)(args);
 			}
 			else

@@ -38,8 +38,8 @@ void Application::run()
 	{
 		updateEvents();
 
-		Network::Networker::get()->executeCallQueue();
 		update();
+		Network::Networker::get()->executeCallQueue();
 
 		render();
 		checkState();

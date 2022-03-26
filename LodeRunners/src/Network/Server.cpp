@@ -84,7 +84,13 @@ namespace Network
 
 	void Server::resumeAcceptClients()
 	{
-		// TO BE IMPLEMENTED
+		m_IsAcceptingClients = true;
+		
+		if(!m_ClientsAcceptorRunning)
+		{
+			ASSERT(tryListen(), "Server couldn't listen back to its asked port.");
+			m_ClientsAcceptor = std::jthread([this]() {this->acceptClients(); });
+		}
 	}
 
 	bool Server::tryListen()
@@ -103,6 +109,8 @@ namespace Network
 
 	void Server::acceptClients()
 	{
+		m_ClientsAcceptorRunning = true;
+
 		// If the listner is blocking, it won't release this thread even if m_IsAcceptingClients is set to false, but we need this thread to check if it should acept clients or not !
 		m_Listener.setBlocking(false);
 
@@ -180,7 +188,6 @@ namespace Network
 							if (m_IsAcceptingClients && !m_ClientsAcceptorRunning )
 							{
 								ASSERT(tryListen(), "Server couldn't listen back to its asked port.");
-								m_ClientsAcceptorRunning = true;
 								m_ClientsAcceptor = std::jthread([this]() {this->acceptClients(); });
 							}
 

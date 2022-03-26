@@ -4,6 +4,8 @@
 
 #include "../Network/Network.h"
 
+#include "../HUD/Custom/EndGameResultsUI.h"
+
 class LevelAsset;
 
 class TileMap;
@@ -16,6 +18,8 @@ class PlayerController;
 using Player = std::pair<size_t, std::string>;
 
 using TilePosition = sf::Vector2u;
+
+enum class PawnType;
 
 class Level
 {
@@ -36,14 +40,13 @@ public:
 	void notifyRunnerDeath(RunnerPawn* runner);
 
 private: // Private member functions
-	// Triggered on server only.
 	void onAllGoldsPicked();
 	void onAllRunnersDead();
 
 private: // Private members
 	Ref<TileMap> m_TileMap;
 
-	/* Only one player controller per instance. */
+	/* Only one player controller per game instance. */
 	Ref<PlayerController> m_PlayerController;
 
 	std::vector<Ref<Pawn>> m_Pawns;
@@ -56,7 +59,11 @@ private: // Private members
 
 	sf::View m_View;
 
+	Ref<EndGameResultsUI> m_EndGameHUD;
+
 private: // Replicated functions
+
+	/* Game end */
 
 	CREATE_REPLICATED_FUNCTION
 	(
@@ -69,6 +76,27 @@ private: // Replicated functions
 	(
 		onAllRunnersDead_Multicast,
 		[this]() { this->onAllRunnersDead(); },
+		"Level", Network::ReplicationMode::Multicast
+	);
+
+	CREATE_REPLICATED_FUNCTION
+	(
+		showResults_Multicast,
+		[this](const PawnType& winners)
+		{
+			m_EndGameHUD->show(winners);
+		},
+		"Level", Network::ReplicationMode::Multicast,
+		const PawnType&
+	);
+
+	CREATE_REPLICATED_FUNCTION
+	(
+		backToLobby_Multicast,
+		[this]()
+		{
+			Application::get()->killState();
+		},
 		"Level", Network::ReplicationMode::Multicast
 	);
 };

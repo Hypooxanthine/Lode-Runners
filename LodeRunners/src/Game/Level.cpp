@@ -17,8 +17,11 @@
 
 Level::Level(Ref<LevelAsset> levelAsset)
 	: m_View({0.f, 0.f, SPACE_UNIT * TILES_WIDTH, SPACE_UNIT * TILES_HEIGHT}),
-	  m_TileMap(MakeRef<TileMap>(levelAsset)), m_GoldsNb(m_TileMap->getGoldsNb())
-{}
+	  m_TileMap(MakeRef<TileMap>(levelAsset)), m_GoldsNb(m_TileMap->getGoldsNb()),
+	m_EndGameHUD(MakeRef<EndGameResultsUI>())
+{
+	m_EndGameHUD->bindEvent([this] {this->backToLobby_Multicast(); });
+}
 
 /* PUBLIC MEMBER FUNCTIONS */
 
@@ -33,6 +36,7 @@ void Level::update(const float& dt)
 	}
 
 	m_PlayerController->update(dt);
+	m_EndGameHUD->update(dt);
 }
 
 void Level::render(Ref<sf::RenderWindow> window)
@@ -46,6 +50,8 @@ void Level::render(Ref<sf::RenderWindow> window)
 		p->renderComponents(window);
 		p->render(window);
 	}
+
+	m_EndGameHUD->render(window);
 }
 
 void Level::onResize()
@@ -77,11 +83,14 @@ void Level::onResize()
 
 		m_View.setSize(levelSize.x + widthCorrection, levelSize.y);
 	}
+
+	m_EndGameHUD->onResize();
 }
 
 void Level::setViewport(const sf::FloatRect& viewport)
 {
 	m_View.setViewport(viewport);
+	m_EndGameHUD->setViewport(viewport);
 }
 
 void Level::addRunner(const Player& runner)
@@ -141,6 +150,8 @@ void Level::notifyRunnerDeath(RunnerPawn* runner)
 		onAllRunnersDead_Multicast();
 }
 
+/* PRIVATE MEMBER FUNCTIONS */
+
 void Level::onAllGoldsPicked()
 {
 	const auto exitTileMapPos = m_TileMap->getExitTile()->getTileMapPosition();
@@ -160,10 +171,11 @@ void Level::onAllGoldsPicked()
 	{
 		m_TileMap->setTile(cursor.x, cursor.y, TileType::Ladder);
 	}
+
+	if (IS_SERVER) showResults_Multicast(PawnType::Runner);
 }
 
 void Level::onAllRunnersDead()
 {
-	// To be implemented.
-	LOG_TRACE("To be implemented : onAllRunnersDead() function.");
+	if (IS_SERVER) showResults_Multicast(PawnType::Ennemy);
 }
