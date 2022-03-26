@@ -45,6 +45,8 @@ public: // Replicated functions
 		dig_OnServer,
 		[this](const DigTarget& target)
 		{
+			if (m_IsKilled) return;
+
 			auto tile = this->getBrickDigTarget(target);
 
 			if (!tile) return;
