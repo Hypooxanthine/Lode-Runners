@@ -169,7 +169,7 @@ void Application::checkState()
 {
 	if( m_PopStateRequest || m_NextState)
 	{
-		if (m_PopStateRequest)
+		if (m_PopStateRequest) // If current state has to be killed
 		{
 			m_States.pop();
 			m_PopStateRequest = false;
@@ -184,8 +184,9 @@ void Application::checkState()
 			m_NextState->init();
 			m_NextState = nullptr;
 		}
-
-		if (m_States.empty())
+		else if (!m_States.empty())
+			m_States.top()->init();
+		else
 			close();
 	}
 }

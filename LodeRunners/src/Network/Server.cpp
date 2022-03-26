@@ -86,7 +86,7 @@ namespace Network
 	{
 		m_IsAcceptingClients = true;
 		
-		if(!m_ClientsAcceptorRunning)
+		if(!m_ClientsAcceptorRunning && m_MaxClients > 0)
 		{
 			ASSERT(tryListen(), "Server couldn't listen back to its asked port.");
 			m_ClientsAcceptor = std::jthread([this]() {this->acceptClients(); });
@@ -158,7 +158,7 @@ namespace Network
 
 	void Server::acceptData()
 	{
-		while ((m_Clients.size() > 0 || m_IsAcceptingClients || m_MaxClients == 0) && !m_RequestedStop)
+		while (/*(m_Clients.size() > 0 || m_IsAcceptingClients || m_MaxClients == 0) && */!m_RequestedStop)
 		{
 			sf::sleep(sf::seconds(FIXED_NETWORK_DELTA_TIME_SECONDS));
 			
