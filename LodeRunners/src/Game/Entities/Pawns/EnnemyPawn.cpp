@@ -77,9 +77,10 @@ void EnnemyPawn::onBeginOverlap(Entity* other)
 		{
 			m_CarriedGold->show_OnServer();
 			m_CarriedGold = nullptr;
+
+			return;
 		}
 
-		return;
 	}
 
 	RunnerPawn* asRunner = dynamic_cast<RunnerPawn*>(other);

@@ -4,8 +4,6 @@
 
 #include "../Network/Network.h"
 
-#include "../HUD/Custom/EndGameResultsUI.h"
-
 class LevelAsset;
 
 class TileMap;
@@ -36,12 +34,8 @@ public:
 	void addRunner(const Player& runner);
 	void addEnnemy(const Player& ennemy);
 
-	void notifyGoldPicked();
-	void notifyRunnerDeath(RunnerPawn* runner);
-
-private: // Private member functions
-	void onAllGoldsPicked();
-	void onAllRunnersDead();
+	TileMap* getTileMap() { return m_TileMap.get(); }
+	size_t getRunnersNumber() const;
 
 private: // Private members
 	Ref<TileMap> m_TileMap;
@@ -51,53 +45,8 @@ private: // Private members
 
 	std::vector<Ref<Pawn>> m_Pawns;
 
-	size_t m_RunnersNb = 0;
 	std::vector<RunnerPawn*> m_DeadRunners;
 
-	size_t m_GoldsNb = 0;
-	size_t m_PickedUpGolds = 0;
-
 	sf::View m_View;
-
-	Ref<EndGameResultsUI> m_EndGameHUD;
-
-private: // Replicated functions
-
-	/* Game end */
-
-	CREATE_REPLICATED_FUNCTION
-	(
-		onAllGoldsPicked_Multicast,
-		[this]() { this->onAllGoldsPicked(); },
-		"Level", Network::ReplicationMode::Multicast
-	);
-
-	CREATE_REPLICATED_FUNCTION
-	(
-		onAllRunnersDead_Multicast,
-		[this]() { this->onAllRunnersDead(); },
-		"Level", Network::ReplicationMode::Multicast
-	);
-
-	CREATE_REPLICATED_FUNCTION
-	(
-		showResults_Multicast,
-		[this](const PawnType& winners)
-		{
-			m_EndGameHUD->show(winners);
-		},
-		"Level", Network::ReplicationMode::Multicast,
-		const PawnType&
-	);
-
-	CREATE_REPLICATED_FUNCTION
-	(
-		backToLobby_Multicast,
-		[this]()
-		{
-			Application::get()->killState();
-		},
-		"Level", Network::ReplicationMode::Multicast
-	);
 };
 

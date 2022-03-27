@@ -8,20 +8,14 @@
 #include "Entities/Pawns/RunnerPawn.h"
 #include "Entities/Pawns/EnnemyPawn.h"
 
-#include "Entities/Tiles/ExitTile.h"
-#include "Entities/Tiles/LadderTile.h"
-
 #include "Controllers/PlayerController.h"
 
 /* CONSTRUCTORS */
 
 Level::Level(Ref<LevelAsset> levelAsset)
 	: m_View({0.f, 0.f, SPACE_UNIT * TILES_WIDTH, SPACE_UNIT * TILES_HEIGHT}),
-	  m_TileMap(MakeRef<TileMap>(levelAsset)), m_GoldsNb(m_TileMap->getGoldsNb()),
-	m_EndGameHUD(MakeRef<EndGameResultsUI>())
-{
-	m_EndGameHUD->bindEvent([this] {this->backToLobby_Multicast(); });
-}
+	  m_TileMap(MakeRef<TileMap>(levelAsset))
+{}
 
 /* PUBLIC MEMBER FUNCTIONS */
 
@@ -36,7 +30,6 @@ void Level::update(const float& dt)
 	}
 
 	m_PlayerController->update(dt);
-	m_EndGameHUD->update(dt);
 }
 
 void Level::render(Ref<sf::RenderWindow> window)
@@ -51,7 +44,6 @@ void Level::render(Ref<sf::RenderWindow> window)
 		p->render(window);
 	}
 
-	m_EndGameHUD->render(window);
 }
 
 void Level::onResize()
@@ -84,13 +76,11 @@ void Level::onResize()
 		m_View.setSize(levelSize.x + widthCorrection, levelSize.y);
 	}
 
-	m_EndGameHUD->onResize();
 }
 
 void Level::setViewport(const sf::FloatRect& viewport)
 {
 	m_View.setViewport(viewport);
-	m_EndGameHUD->setViewport(viewport);
 }
 
 void Level::addRunner(const Player& runner)
@@ -109,7 +99,6 @@ void Level::addRunner(const Player& runner)
 	TilePosition pos = m_TileMap->getRunnersSpawn();
 
 	m_Pawns.back()->setPositionLocal({ (float)pos.x, (float)pos.y });
-	m_RunnersNb++;
 }
 
 void Level::addEnnemy(const Player& ennemy)
@@ -130,52 +119,14 @@ void Level::addEnnemy(const Player& ennemy)
 	m_Pawns.back()->setPositionLocal({ spawnPoint.x, spawnPoint.y });
 }
 
-void Level::notifyGoldPicked()
+size_t Level::getRunnersNumber() const
 {
-	m_PickedUpGolds++;
+	size_t out = 0;
 
-	if (m_PickedUpGolds == m_GoldsNb)
-		onAllGoldsPicked_Multicast();
-}
-
-void Level::notifyRunnerDeath(RunnerPawn* runner)
-{
-	if (std::find(m_DeadRunners.begin(), m_DeadRunners.end(), runner) != m_DeadRunners.end())
-		return; // Pawn already registered as dead.
-
-	m_DeadRunners.push_back(runner);
-
-	// If all runners are dead
-	if (m_DeadRunners.size() == m_RunnersNb)
-		onAllRunnersDead_Multicast();
-}
-
-/* PRIVATE MEMBER FUNCTIONS */
-
-void Level::onAllGoldsPicked()
-{
-	const auto exitTileMapPos = m_TileMap->getExitTile()->getTileMapPosition();
-
-	m_TileMap->setTile(exitTileMapPos.x, exitTileMapPos.y, TileType::Ladder);
-	dynamic_cast<LadderTile*>(m_TileMap->getTile(exitTileMapPos.x, exitTileMapPos.y))->setExit();
-
-	// We want to create ladders on the exit tile but also on every blank tiles below.
-	auto isBlankTile = [this](const sf::Vector2u& pos) -> bool
+	for (auto& p : m_Pawns)
 	{
-		if (pos.x >= TILES_WIDTH || pos.y >= TILES_HEIGHT) return false;
-
-		return dynamic_cast<BlankTile*>(m_TileMap->getTile(size_t(pos.x + pos.y * TILES_WIDTH))) != nullptr;
-	};
-
-	for (sf::Vector2u cursor(exitTileMapPos.x, exitTileMapPos.y + 1); isBlankTile(cursor); cursor.y++)
-	{
-		m_TileMap->setTile(cursor.x, cursor.y, TileType::Ladder);
+		if (dynamic_cast<RunnerPawn*>(p.get())) out++;
 	}
 
-	if (IS_SERVER) showResults_Multicast(PawnType::Runner);
-}
-
-void Level::onAllRunnersDead()
-{
-	if (IS_SERVER) showResults_Multicast(PawnType::Ennemy);
+	return out;
 }

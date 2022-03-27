@@ -20,3 +20,8 @@ LadderTile::LadderTile()
 	topCollider->setCollisionType(CollisionType::Static);
 	topCollider->setCollisionProfile(CollisionProfile::LadderTop);
 }
+
+void LadderTile::setExit(const bool& val)
+{
+	m_IsExit = true;
+}

@@ -7,6 +7,7 @@
 #include "../../Components/TextComponent.h"
 
 #include "../Tiles/Gold.h"
+#include "../Tiles/LadderTile.h"
 
 #include "../TileMap.h"
 
@@ -70,11 +71,20 @@ void RunnerPawn::onBeginOverlap(Entity* other)
 		asGold->pickup_OnServer();
 		setScore_Multicast(m_Score + GOLD_POINTS);
 
-		LOG_INFO("Player {} picked up a gold. New score : {}.", getName(), m_Score);
-
 		GameState* gs = dynamic_cast<GameState*>(Application::get()->getCurrentState());
 
 		if (gs) gs->notifyGoldPicked();
+
+		return;
+	}
+
+	LadderTile* asLadder = dynamic_cast<LadderTile*>(other);
+
+	if (asLadder && asLadder->isExit())
+	{
+		GameState* gs = dynamic_cast<GameState*>(Application::get()->getCurrentState());
+
+		if (gs) gs->endGame_Multicast(PawnType::Runner);
 
 		return;
 	}
@@ -88,7 +98,6 @@ void RunnerPawn::onEndOverlap(Entity* other)
 
 void RunnerPawn::kill()
 {
-	LOG_TRACE("Killed !");
 	m_IsKilled = true;
 	m_Flipbook->setRender(false);
 	m_NameText->setRender(false);
@@ -98,7 +107,7 @@ void RunnerPawn::kill()
 		GameState* gs = dynamic_cast<GameState*>(Application::get()->getCurrentState());
 
 		if (gs)
-			gs->notifyRunnerDeath(this);
+			gs->notifyRunnerDeath();
 	}
 }
 
@@ -142,6 +151,8 @@ void RunnerPawn::setScore(const size_t& score)
 {
 	m_Score = score;
 	m_GoldsTaken++;
+
+	LOG_INFO("Player {} picked up a gold. New score : {}.", getName(), m_Score);
 
 	if(getID() == PLAYER_ID)
 	{
