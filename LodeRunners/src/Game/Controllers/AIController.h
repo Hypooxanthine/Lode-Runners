@@ -4,5 +4,9 @@
 
 class AIController : public Controller
 {
+public:
+	AIController() = default;
+
+
 };
 

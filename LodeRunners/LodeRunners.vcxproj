@@ -223,6 +223,7 @@
     <ClCompile Include="src\HUD\Custom\TeamDispatcherUI.cpp" />
     <ClCompile Include="src\Game\Components\TextComponent.cpp" />
     <ClCompile Include="src\Game\Entities\TileMap.cpp" />
+    <ClCompile Include="src\Util\Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\HUD\Custom\EndGameResultsUI.h" />
@@ -287,6 +288,7 @@
     <ClInclude Include="src\HUD\Custom\TeamDispatcherUI.h" />
     <ClInclude Include="src\Game\Components\TextComponent.h" />
     <ClInclude Include="src\Game\Entities\TileMap.h" />
+    <ClInclude Include="src\Util\Util.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config.xml" />

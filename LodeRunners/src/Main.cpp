@@ -4,17 +4,17 @@
 int main(int argc, char** argv)
 {
 	Log::init();
-
+	
 	{
 		auto networker = std::make_unique<Network::Networker>();
-
+	
 		{
 			// Who knows how big the app will get ? It is safer to allocate it on the heap.
 			auto app = std::make_unique<Application>();
 			app->run();
 		}
 	}
-
+	
 	#ifdef _DEBUG
 	LOG_TRACE("\n\nPress Enter key to close.");
 	std::cin.get();
