@@ -12,31 +12,49 @@ AIController::AIController(TileMap* tileMap, const std::vector<RunnerPawn*>& run
 void AIController::update(const float& dt)
 {
 	m_TimeAccumulator += dt;
-	if (m_TimeAccumulator < .5f) return;
-	else
-		m_TimeAccumulator -= .5f;
-
-	Pawn::MoveDir dir = Pawn::MoveDir::None;
 
 	updateClosestRunner();
-	
-	if (AI::ComputeAStar(m_TileMap->getNavigationGraph(),
-		{ (int)getPawn()->getPosition().x, (int)getPawn()->getPosition().y },
-		{ (int)m_ClosestRunner->getPosition().x , (int)m_ClosestRunner->getPosition().y },
-		m_Path))
-	{
-		sf::Vector2i currentPos = { (int)getPawn()->getPosition().x, (int)getPawn()->getPosition().y };
 
-		if(m_Path.size() > 1)
+	if (!m_ClosestRunner->isKilled()/*m_TimeAccumulator > .1f*/)
+	{
+		m_TimeAccumulator -= .1f;
+
+		if (AI::ComputeAStar(m_TileMap->getNavigationGraph(),
+			{ (int)getPawn()->getPosition().x, (int)getPawn()->getPosition().y },
+			{ (int)m_ClosestRunner->getPosition().x , (int)m_ClosestRunner->getPosition().y },
+			m_Path))
 		{
-			if      (currentPos.x < m_Path[1].getPosition().x) dir = Pawn::MoveDir::Right;
-			else if (currentPos.x > m_Path[1].getPosition().x) dir = Pawn::MoveDir::Left;
-			else if (currentPos.y < m_Path[1].getPosition().y) dir = Pawn::MoveDir::Down;
-			else if (currentPos.y > m_Path[1].getPosition().y) dir = Pawn::MoveDir::Up;
+			m_PathCursor = 0;
 		}
 
-		setMoving(dir);
+		sf::Vector2i currentPos = { (int)getPawn()->getPosition().x, (int)getPawn()->getPosition().y };
+
+		if (m_Path.size() > 1)
+		{
+			if (currentPos.x < m_Path[m_PathCursor + 1].getPosition().x) 
+			{
+				setMovingVertical(VerticalMoveDir::None);
+				setMovingHorizontal(HorizontalMoveDir::Right);
+			}
+			else if (currentPos.x > m_Path[m_PathCursor + 1].getPosition().x) 
+			{
+				setMovingVertical(VerticalMoveDir::None);
+				setMovingHorizontal(HorizontalMoveDir::Left);
+			}
+			else if (currentPos.y < m_Path[m_PathCursor + 1].getPosition().y) 
+			{
+				setMovingHorizontal(HorizontalMoveDir::None);
+				setMovingVertical(VerticalMoveDir::Down);
+			}
+			else if (currentPos.y > m_Path[m_PathCursor + 1].getPosition().y) 
+			{
+				setMovingHorizontal(HorizontalMoveDir::None);
+				setMovingVertical(VerticalMoveDir::Up);
+			}
+		}
 	}
+	else
+		stopMoving();
 	
 }
 

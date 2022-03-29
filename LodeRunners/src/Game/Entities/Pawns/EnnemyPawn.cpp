@@ -14,7 +14,7 @@
 EnnemyPawn::EnnemyPawn(const size_t& ID, const std::string& name, TileMap* tileMap, const sf::Vector2f& spawnPoint)
 	: Pawn(ID, name, tileMap), m_SpawnPoint(spawnPoint)
 {
-	m_Flipbook->setType(FlipbookType::PlayerLeft);
+	m_Flipbook->setType(FlipbookType::EnnemyLeft);
 	m_Flipbook->setTotalDuration(.8f);
 
 	m_Collider->setCollisionProfile(CollisionProfile::Ennemy);
@@ -22,7 +22,7 @@ EnnemyPawn::EnnemyPawn(const size_t& ID, const std::string& name, TileMap* tileM
 	m_Collider->setRelativePosition({ .25f, 0.f });
 	m_Collider->setHitbox({ .5f, 1.f });
 
-	m_Speed = 1.5f;
+	m_Speed = 2.5;
 }
 
 void EnnemyPawn::update(const float& dt)
@@ -31,18 +31,18 @@ void EnnemyPawn::update(const float& dt)
 
 	if (m_IsMovingRight && !m_IsMovingLeft)
 	{
-		if (m_Flipbook->getType() != FlipbookType::PlayerRight || m_Flipbook->isFrozen())
+		if (m_Flipbook->getType() != FlipbookType::EnnemyRight || m_Flipbook->isFrozen())
 		{
-			m_Flipbook->setType(FlipbookType::PlayerRight);
+			m_Flipbook->setType(FlipbookType::EnnemyRight);
 			m_Flipbook->setCurrentFrame(0);
 			m_Flipbook->unFreeze();
 		}
 	}
 	else if (m_IsMovingLeft && !m_IsMovingRight)
 	{
-		if (m_Flipbook->getType() != FlipbookType::PlayerLeft || m_Flipbook->isFrozen())
+		if (m_Flipbook->getType() != FlipbookType::EnnemyLeft || m_Flipbook->isFrozen())
 		{
-			m_Flipbook->setType(FlipbookType::PlayerLeft);
+			m_Flipbook->setType(FlipbookType::EnnemyLeft);
 			m_Flipbook->setCurrentFrame(0);
 			m_Flipbook->unFreeze();
 		}

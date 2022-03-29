@@ -22,4 +22,19 @@ void PlayerController::update(const float& dt)
 		setMovingVertical(VerticalMoveDir::Down);
 	else
 		setMovingVertical(VerticalMoveDir::None);
+
+	if (GET_EVENT(EventType::DigLeft))
+	{
+		RunnerPawn* asRunner = dynamic_cast<RunnerPawn*>(getPawn());
+
+		if (asRunner)
+			asRunner->dig_OnServer(DigTarget::Left);
+	}
+	if (GET_EVENT(EventType::DigRight))
+	{
+		RunnerPawn* asRunner = dynamic_cast<RunnerPawn*>(getPawn());
+
+		if (asRunner)
+			asRunner->dig_OnServer(DigTarget::Right);
+	}
 }

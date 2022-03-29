@@ -1,7 +1,5 @@
 #include "Util.h"
 
-#include "../Core/Base.h"
-
 #include <map>
 #include <vector>
 #include <algorithm>
@@ -101,8 +99,6 @@ namespace Data
 	void AStarGraph::addNode(const NodePosition& pos)
 	{
 		m_Nodes[nodePosToStr(pos)] = Node(pos);
-
-		LOG_TRACE("Next tile : ({}, {})", pos.x, pos.y);
 	}
 
 	void AStarGraph::addEdge(const NodePosition& from, const NodePosition& to)
@@ -163,6 +159,8 @@ namespace AI
 	{
 		using namespace Data;
 
+		path.clear();
+
 		path.push_back(*current);
 
 		while (current->getCameFrom() != nullptr)
@@ -177,8 +175,6 @@ namespace AI
 	bool ComputeAStar(Data::AStarGraph graph, const Data::NodePosition& startPos, const Data::NodePosition& goalPos, std::vector<Data::Node>& path)
 	{
 		using namespace Data;
-
-		path.clear();
 		
 		Node* start = nullptr;
 		Node* goal = nullptr;

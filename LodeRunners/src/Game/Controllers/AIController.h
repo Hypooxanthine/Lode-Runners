@@ -22,6 +22,7 @@ private:
 	std::vector<RunnerPawn*> m_Runners;
 
 	std::vector<Data::Node> m_Path;
+	size_t m_PathCursor = 0;
 	RunnerPawn* m_ClosestRunner = nullptr;
 
 	float m_TimeAccumulator = 0.f;

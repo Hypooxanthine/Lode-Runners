@@ -66,12 +66,20 @@
                         <Frame x="8" y="1"/>
                         <Frame x="8" y="2"/>
                         <Frame x="8" y="3"/>
+						<Frame x="8" y="4"/>
+						<Frame x="8" y="5"/>
+						<Frame x="8" y="6"/>
+						<Frame x="8" y="7"/>
                     </Flipbook>
                     <Flipbook name="EnnemyRight">
                         <Frame x="9" y="0"/>
                         <Frame x="9" y="1"/>
                         <Frame x="9" y="2"/>
                         <Frame x="9" y="3"/>
+						<Frame x="9" y="4"/>
+						<Frame x="9" y="5"/>
+						<Frame x="9" y="6"/>
+						<Frame x="9" y="7"/>
                     </Flipbook>
                     <Flipbook name="EnnemyClimbLadder">
                         <Frame x="10" y="0"/>
