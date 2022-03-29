@@ -6,76 +6,75 @@
 
 namespace Data
 {
-	template <typename T>
-	struct Vertex
+	class Node;
+
+	struct NodePosition
 	{
-		Vertex() = default;
-		Vertex(const std::string& id) : id(id) {}
-
-		using Neighbour = std::pair<T, Vertex*>;
-
-		std::string id;
-		std::vector<Neighbour> neighbours;
+		int x = 0, y = 0;
 	};
 
-	template <typename T>
-	class Graph
+	class Node
 	{
 	public:
-		Graph() = default;
+		Node() = default;
+		Node(const NodePosition& pos);
 
-		Graph(const Graph& other)
-		{
-			for (const auto& pair : other.m_Vertices)
-				this->addVertex(pair.second.id);
+		const NodePosition& getPosition() const;
+		const double& getGCost() const { return m_gCost; }
+		const double& getHCost() const { return m_hCost; }
+		const double& getFCost() const { return m_fCost; }
 
-			for (const auto& pair : other.m_Vertices)
-			{
-				const auto& from = pair.second.id;
+		const Node* getCameFrom() const;
 
-				for (const auto& neighbour : pair.second.neighbours)
-					this->addEdge(from, neighbour.second->id, neighbour.first);
-			}
-		}
+		double heuristcDistTo(const Node& other) const;
+		void computeCosts(const Node* fromNode, const Node* goal);
 
-		bool addVertex(const std::string& id)
-		{
-			if (m_Vertices.contains(id)) return false;
+		std::vector<Node*>& getNeighbours();
+		const std::vector<Node*>& getNeighbours() const;
 
-			m_Vertices[id] = Vertex<T>(id);
-			return true;
-		}
+		void addNeighbour(Node* neighbour);
 
-		bool addEdge(const std::string& from, const std::string& to, const T& cost)
-		{
-			if (!m_Vertices.contains(from) || !m_Vertices.contains(to)) return false;
-
-			auto& neighbours = m_Vertices[from].neighbours;
-			Vertex<T>* vTo = &m_Vertices[to];
-
-			if (std::find_if(neighbours.begin(), neighbours.end(),
-				[&](const Vertex<T>::Neighbour& n) -> bool
-				{
-					return n.second->id == to;
-				}) != neighbours.end()) return false;
-
-			neighbours.push_back(Vertex<T>::Neighbour(cost, vTo));
-
-			return true;
-		}
-
-		const Vertex<T>& getVertex(const std::string& id) const
-		{
-			return m_Vertices.at(id);
-		}
+		bool operator==(const Node& other) const;
 
 	private:
-		std::unordered_map<std::string, Vertex<T>> m_Vertices;
+		NodePosition m_Pos;
+		std::vector<Node*> m_Neighbours;
+		const Node* m_CameFrom = nullptr;
+
+		double m_gCost = 0.f, m_hCost = 0.f, m_fCost = 0.f;
+		bool m_Computed = false;
+	};
+
+	class AStarGraph
+	{
+	public:
+		AStarGraph() = default;
+		AStarGraph(const AStarGraph& other);
+
+		void setStart(const NodePosition& pos);
+		void setGoal(const NodePosition& pos);
+
+		void addNode(const NodePosition& pos);
+
+		void addEdge(const NodePosition& from, const NodePosition& to);
+
+		Node& getNode(const NodePosition& pos);
+		const Node& getNode(const NodePosition& pos) const;
+
+		std::vector<Node*>& getNeighbours(const NodePosition& node);
+		const std::vector<Node*>& getNeighbours(const NodePosition& node) const;
+
+	private:
+		std::string nodePosToStr(const NodePosition& pos) const;
+
+	private:
+		std::unordered_map<std::string, Node> m_Nodes;
+		NodePosition m_StartPos, m_GoalPos;
 	};
 
 }
 
 namespace AI
 {
-	//ComputeAStar()
+	bool ComputeAStar(Data::AStarGraph graph, Data::Node* start, Data::Node* goal, std::vector<std::pair<int, int>>& path);
 }
