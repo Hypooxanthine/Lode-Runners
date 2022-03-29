@@ -22,7 +22,7 @@ EnnemyPawn::EnnemyPawn(const size_t& ID, const std::string& name, TileMap* tileM
 	m_Collider->setRelativePosition({ .25f, 0.f });
 	m_Collider->setHitbox({ .5f, 1.f });
 
-	m_Speed = 3.f;
+	m_Speed = 1.5f;
 }
 
 void EnnemyPawn::update(const float& dt)

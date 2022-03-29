@@ -5,5 +5,6 @@
 
 BlankTile::BlankTile()
 {
+	m_Navigable = true;
 	m_SpriteComponent = makeComponent<SpriteComponent>("Sprite", Assets::getTile(TileType::Blank).get());
 }

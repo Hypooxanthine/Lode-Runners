@@ -12,7 +12,11 @@ public:
 
 	sf::Vector2u getTileMapPosition() const;
 
+	const bool& isNavigable() const { return m_Navigable; }
+
 protected:
 	SpriteComponent* m_SpriteComponent = nullptr;
+
+	bool m_Navigable = false;
 };
 

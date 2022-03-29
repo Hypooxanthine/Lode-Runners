@@ -1,5 +1,7 @@
 #include "Util.h"
 
+#include "../Core/Base.h"
+
 #include <map>
 #include <vector>
 #include <algorithm>
@@ -24,7 +26,7 @@ namespace Data
 
 	double Node::heuristcDistTo(const Node& other) const
 	{
-		return std::sqrt(std::pow(other.m_Pos.x - m_Pos.x, 2) + std::pow(other.m_Pos.y - m_Pos.y, 2));
+		return std::pow(other.m_Pos.x - m_Pos.x, 2) + std::pow(other.m_Pos.y - m_Pos.y, 2);
 	}
 
 	void Node::computeCosts(const Node* fromNode, const Node* goal)
@@ -78,9 +80,6 @@ namespace Data
 
 	AStarGraph::AStarGraph(const AStarGraph& other)
 	{
-		m_StartPos = other.m_StartPos;
-		m_GoalPos = other.m_GoalPos;
-
 		for (const auto& pair : other.m_Nodes)
 		{
 			Node temp(pair.second.getPosition());
@@ -99,49 +98,46 @@ namespace Data
 		}
 	}
 
-	void AStarGraph::setStart(const NodePosition& pos)
-	{
-		m_StartPos = pos;
-	}
-
-	void AStarGraph::setGoal(const NodePosition& pos)
-	{
-		m_GoalPos = pos;
-	}
-
 	void AStarGraph::addNode(const NodePosition& pos)
 	{
 		m_Nodes[nodePosToStr(pos)] = Node(pos);
+
+		LOG_TRACE("Next tile : ({}, {})", pos.x, pos.y);
 	}
 
 	void AStarGraph::addEdge(const NodePosition& from, const NodePosition& to)
 	{
-		m_Nodes[nodePosToStr(from)].getNeighbours().push_back(&m_Nodes[nodePosToStr(to)]);
+		m_Nodes[nodePosToStr(from)].addNeighbour(&m_Nodes[nodePosToStr(to)]);
 	}
 
-	Node& AStarGraph::getNode(const NodePosition& pos)
+	bool AStarGraph::contains(const NodePosition& pos)
 	{
-		return m_Nodes.at(nodePosToStr(pos));
+		return m_Nodes.contains(nodePosToStr(pos));
 	}
 
-	const Node& AStarGraph::getNode(const NodePosition& pos) const
+	Node* AStarGraph::getNode(const NodePosition& pos)
 	{
-		return m_Nodes.at(nodePosToStr(pos));
+		return &m_Nodes.at(nodePosToStr(pos));
+	}
+
+	const Node* AStarGraph::getNode(const NodePosition& pos) const
+	{
+		return &m_Nodes.at(nodePosToStr(pos));
 	}
 
 	std::vector<Node*>& AStarGraph::getNeighbours(const NodePosition& node)
 	{
-		return getNode(node).getNeighbours();
+		return getNode(node)->getNeighbours();
 	}
 
 	const std::vector<Node*>& AStarGraph::getNeighbours(const NodePosition& node) const
 	{
-		return getNode(node).getNeighbours();
+		return getNode(node)->getNeighbours();
 	}
 
 	std::string AStarGraph::nodePosToStr(const NodePosition& pos) const
 	{
-		return std::to_string(pos.x) + " " + std::to_string(pos.y);
+		return std::to_string(pos.x) + "," + std::to_string(pos.y);
 	}
 }
 
@@ -163,25 +159,41 @@ namespace AI
 			});
 	}
 
-	void reconstructPath(std::vector<const Data::Node*> set, const Data::Node* current, std::vector<const Data::Node*>& path)
+	void reconstructPath(const Data::Node* current, std::vector<Data::Node>& path)
 	{
 		using namespace Data;
 
-		path.push_back(current);
+		path.push_back(*current);
 
 		while (current->getCameFrom() != nullptr)
 		{
-			path.push_back(current->getCameFrom());
+			path.push_back(*current->getCameFrom());
 			current = current->getCameFrom();
 		}
+
+		std::reverse(path.begin(), path.end());
 	}
 
-	bool ComputeAStar(Data::AStarGraph graph, Data::Node* start, Data::Node* goal, std::vector<const Data::Node*>& path)
+	bool ComputeAStar(Data::AStarGraph graph, const Data::NodePosition& startPos, const Data::NodePosition& goalPos, std::vector<Data::Node>& path)
 	{
 		using namespace Data;
 
+		path.clear();
+		
+		Node* start = nullptr;
+		Node* goal = nullptr;
+
+		if (graph.contains(startPos))
+			start = graph.getNode(startPos);
+		else
+			return false;
+		if (graph.contains(goalPos))
+			goal = graph.getNode(goalPos);
+		else
+			return false;
+
 		std::vector<Node*> openSet;
-		std::vector<const Node*> closedSet;
+		std::vector<Node*> closedSet;
 
 		openSet.push_back(start);
 		sortOpenSet(openSet);
@@ -192,7 +204,7 @@ namespace AI
 
 			if (current == goal)
 			{
-				reconstructPath(closedSet, current, path);
+				reconstructPath(current, path);
 				return true;
 			}
 
@@ -201,8 +213,13 @@ namespace AI
 
 			for (auto& neighbour : current->getNeighbours())
 			{
-				neighbour->computeCosts(current, goal);
-				openSet.push_back(neighbour);
+				if(std::find(closedSet.begin(), closedSet.end(), neighbour) == closedSet.end())
+				{
+					neighbour->computeCosts(current, goal);
+
+					if(std::find(openSet.begin(), openSet.end(), neighbour) == openSet.end())
+						openSet.push_back(neighbour);
+				}
 			}
 
 			sortOpenSet(openSet);

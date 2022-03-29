@@ -34,6 +34,8 @@ GameState::GameState(Ref<LevelAsset> level, const std::vector<Player>& runners, 
 		m_Level->addEnnemy(p);
 	}
 
+	m_Level->fillEnnemiesWithIA();
+
 	std::string playerName;
 	auto it = std::find_if(runners.begin(), runners.end(), [](const Player& p) { return p.first == PLAYER_ID; });
 

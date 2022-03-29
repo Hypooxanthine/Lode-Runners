@@ -1,13 +1,12 @@
 #include "TileMap.h"
 
-#include "Tiles/Tile.h"
-#include "Tiles/Gold.h"
-#include "Tiles/ExitTile.h"
+#include "Tiles/Tiles.h"
 #include "BlockingWall.h"
 
 TileMap::TileMap(Ref<LevelAsset> levelAsset)
 {
 	initTiles(levelAsset.get());
+	initNavigationGraph();
 	initBlockingWalls();
 }
 
@@ -70,6 +69,11 @@ Tile* TileMap::getTile(const size_t& x, const size_t& y)
 	return getTile(x + y * TILES_WIDTH);
 }
 
+const Data::AStarGraph& TileMap::getNavigationGraph() const
+{
+	return m_NavGraph;
+}
+
 TilePosition TileMap::getRunnersSpawn() const
 {
 	return m_RunnerSpawn;
@@ -78,6 +82,11 @@ TilePosition TileMap::getRunnersSpawn() const
 TilePosition TileMap::nextEnnemySpawn()
 {
 	return m_EnnemiesSpawns[(m_NextEnnemySpawn++) % m_EnnemiesSpawns.size()];
+}
+
+size_t TileMap::getMaxEnnemies() const
+{
+	return m_EnnemiesSpawns.size();
 }
 
 void TileMap::initTiles(const LevelAsset* levelAsset)
@@ -101,6 +110,35 @@ void TileMap::initTiles(const LevelAsset* levelAsset)
 		else if (type == TileType::LevelEnd)
 		{
 			m_ExitTile = dynamic_cast<ExitTile*>(getTile(i));
+		}
+	}
+}
+
+void TileMap::initNavigationGraph()
+{
+	for (size_t i = 0; i < TILES_WIDTH * TILES_HEIGHT; i++)
+	{
+		Tile* tile = getTile(i);
+
+		if (!tile) continue;
+
+		if (dynamic_cast<LadderTile*>(tile) || dynamic_cast<BridgeTile*>(tile)
+			|| (tile->isNavigable() && i + TILES_WIDTH < TILES_WIDTH * TILES_HEIGHT
+				&& (!getTile(i + TILES_WIDTH)->isNavigable() || dynamic_cast<LadderTile*>(getTile(i + TILES_WIDTH)))))
+		{
+			Data::NodePosition pos = { i % TILES_WIDTH, i / TILES_WIDTH };
+			m_NavGraph.addNode(pos);
+
+			if (m_NavGraph.contains({ pos.x - 1, pos.y }))
+			{
+				m_NavGraph.addEdge(pos, { pos.x - 1, pos.y });
+				m_NavGraph.addEdge({ pos.x - 1, pos.y }, pos);
+			}
+			if (m_NavGraph.contains({ pos.x, pos.y - 1 }))
+			{
+				m_NavGraph.addEdge(pos, { pos.x, pos.y - 1 });
+				m_NavGraph.addEdge({ pos.x, pos.y - 1 }, pos);
+			}
 		}
 	}
 }

@@ -19,7 +19,7 @@ class TileMap;
 class Pawn : public Entity
 {
 public:
-	enum class MoveDir { Left, Right, Up, Down };
+	enum class MoveDir { Left, Right, Up, Down, None };
 public:
 	Pawn() = delete;
 	Pawn(const size_t& ID, const std::string& name, TileMap* tileMap);

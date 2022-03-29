@@ -11,7 +11,7 @@
 #define FIXED_DELTA_TIME_SECONDS 1.f / float(FIXED_FPS)
 #define DELTA_TIME_LOG_STEP 1.f
 
-#define FIXED_NETWORK_DELTA_TIME_SECONDS 0.001f
+#define FIXED_NETWORK_DELTA_TIME_SECONDS FIXED_DELTA_TIME_SECONDS / 10.f
 
 /* Main STL libraries. */
 #include <iostream>	
@@ -57,5 +57,3 @@ constexpr Ref<T> MakeRef(Args&& ... args)
 /* Callbacks */
 using Callback = std::function<void(void)>;
 #define BIND_FN(f) [this]() -> void { this->f(); }
-
-/* Global defines */

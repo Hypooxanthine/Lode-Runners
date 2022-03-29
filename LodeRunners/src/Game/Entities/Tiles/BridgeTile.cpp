@@ -6,6 +6,8 @@
 
 BridgeTile::BridgeTile()
 {
+	m_Navigable = true;
+
 	m_SpriteComponent = makeComponent<SpriteComponent>("Sprite", Assets::getTile(TileType::Bridge).get());
 
 	m_Collider = makeComponent<ColliderComponent>("Collider");

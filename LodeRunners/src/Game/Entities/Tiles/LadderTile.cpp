@@ -7,6 +7,8 @@
 LadderTile::LadderTile()
 	: Tile()
 {
+	m_Navigable = true;
+
 	m_SpriteComponent = makeComponent<SpriteComponent>("Sprite", Assets::getTile(TileType::Ladder).get());
 
 	m_Collider = makeComponent<ColliderComponent>("Collider");

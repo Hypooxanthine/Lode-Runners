@@ -26,6 +26,9 @@ public:
 	virtual void setPosition(const sf::Vector2f& position);
 	virtual void move(const sf::Vector2f& delta);
 
+	float getDistanceTo(const Entity* entity) const;
+	float getSquaredDistanceTo(const Entity* entity) const;
+
 	std::optional<Component*> getComponent(const std::string& name);
 
 	template<typename T>

@@ -30,6 +30,17 @@ void Entity::move(const sf::Vector2f& delta)
 	m_WorldPosition += delta * SPACE_UNIT;
 }
 
+float Entity::getDistanceTo(const Entity* entity) const
+{
+	return std::sqrt(getSquaredDistanceTo(entity));
+}
+
+float Entity::getSquaredDistanceTo(const Entity* entity) const
+{
+	sf::Vector2f vect = entity->getPosition() - getPosition();
+	return vect.x * vect.x + vect.y * vect.y;
+}
+
 std::optional<Component*> Entity::getComponent(const std::string& name)
 {
 	for (auto& comp : m_Components)

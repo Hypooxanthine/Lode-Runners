@@ -51,15 +51,14 @@ namespace Data
 		AStarGraph() = default;
 		AStarGraph(const AStarGraph& other);
 
-		void setStart(const NodePosition& pos);
-		void setGoal(const NodePosition& pos);
-
 		void addNode(const NodePosition& pos);
 
 		void addEdge(const NodePosition& from, const NodePosition& to);
 
-		Node& getNode(const NodePosition& pos);
-		const Node& getNode(const NodePosition& pos) const;
+		bool contains(const NodePosition& pos);
+
+		Node* getNode(const NodePosition& pos);
+		const Node* getNode(const NodePosition& pos) const;
 
 		std::vector<Node*>& getNeighbours(const NodePosition& node);
 		const std::vector<Node*>& getNeighbours(const NodePosition& node) const;
@@ -69,12 +68,11 @@ namespace Data
 
 	private:
 		std::unordered_map<std::string, Node> m_Nodes;
-		NodePosition m_StartPos, m_GoalPos;
 	};
 
 }
 
 namespace AI
 {
-	bool ComputeAStar(Data::AStarGraph graph, Data::Node* start, Data::Node* goal, std::vector<std::pair<int, int>>& path);
+	bool ComputeAStar(Data::AStarGraph graph, const Data::NodePosition& startPos, const Data::NodePosition& goalPos, std::vector<Data::Node>& path);
 }

@@ -5,6 +5,7 @@
 #include "StoneTile.h"
 #include "BridgeTile.h"
 #include "LadderTile.h"
+#include "Gold.h"
 
 #include "PlayerSpawnTile.h"
 #include "EnnemySpawnTile.h"

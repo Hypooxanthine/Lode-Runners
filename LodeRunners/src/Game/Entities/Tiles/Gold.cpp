@@ -8,6 +8,8 @@
 GoldTile::GoldTile(const size_t& ID)
 	: Tile(), m_ID(ID)
 {
+	m_Navigable = true;
+
 	m_Collider = makeComponent<ColliderComponent>("Collider");
 	m_Collider->setCollisionType(CollisionType::Static);
 	m_Collider->setHitbox({ 1.f, 1.f });

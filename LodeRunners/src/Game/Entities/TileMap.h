@@ -2,6 +2,8 @@
 
 #include "Entity.h"
 
+#include "../../Util/Util.h"
+
 class Tile;
 class BlockingWall;
 class GoldTile;
@@ -23,18 +25,24 @@ public:
 	Tile* getTile(const size_t& index);
 	Tile* getTile(const size_t& x, const size_t& y);
 
+	const Data::AStarGraph& getNavigationGraph() const;
+
 	TilePosition getRunnersSpawn() const;
 	TilePosition nextEnnemySpawn();
+	size_t getMaxEnnemies() const;
 
 	ExitTile* getExitTile() { return m_ExitTile; }
 	size_t getGoldsNb() const { return m_Golds.size(); }
 
 private: // Private methods
 	void initTiles(const LevelAsset* levelAsset);
+	void initNavigationGraph();
 	void initBlockingWalls();
 
 private:
 	std::array<Ref<Tile>, TILES_HEIGHT* TILES_WIDTH> m_Tiles;
+	Data::AStarGraph m_NavGraph;
+
 	Ref<BlockingWall> m_WallL, m_WallR, m_WallU, m_WallD;
 
 	TilePosition m_RunnerSpawn;

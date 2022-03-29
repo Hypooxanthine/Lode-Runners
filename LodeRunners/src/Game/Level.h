@@ -10,7 +10,10 @@ class TileMap;
 
 class Pawn;
 class RunnerPawn;
+class EnnemyPawn;
+
 class PlayerController;
+class AIController;
 
 // first = playerID, second = playerName.
 using Player = std::pair<size_t, std::string>;
@@ -33,6 +36,7 @@ public:
 
 	void addRunner(const Player& runner);
 	void addEnnemy(const Player& ennemy);
+	void fillEnnemiesWithIA();
 
 	TileMap* getTileMap() { return m_TileMap.get(); }
 	size_t getRunnersNumber() const;
@@ -40,10 +44,13 @@ public:
 private: // Private members
 	Ref<TileMap> m_TileMap;
 
-	/* Only one player controller per game instance. */
+	// Only one player controller per game instance.
 	Ref<PlayerController> m_PlayerController;
+	std::vector<Ref<AIController>> m_AIControllers;
 
 	std::vector<Ref<Pawn>> m_Pawns;
+	std::vector<RunnerPawn*> m_Runners;
+	std::vector<EnnemyPawn*> m_Ennemies;
 
 	std::vector<RunnerPawn*> m_DeadRunners;
 
