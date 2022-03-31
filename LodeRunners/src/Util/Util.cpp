@@ -4,15 +4,17 @@
 #include <vector>
 #include <algorithm>
 
+#include "../Core/Base.h"
+
 namespace Data
 {
 	/* Node class */
 
-	Node::Node(const NodePosition& pos)
+	Node::Node(const sf::Vector2i& pos)
 		: m_Pos(pos)
 	{}
 
-	const NodePosition& Node::getPosition() const
+	const sf::Vector2i& Node::getPosition() const
 	{
 		return m_Pos;
 	}
@@ -78,62 +80,57 @@ namespace Data
 
 	AStarGraph::AStarGraph(const AStarGraph& other)
 	{
-		for (const auto& pair : other.m_Nodes)
+		for (const auto& [id, node] : other.m_Nodes)
 		{
-			Node temp(pair.second.getPosition());
+			Node temp(node.getPosition());
 
-			m_Nodes[pair.first] = Node(pair.second.getPosition());
+			m_Nodes[id] = Node(node.getPosition());
 		}
 
-		for (const auto& pairOther : other.m_Nodes)
+		for (const auto& [id, node] : other.m_Nodes)
 		{
-			for (const auto& neighbourOther : pairOther.second.getNeighbours())
+			for (const auto& neighbour : node.getNeighbours())
 			{
-				Node* correspondingNode = &m_Nodes.at(nodePosToStr(neighbourOther->getPosition()));
+				Node* correspondingNode = &m_Nodes.at(neighbour->getPosition());
 
-				m_Nodes[pairOther.first].addNeighbour(correspondingNode);
+				m_Nodes.at(id).addNeighbour(correspondingNode);
 			}
 		}
 	}
 
-	void AStarGraph::addNode(const NodePosition& pos)
+	void AStarGraph::addNode(const sf::Vector2i& pos)
 	{
-		m_Nodes[nodePosToStr(pos)] = Node(pos);
+		m_Nodes[pos] = Node(pos);
 	}
 
-	void AStarGraph::addEdge(const NodePosition& from, const NodePosition& to)
+	void AStarGraph::addEdge(const sf::Vector2i& from, const sf::Vector2i& to)
 	{
-		m_Nodes[nodePosToStr(from)].addNeighbour(&m_Nodes[nodePosToStr(to)]);
+		m_Nodes.at(from).addNeighbour(&m_Nodes.at(to));
 	}
 
-	bool AStarGraph::contains(const NodePosition& pos)
+	bool AStarGraph::contains(const sf::Vector2i& pos)
 	{
-		return m_Nodes.contains(nodePosToStr(pos));
+		return m_Nodes.contains(pos);
 	}
 
-	Node* AStarGraph::getNode(const NodePosition& pos)
+	Node* AStarGraph::getNode(const sf::Vector2i& pos)
 	{
-		return &m_Nodes.at(nodePosToStr(pos));
+		return &m_Nodes.at(pos);
 	}
 
-	const Node* AStarGraph::getNode(const NodePosition& pos) const
+	const Node* AStarGraph::getNode(const sf::Vector2i& pos) const
 	{
-		return &m_Nodes.at(nodePosToStr(pos));
+		return &m_Nodes.at(pos);
 	}
 
-	std::vector<Node*>& AStarGraph::getNeighbours(const NodePosition& node)
+	std::vector<Node*>& AStarGraph::getNeighbours(const sf::Vector2i& node)
 	{
 		return getNode(node)->getNeighbours();
 	}
 
-	const std::vector<Node*>& AStarGraph::getNeighbours(const NodePosition& node) const
+	const std::vector<Node*>& AStarGraph::getNeighbours(const sf::Vector2i& node) const
 	{
 		return getNode(node)->getNeighbours();
-	}
-
-	std::string AStarGraph::nodePosToStr(const NodePosition& pos) const
-	{
-		return std::to_string(pos.x) + "," + std::to_string(pos.y);
 	}
 }
 
@@ -148,7 +145,7 @@ namespace AI
 			[](const Node* left, const Node* right) -> bool
 			{
 				if (left->getFCost() < right->getFCost()
-				 || left->getFCost() == right->getFCost() && left->getHCost() < right->getHCost())
+					|| (left->getFCost() == right->getFCost() && left->getHCost() < right->getHCost()))
 					return true;
 				else
 					return false;
@@ -172,7 +169,7 @@ namespace AI
 		std::reverse(path.begin(), path.end());
 	}
 
-	bool ComputeAStar(Data::AStarGraph graph, const Data::NodePosition& startPos, const Data::NodePosition& goalPos, std::vector<Data::Node>& path)
+	bool ComputeAStar(Data::AStarGraph graph, const sf::Vector2i& startPos, const sf::Vector2i& goalPos, std::vector<Data::Node>& path)
 	{
 		using namespace Data;
 		
@@ -183,6 +180,7 @@ namespace AI
 			start = graph.getNode(startPos);
 		else
 			return false;
+
 		if (graph.contains(goalPos))
 			goal = graph.getNode(goalPos);
 		else

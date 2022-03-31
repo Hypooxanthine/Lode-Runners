@@ -15,7 +15,13 @@ public:
 	virtual void update(const float& dt) override;
 
 private:
-	bool updateClosestRunner();
+	bool updatePath();
+	void followPath();
+	void updateCursor();
+
+	void updateClosestRunner();
+	sf::Vector2f getTileWorldPos(const sf::Vector2i& pos) const;
+	sf::Vector2i getTileNodePosition(const sf::Vector2f& pos) const;
 
 private:
 	TileMap* m_TileMap;

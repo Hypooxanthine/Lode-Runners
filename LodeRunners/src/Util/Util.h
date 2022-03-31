@@ -3,23 +3,28 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <SFML/Graphics.hpp>
+
+template<>
+struct std::hash<sf::Vector2i>
+{
+	size_t operator()(const sf::Vector2i& v) const
+	{
+		return std::hash<std::string>()(std::to_string(v.x) + " " + std::to_string(v.y));
+	}
+};
 
 namespace Data
 {
 	class Node;
 
-	struct NodePosition
-	{
-		int x = 0, y = 0;
-	};
-
 	class Node
 	{
 	public:
 		Node() = default;
-		Node(const NodePosition& pos);
+		Node(const sf::Vector2i& pos);
 
-		const NodePosition& getPosition() const;
+		const sf::Vector2i& getPosition() const;
 		const double& getGCost() const { return m_gCost; }
 		const double& getHCost() const { return m_hCost; }
 		const double& getFCost() const { return m_fCost; }
@@ -37,7 +42,7 @@ namespace Data
 		bool operator==(const Node& other) const;
 
 	private:
-		NodePosition m_Pos;
+		sf::Vector2i m_Pos;
 		std::vector<Node*> m_Neighbours;
 		const Node* m_CameFrom = nullptr;
 
@@ -51,28 +56,25 @@ namespace Data
 		AStarGraph() = default;
 		AStarGraph(const AStarGraph& other);
 
-		void addNode(const NodePosition& pos);
+		void addNode(const sf::Vector2i& pos);
 
-		void addEdge(const NodePosition& from, const NodePosition& to);
+		void addEdge(const sf::Vector2i& from, const sf::Vector2i& to);
 
-		bool contains(const NodePosition& pos);
+		bool contains(const sf::Vector2i& pos);
 
-		Node* getNode(const NodePosition& pos);
-		const Node* getNode(const NodePosition& pos) const;
+		Node* getNode(const sf::Vector2i& pos);
+		const Node* getNode(const sf::Vector2i& pos) const;
 
-		std::vector<Node*>& getNeighbours(const NodePosition& node);
-		const std::vector<Node*>& getNeighbours(const NodePosition& node) const;
-
-	private:
-		std::string nodePosToStr(const NodePosition& pos) const;
+		std::vector<Node*>& getNeighbours(const sf::Vector2i& node);
+		const std::vector<Node*>& getNeighbours(const sf::Vector2i& node) const;
 
 	private:
-		std::unordered_map<std::string, Node> m_Nodes;
+		std::unordered_map<sf::Vector2i, Node> m_Nodes;
 	};
 
 }
 
 namespace AI
 {
-	bool ComputeAStar(Data::AStarGraph graph, const Data::NodePosition& startPos, const Data::NodePosition& goalPos, std::vector<Data::Node>& path);
+	bool ComputeAStar(Data::AStarGraph graph, const sf::Vector2i& startPos, const sf::Vector2i& goalPos, std::vector<Data::Node>& path);
 }

@@ -126,7 +126,7 @@ void TileMap::initNavigationGraph()
 			|| (tile->isNavigable() && i + TILES_WIDTH < TILES_WIDTH * TILES_HEIGHT
 				&& (!getTile(i + TILES_WIDTH)->isNavigable() || dynamic_cast<LadderTile*>(getTile(i + TILES_WIDTH)))))
 		{
-			Data::NodePosition pos = { i % TILES_WIDTH, i / TILES_WIDTH };
+			sf::Vector2i pos = { (int)i % TILES_WIDTH, (int)i / TILES_WIDTH };
 			m_NavGraph.addNode(pos);
 
 			if (m_NavGraph.contains({ pos.x - 1, pos.y }))
