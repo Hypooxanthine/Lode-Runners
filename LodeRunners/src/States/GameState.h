@@ -31,6 +31,8 @@ public:
 
 	void setScore(const size_t& score);
 
+	const bool& isGameEnded() const;
+
 	void notifyGoldPicked();
 	void notifyRunnerDeath();
 
@@ -52,6 +54,8 @@ private:
 	size_t m_RunnersNb = 0;
 	size_t m_DeadRunnersNb = 0;
 
+	bool m_GameEnded = false;
+
 public: // Public replicated functions
 
 	/* Game end */
@@ -62,6 +66,7 @@ public: // Public replicated functions
 		[this](const PawnType& winners)
 		{
 			m_EndGameHUD->show(winners);
+			m_GameEnded = true;
 		},
 		"GameState", Network::ReplicationMode::Multicast,
 		const PawnType&

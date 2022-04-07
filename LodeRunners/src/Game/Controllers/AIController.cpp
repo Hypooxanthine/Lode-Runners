@@ -14,6 +14,9 @@ AIController::AIController(TileMap* tileMap, const std::vector<RunnerPawn*>& run
 
 void AIController::update(const float& dt)
 {
+	GameState* gs = dynamic_cast<GameState*>(Application::get()->getCurrentState());
+	if (gs && gs->isGameEnded()) return;
+
 	m_TimeAccumulator += dt;
 
 

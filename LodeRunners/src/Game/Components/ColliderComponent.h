@@ -25,11 +25,14 @@ public:
 	const CollisionType& getCollisionType() const;
 	void setCollisionType(const CollisionType& type);
 
-	const CollisionProfile& getCollisionProfile() const;
+	CollisionProfile getCollisionProfile() const;
 	void setCollisionProfile(const CollisionProfile& profile);
 
 	const CollisionResponse& getBehaviourWith(const CollisionProfile& profile) const;
 	void setBehavioursWith(const CollisionProfile& profile, const CollisionResponse& response);
+
+	void enableCollisions();
+	void disableCollisions();
 
 	bool ignores(const ColliderComponent* other) const;
 	bool overlaps(const ColliderComponent* other) const;
@@ -47,6 +50,7 @@ private: // Private members
 	CollisionProfile m_ColProfile = CollisionProfile::TileSolid;
 	
 	std::map<CollisionProfile, CollisionResponse> m_BehaviourWithProfile;
+	bool m_Disabled = false;
 
 	sf::Vector2f m_LastPosition;
 

@@ -101,6 +101,7 @@ void RunnerPawn::kill()
 	m_IsKilled = true;
 	m_Flipbook->setRender(false);
 	m_NameText->setRender(false);
+	m_Collider->disableCollisions();
 
 	if (IS_SERVER)
 	{

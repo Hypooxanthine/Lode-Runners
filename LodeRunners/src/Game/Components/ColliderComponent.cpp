@@ -87,9 +87,10 @@ void ColliderComponent::setCollisionType(const CollisionType& type)
 	Physics::get()->updateColliderType(this);
 }
 
-const CollisionProfile& ColliderComponent::getCollisionProfile() const
+CollisionProfile ColliderComponent::getCollisionProfile() const
 {
-	return m_ColProfile;
+	if (m_Disabled) return CollisionProfile::NoCollision;
+	else return m_ColProfile;
 }
 
 void ColliderComponent::setCollisionProfile(const CollisionProfile& profile)
@@ -99,12 +100,24 @@ void ColliderComponent::setCollisionProfile(const CollisionProfile& profile)
 
 const CollisionResponse& ColliderComponent::getBehaviourWith(const CollisionProfile& profile) const
 {
-	return m_BehaviourWithProfile.at(profile);
+	if (m_Disabled) return CollisionResponse::Ignore;
+	else return m_BehaviourWithProfile.at(profile);
 }
 
 void ColliderComponent::setBehavioursWith(const CollisionProfile& profile, const CollisionResponse& response)
 {
 	m_BehaviourWithProfile[profile] = response;
+}
+
+void ColliderComponent::enableCollisions()
+{
+	m_Disabled = false;
+}
+
+void ColliderComponent::disableCollisions()
+{
+	m_Disabled = true;
+	m_ColProfile = CollisionProfile::NoCollision;
 }
 
 bool ColliderComponent::ignores(const ColliderComponent* other) const

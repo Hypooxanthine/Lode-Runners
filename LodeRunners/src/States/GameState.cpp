@@ -87,6 +87,11 @@ void GameState::setScore(const size_t& score)
 	m_GameUI->setScore(score);
 }
 
+const bool& GameState::isGameEnded() const
+{
+	return m_GameEnded;
+}
+
 void GameState::notifyGoldPicked()
 {
 	if (!IS_SERVER) return;

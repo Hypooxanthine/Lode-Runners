@@ -69,6 +69,9 @@ void Pawn::update(const float& dt)
 {
 	if (IS_SERVER)
 	{
+		GameState* gs = dynamic_cast<GameState*>(Application::get()->getCurrentState());
+		if (gs && gs->isGameEnded()) return;
+
 		if (m_IsMovingLeft)
 			move({ -dt * m_Speed, 0.f });
 		if (m_IsMovingRight)

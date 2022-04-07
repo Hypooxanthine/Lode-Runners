@@ -6,6 +6,8 @@
 #include "../../../Network/Network.h"
 #include "../../Physics.h"
 
+#include "../../../States/GameState.h"
+
 class Controller;
 class PlayerController;
 class AIController;
@@ -106,18 +108,6 @@ public: // Replicated functions
 			setPosition_OnClients(getPosition().x, getPosition().y);
 		},
 		"Pawn" + std::to_string(m_ID), Network::ReplicationMode::OnServer,
-		const float&, const float&
-	);
-
-	CREATE_REPLICATED_FUNCTION
-	(
-		move_OnClients,
-		[this](const float& x, const float& y)
-		{
-			m_WorldPosition.x += x * SPACE_UNIT;
-			m_WorldPosition.y += y * SPACE_UNIT;
-		},
-		"Pawn" + std::to_string(m_ID), Network::ReplicationMode::OnClients,
 		const float&, const float&
 	);
 

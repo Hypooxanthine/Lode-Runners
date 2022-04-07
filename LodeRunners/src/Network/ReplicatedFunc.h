@@ -186,7 +186,7 @@ namespace Network
 
 		ByteArray m_Buffer;
 
-		size_t m_GUID = "";
+		size_t m_GUID = 0;
 
 		ReplicationMode m_Mode = ReplicationMode::NotReplicated;
 	};
