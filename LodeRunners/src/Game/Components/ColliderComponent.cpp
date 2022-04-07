@@ -98,7 +98,7 @@ void ColliderComponent::setCollisionProfile(const CollisionProfile& profile)
 	m_ColProfile = profile;
 }
 
-const CollisionResponse& ColliderComponent::getBehaviourWith(const CollisionProfile& profile) const
+CollisionResponse ColliderComponent::getBehaviourWith(const CollisionProfile& profile) const
 {
 	if (m_Disabled) return CollisionResponse::Ignore;
 	else return m_BehaviourWithProfile.at(profile);

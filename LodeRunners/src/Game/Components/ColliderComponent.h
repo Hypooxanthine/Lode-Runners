@@ -28,7 +28,7 @@ public:
 	CollisionProfile getCollisionProfile() const;
 	void setCollisionProfile(const CollisionProfile& profile);
 
-	const CollisionResponse& getBehaviourWith(const CollisionProfile& profile) const;
+	CollisionResponse getBehaviourWith(const CollisionProfile& profile) const;
 	void setBehavioursWith(const CollisionProfile& profile, const CollisionResponse& response);
 
 	void enableCollisions();

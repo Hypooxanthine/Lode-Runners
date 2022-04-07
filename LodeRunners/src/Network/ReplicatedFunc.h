@@ -104,6 +104,13 @@ namespace Network
 		}
 
 		template<>
+		void deserializeArg(size_t& receiver, ByteArray& buffer, size_t& cursor)
+		{
+			receiver = static_cast<size_t>(*reinterpret_cast<uint64_t*>(buffer.data() + cursor));
+			cursor += sizeof(uint64_t);
+		}
+
+		template<>
 		void deserializeArg(std::string& receiver, ByteArray& buffer, size_t& cursor)
 		{
 			size_t size = *reinterpret_cast<size_t*>(buffer.data() + cursor);
@@ -143,6 +150,21 @@ namespace Network
 			using Raw = std::remove_reference<T>::type;
 
 			std::byte* asByte = (std::byte*)&arg;
+			ByteArray asArrayByte;
+
+			for (size_t i = 0; i < sizeof(Raw); i++)
+				asArrayByte.push_back(*(asByte + i));
+
+			m_Buffer.insert(m_Buffer.begin(), asArrayByte.begin(), asArrayByte.end());
+		}
+
+		template<>
+		void serializeArg(const size_t& arg)
+		{
+			using Raw = uint64_t;
+			uint64_t asUint64_t = static_cast<uint64_t>(arg);
+
+			std::byte* asByte = (std::byte*)&asUint64_t;
 			ByteArray asArrayByte;
 
 			for (size_t i = 0; i < sizeof(Raw); i++)
