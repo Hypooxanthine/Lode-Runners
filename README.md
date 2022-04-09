@@ -9,7 +9,7 @@ EDIT : matchmaking server will take too much time. It could be a great improveme
   - [DONE] End-game checking system.
   - [DONE] Level end ladder spawn.
   - [DONE] Back-to-lobby system (at the end of the game).
-  - Scores saving system with leaderboard (another project/application ?).
+  - [DONE] Scores saving system with leaderboard (another project/application ?).
   - Settings
     - Skin selector
 2. Bug fixes
