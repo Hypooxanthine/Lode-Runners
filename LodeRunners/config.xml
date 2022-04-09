@@ -118,11 +118,11 @@
         <Skins path="Resources/Skins/"/>
         <Fonts path="Resources/Fonts/"/>
         <Levels path="Resources/Levels/"/>
+		<LeaderBoard path="Resources/Misc/LeaderBoard.txt" />
     </Paths>
     <Settings>
         <Skin selected="default"/>
         <Audio volume="0.5"/>
         <Animation time="0.5"/>
     </Settings>
-    <Network/>
 </App>

@@ -38,6 +38,8 @@ public:
 	void addEnnemy(const Player& ennemy);
 	void fillEnnemiesWithIA();
 
+	const std::vector<Ref<Pawn>>& getPawns() const;
+
 	TileMap* getTileMap() { return m_TileMap.get(); }
 	size_t getRunnersNumber() const;
 

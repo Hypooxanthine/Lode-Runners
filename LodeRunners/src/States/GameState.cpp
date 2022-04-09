@@ -53,6 +53,20 @@ GameState::GameState(Ref<LevelAsset> level, const std::vector<Player>& runners, 
 
 	m_EndGameHUD->setViewport(LEVEL_VIEWPORT);
 	m_EndGameHUD->bindEvent([this] {this->backToLobby_Multicast(); });
+
+	m_LeaderBoard = MakeRef<LeaderBoardAsset>(*Assets::getLeaderBoard());
+}
+
+GameState::~GameState()
+{
+	if(IS_SERVER)
+	{
+		for (const auto& pawn : m_Level->getPawns())
+			m_LeaderBoard->addScore(pawn->getName(), pawn->getScore());
+
+		AssetLoader::saveLeaderBoard(m_LeaderBoard);
+		Assets::reloadLeaderBoard();
+	}
 }
 
 void GameState::init()

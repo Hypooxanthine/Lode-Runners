@@ -33,7 +33,7 @@ public:
 
 	void setController(Controller* controller) { m_Controller = controller; }
 
-	/* Overridings that take replication in account.That's a bit dirty and should be handled differently. */
+	/* Overridings that take replication in account. */
 
 	virtual void setPosition(const sf::Vector2f& position) override;
 	virtual void move(const sf::Vector2f& delta) override;
@@ -43,8 +43,12 @@ public:
 	const size_t& getID() const { return m_ID; }
 	const std::string& getName() const { return m_Name; }
 
+	const size_t& getScore() const { return m_Score; }
+
 	std::optional<PlayerController*> getPlayerController();
 	std::optional<AIController*> getAIController();
+
+	void setScore(const size_t& score);
 
 protected: // Protected members
 	ColliderComponent* m_Collider;
@@ -59,6 +63,8 @@ protected: // Protected members
 
 	float m_Speed = 3.f;
 	float m_GravityForce = 8.f;
+
+	size_t m_Score = 0;
 
 	bool m_IsMovingLeft = false, m_IsMovingRight = false, m_IsMovingUp = false, m_IsMovingDown = false;
 
@@ -163,6 +169,19 @@ public: // Replicated functions
 		},
 		"Pawn" + std::to_string(m_ID), Network::ReplicationMode::OnServer,
 		const MoveDir&, const bool&
+	);
+
+	/* Scores */
+
+	CREATE_REPLICATED_FUNCTION
+	(
+		setScore_Multicast,
+		[this](const size_t& score)
+		{
+			setScore(score);
+		},
+		"Pawn" + std::to_string(getID()), Network::ReplicationMode::Multicast,
+		const size_t&
 	);
 };
 

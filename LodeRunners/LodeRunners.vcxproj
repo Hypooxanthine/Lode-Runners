@@ -167,6 +167,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Assets\LeaderBoardAsset.cpp" />
     <ClCompile Include="src\HUD\Custom\EndGameResultsUI.cpp" />
     <ClCompile Include="src\HUD\Custom\GameUI.cpp" />
     <ClCompile Include="src\Game\Entities\Tiles\Gold.cpp" />
@@ -226,6 +227,7 @@
     <ClCompile Include="src\Util\Util.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Assets\LeaderBoardAsset.h" />
     <ClInclude Include="src\HUD\Custom\EndGameResultsUI.h" />
     <ClInclude Include="src\HUD\Custom\GameUI.h" />
     <ClInclude Include="src\Game\Entities\Tiles\Gold.h" />

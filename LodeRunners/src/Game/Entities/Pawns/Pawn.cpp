@@ -127,3 +127,17 @@ std::optional<AIController*> Pawn::getAIController()
 
 	return out != nullptr ? out : std::optional<AIController*>();
 }
+
+void Pawn::setScore(const size_t& score)
+{
+	m_Score = score;
+
+	LOG_INFO("Player {} picked up a gold. New score : {}.", getName(), m_Score);
+
+	if (getID() == PLAYER_ID)
+	{
+		auto state = dynamic_cast<GameState*>(Application::get()->getCurrentState());
+		if (state) state->setScore(m_Score);
+	}
+
+}

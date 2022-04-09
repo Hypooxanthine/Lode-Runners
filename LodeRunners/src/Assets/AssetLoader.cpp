@@ -17,6 +17,7 @@ std::map<TileType, std::string> AssetLoader::m_XMLTileNames;
 std::map<FlipbookType, std::string> AssetLoader::m_XMLFlipbookNames;
 std::vector<std::string> AssetLoader::m_AvailableSkins;
 std::vector<std::pair<std::string, std::string>> AssetLoader::m_AvailableLevels;
+std::string AssetLoader::m_LeaderBoardPath;
 unsigned int AssetLoader::m_ElementSize = 0;
 
 void AssetLoader::init()
@@ -61,11 +62,14 @@ void AssetLoader::init()
 		for (const auto& p : m_AvailableLevels)
 			LOG_TRACE(p.first);
 		#endif
+
+	fillLeaderBoardPath(docHandle);
+		LOG_INFO("LeaderBoard path : {}", m_LeaderBoardPath);
 }
 
 void AssetLoader::fillAvailableSkins(tinyxml2::XMLHandle& handle)
 {
-	auto skinsElement = getSkins(handle);
+	auto skinsElement = getSkinsElement(handle);
 
 	auto skinElement = skinsElement->FirstChildElement();
 	CORRUPTED(skinElement);
@@ -86,7 +90,7 @@ void AssetLoader::fillAvailableSkins(tinyxml2::XMLHandle& handle)
 void AssetLoader::fillAvailableLevels(tinyxml2::XMLHandle& handle)
 {
 	m_AvailableLevels.clear();
-	auto levelsElement = getLevels(handle);
+	auto levelsElement = getLevelsElement(handle);
 
 	auto levelElement = levelsElement->FirstChildElement();
 	if(!levelElement) return; // If no level does exist, we just don't fill the levels list.
@@ -108,6 +112,16 @@ void AssetLoader::fillAvailableLevels(tinyxml2::XMLHandle& handle)
 	}
 }
 
+void AssetLoader::fillLeaderBoardPath(tinyxml2::XMLHandle& handle)
+{
+	auto leaderBoardElement = getLeaderBoardElement(handle);
+
+	const char* pathPtr = nullptr;
+	CORRUPTED(leaderBoardElement->QueryStringAttribute("path", &pathPtr) == tinyxml2::XMLError::XML_SUCCESS);
+
+	m_LeaderBoardPath = pathPtr;
+}
+
 void AssetLoader::loadSkin(const std::string& skinName, std::unordered_map<TileType,Ref<SpriteAsset>>& tiles, unsigned int& elementSize, Ref<FontAsset> font, std::unordered_map<FlipbookType,Ref<FlipbookAsset>>& flipbooks)
 {
 	tinyxml2::XMLDocument doc;
@@ -123,7 +137,7 @@ void AssetLoader::loadSkin(const std::string& skinName, std::unordered_map<TileT
 void AssetLoader::LoadSpritesheet(tinyxml2::XMLHandle& handle, const std::string& name)
 {
 	// Getting requested skin settings
-	auto skinElement = getSkin(handle, name);
+	auto skinElement = getSkinElement(handle, name);
 
 	// Getting spritesheet file path
 	auto pathElement = handle.FirstChildElement("App").FirstChildElement("Paths").FirstChildElement("Skins").ToElement();
@@ -143,12 +157,12 @@ void AssetLoader::LoadSpritesheet(tinyxml2::XMLHandle& handle, const std::string
 void AssetLoader::loadTiles(std::unordered_map<TileType,Ref<SpriteAsset>>& tiles, unsigned int& elementSize, tinyxml2::XMLHandle& handle, const std::string& skinName)
 {
 	// Getting requested skin layout
-	auto skinElement = getSkin(handle, skinName);
+	auto skinElement = getSkinElement(handle, skinName);
 
 	const char* layoutName = skinElement->Attribute("layout");
 	CORRUPTED(layoutName);
 
-	auto layoutElement = getLayout(handle, layoutName);
+	auto layoutElement = getLayoutElement(handle, layoutName);
 
 	// Getting element size
 	CORRUPTED(layoutElement->QueryUnsignedAttribute("elementSize", &m_ElementSize) == tinyxml2::XMLError::XML_SUCCESS);
@@ -257,7 +271,7 @@ void AssetLoader::saveLevel(Ref<const LevelAsset> level)
 	ASSERT(doc.LoadFile("config.xml") == tinyxml2::XMLError::XML_SUCCESS, "Couldn't open config.xml.");
 	tinyxml2::XMLHandle docHandle(&doc);
 
-	auto levelsElement = getLevels(docHandle);
+	auto levelsElement = getLevelsElement(docHandle);
 	auto levelElement = levelsElement->FirstChildElement("Level");
 	for (levelElement;
 		levelElement != nullptr && levelElement->Attribute("name") != level->getName();
@@ -286,17 +300,95 @@ void AssetLoader::saveLevel(Ref<const LevelAsset> level)
 	saveLevel(level, getLevelPath(docHandle, level->getName()));
 }
 
-tinyxml2::XMLElement* AssetLoader::getSkins(tinyxml2::XMLHandle& handle)
+void AssetLoader::loadLeaderBoard(Ref<LeaderBoardAsset> leaderBoard)
+{
+	LOG_INFO("Loading leaderboard.");
+	leaderBoard->clear();
+
+	std::ifstream ifs;
+	ifs.open(m_LeaderBoardPath);
+
+	if (ifs.is_open())
+	{
+		LOG_INFO("Leaderboard opened.");
+
+		std::string line;
+
+		while (std::getline(ifs, line))
+		{
+			std::string playerName;
+			uint64_t playerScore = 0;
+
+			for (const char& ch : line)
+			{
+				if (ch < '0' || ch > '9')
+					playerName += ch;
+				else
+					break;
+			}
+
+			playerName = playerName.substr(0, playerName.size() - 1);
+			std::istringstream iss(line.substr(playerName.size()));
+
+			ASSERT(iss >> playerScore, "File " + m_LeaderBoardPath + " corrupted.");
+
+			leaderBoard->set(playerName, playerScore);
+			LOG_TRACE("Leaderboard entry added : player \"{}\", score {}.", playerName, playerScore);
+		}
+
+		ifs.close();
+
+		return;
+	}
+	else // Leaderboard doesn't exist
+	{
+		// No entry to add to the leaderboard.
+		LOG_INFO("Couldn't open leaderboard at path {}. Starting with an empty leaderboard.", m_LeaderBoardPath);
+		return;
+	}
+}
+
+void AssetLoader::saveLeaderBoard(Ref<const LeaderBoardAsset> leaderBoard)
+{
+	LOG_INFO("Saving leaderboard at path {}.", m_LeaderBoardPath);
+
+	std::ofstream ofs;
+	ofs.open(m_LeaderBoardPath, std::ofstream::out | std::ofstream::trunc);
+
+	ASSERT(ofs.is_open(), "Couldn't open file " + m_LeaderBoardPath + ".");
+
+	std::vector<std::pair<std::string, uint64_t>> sorted;
+
+	for (const auto& entry : leaderBoard->getData())
+		sorted.push_back(entry);
+
+	std::sort(sorted.rbegin(), sorted.rend(),
+		[](const std::pair<std::string, uint64_t>& left, const std::pair<std::string, uint64_t>& right)
+		{
+			return left.second < right.second;
+		});
+
+	for (auto& [playerName, playerScore] : sorted)
+	{
+		ofs << playerName << " " << playerScore << '\n';
+	}
+
+	ofs.close();
+
+	LOG_INFO("Leaderboard saved at path {}.", m_LeaderBoardPath);
+}
+
+tinyxml2::XMLElement* AssetLoader::getSkinsElement(tinyxml2::XMLHandle& handle)
 {
 	auto skinsElement = handle.FirstChildElement("App").FirstChildElement("Spritesheets").FirstChildElement("Skins").ToElement();
 	CORRUPTED(skinsElement);
 	return skinsElement;
 }
 
-tinyxml2::XMLElement* AssetLoader::getSkin(tinyxml2::XMLHandle& handle, const std::string& name)
+tinyxml2::XMLElement* AssetLoader::getSkinElement(tinyxml2::XMLHandle& handle, const std::string& name)
 {
 	// Getting skins
-	auto skinsElement = getSkins(handle);
+	auto skinsElement = getSkinsElement(handle);
 
 	// Getting requested skin settings
 	auto skinElement = skinsElement->FirstChildElement("Skin");
@@ -313,7 +405,7 @@ tinyxml2::XMLElement* AssetLoader::getSkin(tinyxml2::XMLHandle& handle, const st
 std::string AssetLoader::getSpriteSheetPath(tinyxml2::XMLHandle& handle, const std::string& name)
 {
 	// Getting requested skin settings (it contains the file name of the spritesheet to use)
-	auto skinElement = getSkin(handle, name);
+	auto skinElement = getSkinElement(handle, name);
 
 	// Getting spritesheet file path
 	auto pathElement = handle.FirstChildElement("App").FirstChildElement("Paths").FirstChildElement("Skins").ToElement();
@@ -330,14 +422,14 @@ std::string AssetLoader::getSpriteSheetPath(tinyxml2::XMLHandle& handle, const s
 	return (std::string)spritesheetPath + spritesheetFileName;
 }
 
-tinyxml2::XMLElement* AssetLoader::getLayouts(tinyxml2::XMLHandle& handle)
+tinyxml2::XMLElement* AssetLoader::getLayoutsElement(tinyxml2::XMLHandle& handle)
 {
 	auto layoutsElement = handle.FirstChildElement("App").FirstChildElement("Spritesheets").FirstChildElement("Layouts").ToElement();
 	CORRUPTED(layoutsElement);
 	return layoutsElement;
 }
 
-tinyxml2::XMLElement* AssetLoader::getLayout(tinyxml2::XMLHandle& handle, const std::string& name)
+tinyxml2::XMLElement* AssetLoader::getLayoutElement(tinyxml2::XMLHandle& handle, const std::string& name)
 {
 	auto layoutElement = handle.FirstChildElement("App").FirstChildElement("Spritesheets").FirstChildElement("Layouts").FirstChildElement("Layout").ToElement();
 	CORRUPTED(layoutElement);
@@ -350,14 +442,22 @@ tinyxml2::XMLElement* AssetLoader::getLayout(tinyxml2::XMLHandle& handle, const 
 	return layoutElement;
 }
 
-tinyxml2::XMLElement* AssetLoader::getLayoutFromSkinName(tinyxml2::XMLHandle& handle, const std::string& skinName)
+tinyxml2::XMLElement* AssetLoader::getLayoutElementFromSkinName(tinyxml2::XMLHandle& handle, const std::string& skinName)
 {
-	auto skinElement = getSkin(handle, skinName);
+	auto skinElement = getSkinElement(handle, skinName);
 
 	const char* layoutName = nullptr;
 	CORRUPTED(skinElement->QueryStringAttribute("layout", &layoutName) == tinyxml2::XMLError::XML_SUCCESS);
 
-	return getLayout(handle, layoutName);
+	return getLayoutElement(handle, layoutName);
+}
+
+tinyxml2::XMLElement* AssetLoader::getLeaderBoardElement(tinyxml2::XMLHandle& handle)
+{
+	auto leaderBoardElement = handle.FirstChildElement("App").FirstChildElement("Paths").FirstChildElement("LeaderBoard").ToElement();
+	CORRUPTED(leaderBoardElement);
+
+	return leaderBoardElement;
 }
 
 tinyxml2::XMLElement* AssetLoader::getTiles(tinyxml2::XMLHandle& handle)
@@ -405,7 +505,7 @@ std::string AssetLoader::getFontsPath(tinyxml2::XMLHandle& handle)
 
 std::string AssetLoader::getFontFileName(tinyxml2::XMLHandle& handle, const std::string& name)
 {
-	auto skin = getSkin(handle, name);
+	auto skin = getSkinElement(handle, name);
 
 	const char* fontName;
 	CORRUPTED(skin->QueryStringAttribute("font", &fontName) == tinyxml2::XMLError::XML_SUCCESS);
@@ -454,7 +554,7 @@ tinyxml2::XMLElement* AssetLoader::getFlipbook(tinyxml2::XMLHandle& handle, cons
 
 tinyxml2::XMLElement* AssetLoader::getFlipbooks(tinyxml2::XMLHandle& handle, const std::string& skinName)
 {
-	auto layoutElement = getLayoutFromSkinName(handle, skinName);
+	auto layoutElement = getLayoutElementFromSkinName(handle, skinName);
 
 	auto flipbooksElement = layoutElement->FirstChildElement("Flipbooks");
 	CORRUPTED(flipbooksElement);
@@ -462,7 +562,7 @@ tinyxml2::XMLElement* AssetLoader::getFlipbooks(tinyxml2::XMLHandle& handle, con
 	return flipbooksElement;
 }
 
-tinyxml2::XMLElement* AssetLoader::getLevels(tinyxml2::XMLHandle& handle)
+tinyxml2::XMLElement* AssetLoader::getLevelsElement(tinyxml2::XMLHandle& handle)
 {
 	auto levelsElement = handle.FirstChildElement("App").FirstChildElement("Levels").ToElement();
 	CORRUPTED(levelsElement);
@@ -472,7 +572,7 @@ tinyxml2::XMLElement* AssetLoader::getLevels(tinyxml2::XMLHandle& handle)
 tinyxml2::XMLElement* AssetLoader::getLevel(tinyxml2::XMLHandle& handle, const std::string& name)
 {
 	// Getting levels
-	auto levelsElement = getLevels(handle);
+	auto levelsElement = getLevelsElement(handle);
 
 	// Getting requested skin settings
 	auto levelElement = levelsElement->FirstChildElement("Level");

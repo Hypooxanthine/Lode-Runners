@@ -1,0 +1,6 @@
+Alex 1200
+Robin 600
+Hugo 450
+IA 300
+Player Name 300
+Paul 150

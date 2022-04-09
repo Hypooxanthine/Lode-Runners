@@ -22,6 +22,7 @@ class GameState : public State
 {
 public:
 	GameState(Ref<LevelAsset> level, const std::vector<Player>& runners, const std::vector<Player>& ennemies);
+	virtual ~GameState();
 
 	virtual void init() override;
 	virtual void update(const float& dt) override;
@@ -45,8 +46,9 @@ private:
 	Ref<Level> m_Level;
 
 	Ref<GameUI> m_GameUI;
-
 	Ref<EndGameResultsUI> m_EndGameHUD;
+
+	Ref<LeaderBoardAsset> m_LeaderBoard;
 
 	size_t m_GoldsNb = 0;
 	size_t m_PickedUpGolds = 0;

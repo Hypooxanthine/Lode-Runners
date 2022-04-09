@@ -2,10 +2,12 @@
 
 #include "../Core/Base.h"
 #include "../Core/tinyxml2.h"
+
 #include "SpriteAsset.h"
 #include "FlipbookAsset.h"
 #include "LevelAsset.h"
 #include "FontAsset.h"
+#include "LeaderBoardAsset.h"
 
 enum class TileType
 {
@@ -58,6 +60,9 @@ public:
 	static void loadLevel(const std::string& name, Ref<LevelAsset> level);
 	static void saveLevel(Ref<const LevelAsset> level);
 
+	static void loadLeaderBoard(Ref<LeaderBoardAsset> leaderBoard);
+	static void saveLeaderBoard(Ref<const LeaderBoardAsset> leaderBoard);
+
 private:
 	struct ElementPosition { unsigned int x = 0, y = 0; };
 
@@ -71,14 +76,16 @@ private: // Private member functions : interactions with config.xml
 	// Filling available assets lists
 	static void fillAvailableSkins(tinyxml2::XMLHandle& handle);
 	static void fillAvailableLevels(tinyxml2::XMLHandle& handle);
+	static void fillLeaderBoardPath(tinyxml2::XMLHandle& handle);
 
 	// Skins
-	static tinyxml2::XMLElement* getSkins(tinyxml2::XMLHandle& handle);
-	static tinyxml2::XMLElement* getSkin(tinyxml2::XMLHandle& handle, const std::string& skinName);
+	static tinyxml2::XMLElement* getSkinsElement(tinyxml2::XMLHandle& handle);
+	static tinyxml2::XMLElement* getSkinElement(tinyxml2::XMLHandle& handle, const std::string& skinName);
 	static std::string getSpriteSheetPath(tinyxml2::XMLHandle& handle, const std::string& skinName);
-	static tinyxml2::XMLElement* getLayouts(tinyxml2::XMLHandle& handle);
-	static tinyxml2::XMLElement* getLayout(tinyxml2::XMLHandle& handle, const std::string& layoutName);
-	static tinyxml2::XMLElement* getLayoutFromSkinName(tinyxml2::XMLHandle& handle, const std::string& skinName);
+	static tinyxml2::XMLElement* getLayoutsElement(tinyxml2::XMLHandle& handle);
+	static tinyxml2::XMLElement* getLayoutElement(tinyxml2::XMLHandle& handle, const std::string& layoutName);
+	static tinyxml2::XMLElement* getLayoutElementFromSkinName(tinyxml2::XMLHandle& handle, const std::string& skinName);
+	static tinyxml2::XMLElement* getLeaderBoardElement(tinyxml2::XMLHandle& handle);
 
 	// Tiles
 	static tinyxml2::XMLElement* getTiles(tinyxml2::XMLHandle& handle);
@@ -88,13 +95,13 @@ private: // Private member functions : interactions with config.xml
 	static std::string getFontsPath(tinyxml2::XMLHandle& handle);
 	static std::string getFontFileName(tinyxml2::XMLHandle& handle, const std::string& name);
 
-	// TODO : Flipbooks
+	// Flipbooks
 	static ElementPosition getFramePosition(const tinyxml2::XMLElement* frameElement);
 	static tinyxml2::XMLElement* getFlipbook(tinyxml2::XMLHandle& handle, const std::string& name, const std::string& skinName);
 	static tinyxml2::XMLElement* getFlipbooks(tinyxml2::XMLHandle& handle, const std::string& skinName);
 
 	// Levels
-	static tinyxml2::XMLElement* getLevels(tinyxml2::XMLHandle& handle);
+	static tinyxml2::XMLElement* getLevelsElement(tinyxml2::XMLHandle& handle);
 	static tinyxml2::XMLElement* getLevel(tinyxml2::XMLHandle& handle, const std::string& name);
 	static std::string getLevelsPath(tinyxml2::XMLHandle& handle);
 	static std::string getLevelPath(tinyxml2::XMLHandle& handle, const std::string& name);
@@ -108,6 +115,7 @@ private: // Private members
 	// Lists of available assets
 	static std::vector<std::string> m_AvailableSkins;
 	static std::vector<std::pair<std::string, std::string>> m_AvailableLevels; // first = name, second = path
+	static std::string m_LeaderBoardPath;
 
 	// Element size. Needed to load a level and to set tiles positions.
 	static unsigned int m_ElementSize;

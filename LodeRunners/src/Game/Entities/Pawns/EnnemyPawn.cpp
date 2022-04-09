@@ -11,6 +11,8 @@
 
 #include "RunnerPawn.h"
 
+#define KILL_POINTS 300
+
 EnnemyPawn::EnnemyPawn(const size_t& ID, const std::string& name, TileMap* tileMap, const sf::Vector2f& spawnPoint)
 	: Pawn(ID, name, tileMap), m_SpawnPoint(spawnPoint)
 {
@@ -88,6 +90,7 @@ void EnnemyPawn::onBeginOverlap(Entity* other)
 	if (asRunner)
 	{
 		asRunner->kill_Multicast();
+		setScore_Multicast(m_Score + KILL_POINTS);
 
 		return;
 	}

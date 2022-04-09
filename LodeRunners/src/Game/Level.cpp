@@ -158,6 +158,11 @@ void Level::fillEnnemiesWithIA()
 	}
 }
 
+const std::vector<Ref<Pawn>>& Level::getPawns() const
+{
+	return m_Pawns;
+}
+
 size_t Level::getRunnersNumber() const
 {
 	return m_Runners.size();
