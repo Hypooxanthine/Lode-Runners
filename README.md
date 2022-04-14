@@ -3,6 +3,9 @@ This project is a university assignment. I'm planning to use threads, sockets in
 
 EDIT : matchmaking server will take too much time. It could be a great improvement in the future.
 
+## Demo video
+https://youtu.be/fF3n6Puy7yw
+
 ## To-do list
 
 1. Main features

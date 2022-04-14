@@ -19,7 +19,6 @@ void AIController::update(const float& dt)
 
 	m_TimeAccumulator += dt;
 
-
 	if (m_TimeAccumulator >= UPDATE_PATH_TIME)
 	{
 		m_TimeAccumulator -= UPDATE_PATH_TIME;
@@ -33,8 +32,7 @@ void AIController::update(const float& dt)
 		followPath();
 	}
 	else
-		stopMoving();
-	
+		stopMoving();	
 }
 
 bool AIController::updatePath()

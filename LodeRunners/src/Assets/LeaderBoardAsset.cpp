@@ -15,7 +15,7 @@ uint64_t LeaderBoardAsset::getOrDefault(const std::string& playerName, const uin
 	return m_Data.contains(playerName) ? m_Data.at(playerName) : defaultValue;
 }
 
-const std::map<std::string, uint64_t>& LeaderBoardAsset::getData() const
+const std::unordered_map<std::string, uint64_t>& LeaderBoardAsset::getData() const
 {
 	return m_Data;
 }

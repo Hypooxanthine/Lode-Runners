@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Core/Base.h"
+#include <unordered_map>
 
 class LeaderBoardAsset
 {
@@ -14,13 +15,12 @@ public:
 	const uint64_t& get(const std::string& playerName) const;
 	uint64_t getOrDefault(const std::string& playerName, const uint64_t& defaultValue = 0);
 
-	const std::map<std::string, uint64_t>& getData() const;
+	const std::unordered_map<std::string, uint64_t>& getData() const;
 
 	void set(const std::string& playerName, const uint64_t& score);
 	void addScore(const std::string& playerName, const uint64_t& score);
 
 private:
-	// std::map because we need to sort the leader board.
-	std::map<std::string, uint64_t> m_Data;
+	std::unordered_map<std::string, uint64_t> m_Data;
 };
 

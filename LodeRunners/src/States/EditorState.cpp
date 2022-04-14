@@ -189,7 +189,6 @@ void EditorState::update(const float& dt)
 
 		if (sf::IntRect(0, 0, TILES_WIDTH, TILES_HEIGHT).contains(hoveredTile))
 		{
-
 			m_RenderHighlighter = true;
 			m_Highlight.setPosition(m_LevelAsset->at(hoveredTile.x, hoveredTile.y)->getPosition());
 

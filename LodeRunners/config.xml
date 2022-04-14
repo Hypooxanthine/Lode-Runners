@@ -123,6 +123,5 @@
     <Settings>
         <Skin selected="default"/>
         <Audio volume="0.5"/>
-        <Animation time="0.5"/>
     </Settings>
 </App>
